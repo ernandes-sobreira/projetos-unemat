@@ -3,293 +3,437 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Painel UNEMAT - Pesquisa, Extensao e Pos-Graduacao</title>
+    <title>HUB da Pos - UNEMAT</title>
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
-    <nav id="sidebar">
-        <div class="sidebar-header">
-            <h2>UNEMAT</h2>
-            <p>Painel Academico</p>
+
+<!-- ============ SIDEBAR ============ -->
+<nav id="sidebar">
+    <div class="sidebar-logo-area">
+        <img id="sidebar-logo" src="Logo_moderno_HUB_da_Pos.png" alt="HUB da Pos" onerror="this.style.display='none'">
+        <div class="hub-title">HUB <span>da Pos</span></div>
+        <div class="hub-sub">UNEMAT - Academico</div>
+    </div>
+
+    <div class="nav-section-label">Navegacao</div>
+    <ul class="nav-menu">
+        <li><a href="#" class="nav-link active" data-page="visao-geral">
+            <span class="nav-icon">&#128202;</span><span class="nav-label">Visao Geral</span>
+        </a></li>
+        <li><a href="#" class="nav-link" data-page="pesquisa">
+            <span class="nav-icon">&#128270;</span><span class="nav-label">Pesquisa</span>
+        </a></li>
+        <li><a href="#" class="nav-link" data-page="extensao">
+            <span class="nav-icon">&#127758;</span><span class="nav-label">Extensao</span>
+        </a></li>
+        <li><a href="#" class="nav-link" data-page="ppg">
+            <span class="nav-icon">&#127891;</span><span class="nav-label">Pos-Graduacao</span>
+        </a></li>
+        <li><a href="#" class="nav-link" data-page="docentes">
+            <span class="nav-icon">&#128105;</span><span class="nav-label">Docentes</span>
+        </a></li>
+        <li><a href="#" class="nav-link" data-page="sankey">
+            <span class="nav-icon">&#128336;</span><span class="nav-label">Sankey Interativo</span>
+        </a></li>
+        <li><a href="#" class="nav-link" data-page="analise-ppg">
+            <span class="nav-icon">&#128196;</span><span class="nav-label">Analise por PPG</span>
+        </a></li>
+        <li><a href="#" class="nav-link" data-page="analise-docentes">
+            <span class="nav-icon">&#128100;</span><span class="nav-label">Analise por Docente</span>
+        </a></li>
+        <li><a href="#" class="nav-link" data-page="sobre">
+            <span class="nav-icon">&#8505;</span><span class="nav-label">Sobre</span>
+        </a></li>
+    </ul>
+
+    <!-- FILTROS GLOBAIS -->
+    <div class="active-filters-bar" id="active-filters-bar"></div>
+    <div class="sidebar-global-filters">
+        <div class="sgf-title">&#128269; Filtros Globais</div>
+        <div class="sgf-field">
+            <label>Programa PPG</label>
+            <select id="gf-programa">
+                <option value="">Todos</option>
+            </select>
         </div>
-        <ul class="nav-menu">
-            <li><a href="#" class="nav-link active" data-page="visao-geral">Visao Geral</a></li>
-            <li><a href="#" class="nav-link" data-page="pesquisa">Pesquisa</a></li>
-            <li><a href="#" class="nav-link" data-page="extensao">Extensao</a></li>
-            <li><a href="#" class="nav-link" data-page="ppg">Pos-Graduacao</a></li>
-            <li><a href="#" class="nav-link" data-page="docentes">Docentes</a></li>
-            <li><a href="#" class="nav-link" data-page="sankey">Sankey Interativo</a></li>
-            <li><a href="#" class="nav-link" data-page="analise-ppg">Analise por PPG</a></li>
-            <li><a href="#" class="nav-link" data-page="analise-docentes">Analise por Docente</a></li>
-        </ul>
-    </nav>
+        <div class="sgf-field">
+            <label>Tipo</label>
+            <select id="gf-tipo">
+                <option value="">Todos</option>
+                <option value="pesquisa">Pesquisa</option>
+                <option value="extensao">Extensao</option>
+                <option value="ppg">PPG</option>
+            </select>
+        </div>
+        <div class="sgf-field">
+            <label>Ano</label>
+            <select id="gf-ano">
+                <option value="">Todos</option>
+            </select>
+        </div>
+        <div class="sgf-field">
+            <label>Busca por palavra</label>
+            <input type="text" id="gf-keyword" placeholder="Palavra-chave...">
+        </div>
+        <button class="sgf-clear-btn" id="gf-clear">Limpar Filtros</button>
+    </div>
+</nav>
 
-    <main id="content">
-        <!-- VISAO GERAL -->
-        <section id="visao-geral" class="page active">
-            <h1>Visao Geral - UNEMAT</h1>
-            <div class="stats-grid" id="stats-cards"></div>
-            <div class="charts-row">
-                <div class="chart-box">
-                    <h3>Registros de Pesquisa por Ano</h3>
-                    <canvas id="chart-pesq-ano"></canvas>
+<!-- ============ MAIN CONTENT ============ -->
+<main id="content">
+
+    <!-- VISAO GERAL -->
+    <section id="visao-geral" class="page active">
+        <div class="page-header">
+            <div class="page-header-icon">&#128202;</div>
+            <div>
+                <h1>Visao Geral</h1>
+                <div class="ph-sub">Panorama institucional de pesquisa, extensao e pos-graduacao</div>
+            </div>
+        </div>
+        <div id="global-filter-banner" class="filter-results-banner"></div>
+        <div class="stats-grid" id="stats-cards"></div>
+        <div class="charts-row">
+            <div class="chart-box">
+                <h3>Pesquisa por Ano</h3>
+                <canvas id="chart-pesq-ano"></canvas>
+            </div>
+            <div class="chart-box">
+                <h3>Extensao por Ano</h3>
+                <canvas id="chart-ext-ano"></canvas>
+            </div>
+        </div>
+        <div class="charts-row">
+            <div class="chart-box">
+                <h3>Perfil dos Docentes</h3>
+                <canvas id="chart-doc-perfil"></canvas>
+            </div>
+            <div class="chart-box">
+                <h3>Programas por Campus</h3>
+                <canvas id="chart-ppg-campus"></canvas>
+            </div>
+        </div>
+    </section>
+
+    <!-- PESQUISA -->
+    <section id="pesquisa" class="page">
+        <div class="page-header">
+            <div class="page-header-icon">&#128270;</div>
+            <div>
+                <h1>Pesquisa</h1>
+                <div class="ph-sub">Projetos e registros de pesquisa institucionalizados</div>
+            </div>
+        </div>
+        <div id="pesq-filter-banner" class="filter-results-banner"></div>
+        <div class="charts-row">
+            <div class="chart-box">
+                <h3>Registros por Ano</h3>
+                <canvas id="chart-pesq-ano2"></canvas>
+            </div>
+            <div class="chart-box">
+                <h3>Top 20 Areas de Pesquisa</h3>
+                <canvas id="chart-top-areas"></canvas>
+            </div>
+        </div>
+        <div class="chart-box full-width">
+            <h3>Nuvem de Palavras - Titulos</h3>
+            <div id="wc-pesquisa" class="word-cloud-container"></div>
+        </div>
+        <div class="chart-box full-width">
+            <h3>Projetos de Pesquisa</h3>
+            <div class="table-controls">
+                <input type="text" id="pesq-search" placeholder="&#128269; Titulo, coordenador, area..." class="search-input">
+                <select id="pesq-year-filter" class="filter-select"><option value="">Todos os anos</option></select>
+                <span id="pesq-count-tag" class="result-count-tag"></span>
+            </div>
+            <div class="table-wrapper">
+                <table id="pesq-table">
+                    <thead><tr><th>Codigo</th><th>Titulo</th><th>Area</th><th>Ano</th><th>Coordenador</th><th>Departamento</th></tr></thead>
+                    <tbody></tbody>
+                </table>
+            </div>
+            <div id="pesq-pagination" class="pagination"></div>
+        </div>
+    </section>
+
+    <!-- EXTENSAO -->
+    <section id="extensao" class="page">
+        <div class="page-header">
+            <div class="page-header-icon">&#127758;</div>
+            <div>
+                <h1>Extensao</h1>
+                <div class="ph-sub">Acoes de extensao universitaria</div>
+            </div>
+        </div>
+        <div id="ext-filter-banner" class="filter-results-banner"></div>
+        <div class="charts-row">
+            <div class="chart-box">
+                <h3>Acoes por Ano</h3>
+                <canvas id="chart-ext-ano2"></canvas>
+            </div>
+            <div class="chart-box">
+                <h3>Tipos de Acao</h3>
+                <canvas id="chart-ext-tipos"></canvas>
+            </div>
+        </div>
+        <div class="chart-box full-width">
+            <div class="charts-row" style="padding:0">
+                <div class="chart-box" style="box-shadow:none;border:none">
+                    <h3>Top 15 Temas</h3>
+                    <canvas id="chart-ext-temas"></canvas>
                 </div>
-                <div class="chart-box">
-                    <h3>Acoes de Extensao por Ano</h3>
-                    <canvas id="chart-ext-ano"></canvas>
+                <div class="chart-box" style="box-shadow:none;border:none">
+                    <h3>Nuvem de Palavras</h3>
+                    <div id="wc-extensao" class="word-cloud-container"></div>
                 </div>
             </div>
-            <div class="charts-row">
-                <div class="chart-box">
-                    <h3>Perfil dos Docentes</h3>
-                    <canvas id="chart-doc-perfil"></canvas>
-                </div>
-                <div class="chart-box">
-                    <h3>Programas por Campus</h3>
-                    <canvas id="chart-ppg-campus"></canvas>
-                </div>
+        </div>
+        <div class="chart-box full-width">
+            <h3>Acoes de Extensao</h3>
+            <div class="table-controls">
+                <input type="text" id="ext-search" placeholder="&#128269; Titulo, coordenador, tema..." class="search-input">
+                <select id="ext-year-filter" class="filter-select"><option value="">Todos os anos</option></select>
+                <select id="ext-type-filter" class="filter-select"><option value="">Todos os tipos</option></select>
+                <span id="ext-count-tag" class="result-count-tag"></span>
             </div>
-        </section>
+            <div class="table-wrapper">
+                <table id="ext-table">
+                    <thead><tr><th>Titulo</th><th>Tipo</th><th>Ano</th><th>Coordenador</th><th>Tema</th><th>Departamento</th></tr></thead>
+                    <tbody></tbody>
+                </table>
+            </div>
+            <div id="ext-pagination" class="pagination"></div>
+        </div>
+    </section>
 
-        <!-- PESQUISA -->
-        <section id="pesquisa" class="page">
-            <h1>Pesquisa</h1>
+    <!-- PPG -->
+    <section id="ppg" class="page">
+        <div class="page-header">
+            <div class="page-header-icon">&#127891;</div>
+            <div>
+                <h1>Pos-Graduacao</h1>
+                <div class="ph-sub">Programas stricto sensu da UNEMAT</div>
+            </div>
+        </div>
+        <div class="charts-row">
+            <div class="chart-box">
+                <h3>Programas por Campus</h3>
+                <canvas id="chart-ppg-campus2"></canvas>
+            </div>
+            <div class="chart-box">
+                <h3>Docentes por Programa</h3>
+                <canvas id="chart-ppg-docentes"></canvas>
+            </div>
+        </div>
+        <div class="chart-box full-width">
+            <h3>Lista de Programas</h3>
+            <div class="table-wrapper">
+                <table id="ppg-table">
+                    <thead><tr><th>Sigla</th><th>Programa</th><th>Nivel</th><th>Campus</th><th>Docentes</th></tr></thead>
+                    <tbody></tbody>
+                </table>
+            </div>
+        </div>
+    </section>
+
+    <!-- DOCENTES -->
+    <section id="docentes" class="page">
+        <div class="page-header">
+            <div class="page-header-icon">&#128105;</div>
+            <div>
+                <h1>Docentes</h1>
+                <div class="ph-sub">Corpo docente ativo com producao registrada</div>
+            </div>
+        </div>
+        <div id="doc-filter-banner" class="filter-results-banner"></div>
+        <div class="stats-grid" id="doc-stats-cards"></div>
+        <div class="chart-box full-width">
+            <h3>Busca de Docentes</h3>
+            <div class="table-controls">
+                <input type="text" id="doc-search" placeholder="&#128269; Nome, SIAPE, departamento..." class="search-input">
+                <select id="doc-filter" class="filter-select">
+                    <option value="">Todos</option>
+                    <option value="pesq">Com Pesquisa</option>
+                    <option value="ext">Com Extensao</option>
+                    <option value="ppg">Em PPG</option>
+                    <option value="tripla">Tripla Atuacao</option>
+                </select>
+                <span id="doc-count-tag" class="result-count-tag"></span>
+            </div>
+            <div class="table-wrapper">
+                <table id="doc-table">
+                    <thead><tr><th>Nome</th><th>SIAPE</th><th>Departamento</th><th>Pesquisa</th><th>Extensao</th><th>PPG</th></tr></thead>
+                    <tbody></tbody>
+                </table>
+            </div>
+            <div id="doc-pagination" class="pagination"></div>
+        </div>
+    </section>
+
+    <!-- SANKEY -->
+    <section id="sankey" class="page">
+        <div class="page-header">
+            <div class="page-header-icon">&#128336;</div>
+            <div>
+                <h1>Diagrama Sankey Interativo</h1>
+                <div class="ph-sub">Fluxo entre programas, atividades e areas</div>
+            </div>
+        </div>
+        <div class="sankey-controls">
+            <div class="control-group">
+                <label>Eixo Esquerdo</label>
+                <select id="sankey-left">
+                    <option value="programa">Programa (PPG)</option>
+                    <option value="campus">Campus</option>
+                    <option value="nivel">Nivel</option>
+                </select>
+            </div>
+            <div class="control-group">
+                <label>Eixo Direito</label>
+                <select id="sankey-right">
+                    <option value="atividade">Tipo de Atividade</option>
+                    <option value="area_pesq">Area de Pesquisa (Top 10)</option>
+                    <option value="tema_ext">Tema de Extensao</option>
+                </select>
+            </div>
+            <div class="control-group">
+                <label>Filtrar Programas</label>
+                <select id="sankey-ppg-filter" multiple size="5"></select>
+                <small>Ctrl+click para multiplos. Nenhum = todos.</small>
+            </div>
+            <button id="sankey-update" class="btn-primary">&#128257; Atualizar</button>
+        </div>
+        <div id="sankey-container" class="sankey-wrapper"></div>
+    </section>
+
+    <!-- ANALISE PPG -->
+    <section id="analise-ppg" class="page">
+        <div class="page-header">
+            <div class="page-header-icon">&#128196;</div>
+            <div>
+                <h1>Analise por Programa</h1>
+                <div class="ph-sub">Producao detalhada por programa de pos-graduacao</div>
+            </div>
+        </div>
+        <div class="control-group" style="margin-bottom:20px;max-width:640px">
+            <label>Selecione o Programa</label>
+            <select id="ppg-select" class="filter-select" style="width:100%"></select>
+        </div>
+        <div id="ppg-analysis-content">
+            <div class="stats-grid" id="ppg-analysis-stats"></div>
             <div class="charts-row">
                 <div class="chart-box">
-                    <h3>Registros por Ano</h3>
-                    <canvas id="chart-pesq-ano2"></canvas>
+                    <h3>Areas de Pesquisa</h3>
+                    <canvas id="chart-ppg-areas"></canvas>
                 </div>
                 <div class="chart-box">
-                    <h3>Top 20 Areas de Pesquisa</h3>
-                    <canvas id="chart-top-areas"></canvas>
+                    <h3>Temas de Extensao</h3>
+                    <canvas id="chart-ppg-temas"></canvas>
                 </div>
             </div>
             <div class="chart-box full-width">
-                <h3>Nuvem de Palavras - Titulos de Pesquisa</h3>
-                <div id="wc-pesquisa" class="word-cloud-container"></div>
+                <h3>Nuvem de Palavras do Programa</h3>
+                <div id="wc-ppg" class="word-cloud-container"></div>
             </div>
             <div class="chart-box full-width">
-                <h3>Todos os Projetos de Pesquisa</h3>
-                <div class="table-controls">
-                    <input type="text" id="pesq-search" placeholder="Buscar por titulo, coordenador, area..." class="search-input">
-                    <select id="pesq-year-filter" class="filter-select"><option value="">Todos os anos</option></select>
-                </div>
+                <h3>Docentes do Programa</h3>
                 <div class="table-wrapper">
-                    <table id="pesq-table">
-                        <thead><tr><th>Codigo</th><th>Titulo</th><th>Area</th><th>Ano</th><th>Coordenador</th><th>Departamento</th></tr></thead>
+                    <table id="ppg-doc-table">
+                        <thead><tr><th>Nome</th><th>SIAPE</th><th>Proj. Pesquisa</th><th>Acoes Ext.</th></tr></thead>
                         <tbody></tbody>
                     </table>
                 </div>
-                <div id="pesq-pagination" class="pagination"></div>
             </div>
-        </section>
+        </div>
+    </section>
 
-        <!-- EXTENSAO -->
-        <section id="extensao" class="page">
-            <h1>Extensao</h1>
+    <!-- ANALISE DOCENTES -->
+    <section id="analise-docentes" class="page">
+        <div class="page-header">
+            <div class="page-header-icon">&#128100;</div>
+            <div>
+                <h1>Analise por Docente</h1>
+                <div class="ph-sub">Perfil individual de producao academica</div>
+            </div>
+        </div>
+        <div class="control-group" style="margin-bottom:20px;max-width:640px;position:relative">
+            <label>Buscar Docente</label>
+            <input type="text" id="docente-search-input" placeholder="Digite o nome do docente..." class="search-input" style="width:100%;max-width:640px">
+            <div id="docente-suggestions" class="suggestions-list"></div>
+        </div>
+        <div id="docente-analysis-content" style="display:none">
+            <div class="stats-grid" id="docente-stats"></div>
             <div class="charts-row">
                 <div class="chart-box">
-                    <h3>Acoes por Ano</h3>
-                    <canvas id="chart-ext-ano2"></canvas>
+                    <h3>Areas de Pesquisa</h3>
+                    <canvas id="chart-docente-areas"></canvas>
                 </div>
                 <div class="chart-box">
-                    <h3>Tipos de Acao</h3>
-                    <canvas id="chart-ext-tipos"></canvas>
+                    <h3>Temas de Extensao</h3>
+                    <canvas id="chart-docente-temas"></canvas>
                 </div>
             </div>
             <div class="chart-box full-width">
-                <div class="charts-row" style="padding:0">
-                    <div class="chart-box" style="box-shadow:none">
-                        <h3>Top 15 Temas de Extensao</h3>
-                        <canvas id="chart-ext-temas"></canvas>
-                    </div>
-                    <div class="chart-box" style="box-shadow:none">
-                        <h3>Nuvem de Palavras - Extensao</h3>
-                        <div id="wc-extensao" class="word-cloud-container"></div>
-                    </div>
-                </div>
-            </div>
-            <div class="chart-box full-width">
-                <h3>Todas as Acoes de Extensao</h3>
-                <div class="table-controls">
-                    <input type="text" id="ext-search" placeholder="Buscar por titulo, coordenador, tema..." class="search-input">
-                    <select id="ext-year-filter" class="filter-select"><option value="">Todos os anos</option></select>
-                    <select id="ext-type-filter" class="filter-select"><option value="">Todos os tipos</option></select>
-                </div>
+                <h3>Projetos de Pesquisa</h3>
                 <div class="table-wrapper">
-                    <table id="ext-table">
-                        <thead><tr><th>Titulo</th><th>Tipo</th><th>Ano</th><th>Coordenador</th><th>Tema</th><th>Departamento</th></tr></thead>
-                        <tbody></tbody>
-                    </table>
-                </div>
-                <div id="ext-pagination" class="pagination"></div>
-            </div>
-        </section>
-
-        <!-- PPG -->
-        <section id="ppg" class="page">
-            <h1>Pos-Graduacao</h1>
-            <div class="charts-row">
-                <div class="chart-box">
-                    <h3>Programas por Campus</h3>
-                    <canvas id="chart-ppg-campus2"></canvas>
-                </div>
-                <div class="chart-box">
-                    <h3>Docentes por Programa</h3>
-                    <canvas id="chart-ppg-docentes"></canvas>
-                </div>
-            </div>
-            <div class="chart-box full-width">
-                <h3>Lista de Programas de Pos-Graduacao</h3>
-                <div class="table-wrapper">
-                    <table id="ppg-table">
-                        <thead><tr><th>Sigla</th><th>Programa</th><th>Nivel</th><th>Campus</th><th>Docentes</th></tr></thead>
+                    <table id="docente-pesq-table">
+                        <thead><tr><th>Codigo</th><th>Titulo</th><th>Area</th><th>Ano</th></tr></thead>
                         <tbody></tbody>
                     </table>
                 </div>
             </div>
-        </section>
-
-        <!-- DOCENTES -->
-        <section id="docentes" class="page">
-            <h1>Docentes</h1>
-            <div class="stats-grid" id="doc-stats-cards"></div>
             <div class="chart-box full-width">
-                <h3>Busca de Docentes</h3>
-                <div class="table-controls">
-                    <input type="text" id="doc-search" placeholder="Buscar por nome, SIAPE, departamento..." class="search-input">
-                    <select id="doc-filter" class="filter-select">
-                        <option value="">Todos</option>
-                        <option value="pesq">Com Pesquisa</option>
-                        <option value="ext">Com Extensao</option>
-                        <option value="ppg">Em PPG</option>
-                        <option value="tripla">Pesquisa+Extensao+PPG</option>
-                    </select>
-                </div>
+                <h3>Acoes de Extensao</h3>
                 <div class="table-wrapper">
-                    <table id="doc-table">
-                        <thead><tr><th>Nome</th><th>SIAPE</th><th>Departamento</th><th>Pesquisa</th><th>Extensao</th><th>PPG</th></tr></thead>
+                    <table id="docente-ext-table">
+                        <thead><tr><th>Titulo</th><th>Tipo</th><th>Ano</th><th>Tema</th></tr></thead>
                         <tbody></tbody>
                     </table>
                 </div>
-                <div id="doc-pagination" class="pagination"></div>
             </div>
-        </section>
+            <div class="chart-box full-width">
+                <h3>Vinculacao a Programas PPG</h3>
+                <div id="docente-ppg-info"></div>
+            </div>
+        </div>
+    </section>
 
-        <!-- SANKEY -->
-        <section id="sankey" class="page">
-            <h1>Diagrama Sankey Interativo</h1>
-            <div class="sankey-controls">
-                <div class="control-group">
-                    <label>Eixo Esquerdo:</label>
-                    <select id="sankey-left">
-                        <option value="programa">Programa (PPG)</option>
-                        <option value="campus">Campus</option>
-                        <option value="nivel">Nivel (Mestrado/Doutorado)</option>
-                    </select>
-                </div>
-                <div class="control-group">
-                    <label>Eixo Direito:</label>
-                    <select id="sankey-right">
-                        <option value="atividade">Tipo de Atividade</option>
-                        <option value="area_pesq">Area de Pesquisa (Top 10)</option>
-                        <option value="tema_ext">Tema de Extensao</option>
-                    </select>
-                </div>
-                <div class="control-group">
-                    <label>Filtrar Programas:</label>
-                    <select id="sankey-ppg-filter" multiple size="6"></select>
-                    <small>Ctrl+click para selecionar multiplos. Nenhum = todos.</small>
-                </div>
-                <button id="sankey-update" class="btn-primary">Atualizar Sankey</button>
+    <!-- SOBRE -->
+    <section id="sobre" class="page">
+        <div class="page-header">
+            <div class="page-header-icon">&#8505;</div>
+            <div>
+                <h1>Sobre o HUB da Pos</h1>
+                <div class="ph-sub">Informacoes e creditos da plataforma</div>
             </div>
-            <div id="sankey-container" class="sankey-wrapper"></div>
-        </section>
+        </div>
+        <div class="sobre-box">
+            <h2>&#127891; O que e o HUB da Pos?</h2>
+            <p>Esta plataforma reune dados de projetos institucionalizados na UNEMAT, extraidos do sistema SIGAA, a partir do ano de 2024. Permite a visualizacao, filtragem e analise cruzada de atividades de pesquisa, extensao e pos-graduacao stricto sensu em todos os campi da universidade.</p>
+        </div>
+        <div class="sobre-box">
+            <h2>&#128101; Equipe</h2>
+            <p>Organizado por:</p>
+            <div class="team-badges">
+                <span class="team-badge">Ernandes Sobreira</span>
+                <span class="team-badge">Danielle Tavares</span>
+                <span class="team-badge">Keitty Macuchapi</span>
+                <span class="team-badge">Leticia Zen</span>
+                <span class="team-badge">Cintya Nascimento</span>
+            </div>
+        </div>
+        <div class="sobre-box">
+            <h2>&#128202; Fonte dos Dados</h2>
+            <p>Dados extraidos do SIGAA (Sistema Integrado de Gestao de Atividades Academicas) da UNEMAT. Os registros abrangem projetos de pesquisa, acoes de extensao e programas de pos-graduacao stricto sensu com dados a partir de 2024.</p>
+        </div>
+    </section>
 
-        <!-- ANALISE PPG -->
-        <section id="analise-ppg" class="page">
-            <h1>Analise Cruzada por Programa</h1>
-            <div class="control-group" style="margin-bottom:20px">
-                <label>Selecione o Programa:</label>
-                <select id="ppg-select" class="filter-select" style="width:100%;max-width:600px"></select>
-            </div>
-            <div id="ppg-analysis-content">
-                <div class="stats-grid" id="ppg-analysis-stats"></div>
-                <div class="charts-row">
-                    <div class="chart-box">
-                        <h3>Areas de Pesquisa do Programa</h3>
-                        <canvas id="chart-ppg-areas"></canvas>
-                    </div>
-                    <div class="chart-box">
-                        <h3>Temas de Extensao do Programa</h3>
-                        <canvas id="chart-ppg-temas"></canvas>
-                    </div>
-                </div>
-                <div class="chart-box full-width">
-                    <h3>Nuvem de Palavras do Programa</h3>
-                    <div id="wc-ppg" class="word-cloud-container"></div>
-                </div>
-                <div class="chart-box full-width">
-                    <h3>Docentes do Programa</h3>
-                    <div class="table-wrapper">
-                        <table id="ppg-doc-table">
-                            <thead><tr><th>Nome</th><th>SIAPE</th><th>Projetos Pesquisa</th><th>Acoes Extensao</th></tr></thead>
-                            <tbody></tbody>
-                        </table>
-                    </div>
-                </div>
-            </div>
-        </section>
+</main>
 
-        <!-- ANALISE DOCENTES -->
-        <section id="analise-docentes" class="page">
-            <h1>Analise por Docente</h1>
-            <div class="control-group" style="margin-bottom:20px">
-                <label>Buscar Docente:</label>
-                <input type="text" id="docente-search-input" placeholder="Digite o nome do docente..." class="search-input" style="width:100%;max-width:600px">
-                <div id="docente-suggestions" class="suggestions-list"></div>
-            </div>
-            <div id="docente-analysis-content" style="display:none">
-                <div class="stats-grid" id="docente-stats"></div>
-                <div class="charts-row">
-                    <div class="chart-box">
-                        <h3>Areas de Pesquisa</h3>
-                        <canvas id="chart-docente-areas"></canvas>
-                    </div>
-                    <div class="chart-box">
-                        <h3>Temas de Extensao</h3>
-                        <canvas id="chart-docente-temas"></canvas>
-                    </div>
-                </div>
-                <div class="chart-box full-width">
-                    <h3>Projetos de Pesquisa</h3>
-                    <div class="table-wrapper">
-                        <table id="docente-pesq-table">
-                            <thead><tr><th>Codigo</th><th>Titulo</th><th>Area</th><th>Ano</th></tr></thead>
-                            <tbody></tbody>
-                        </table>
-                    </div>
-                </div>
-                <div class="chart-box full-width">
-                    <h3>Acoes de Extensao</h3>
-                    <div class="table-wrapper">
-                        <table id="docente-ext-table">
-                            <thead><tr><th>Titulo</th><th>Tipo</th><th>Ano</th><th>Tema</th></tr></thead>
-                            <tbody></tbody>
-                        </table>
-                    </div>
-                </div>
-                <div class="chart-box full-width">
-                    <h3>Vinculacao a Programas PPG</h3>
-                    <div id="docente-ppg-info"></div>
-                </div>
-            </div>
-        </section>
-    </main>
-
-    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/d3@7"></script>
-    <script src="https://cdn.jsdelivr.net/npm/d3-sankey@0.12.3/dist/d3-sankey.min.js"></script>
-    <script src="app.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/d3@7"></script>
+<script src="https://cdn.jsdelivr.net/npm/d3-sankey@0.12.3/dist/d3-sankey.min.js"></script>
+<script src="app.js"></script>
 </body>
 </html>

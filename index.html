@@ -230,7 +230,7 @@
             <h3>Lista de Programas</h3>
             <div class="table-wrapper">
                 <table id="ppg-table">
-                    <thead><tr><th>Sigla</th><th>Programa</th><th>Nível</th><th>Campus</th><th>Docentes</th></tr></thead>
+                    <thead><tr><th>Sigla</th><th>Programa</th><th>Nível</th><th>Campus</th><th>Docentes</th><th style="width:36px"></th></tr></thead>
                     <tbody></tbody>
                 </table>
             </div>
@@ -435,5 +435,25 @@
 <script src="https://cdn.jsdelivr.net/npm/d3@7"></script>
 <script src="https://cdn.jsdelivr.net/npm/d3-sankey@0.12.3/dist/d3-sankey.min.js"></script>
 <script src="app.js"></script>
+
+<!-- ============ MODAL DOCENTE ============ -->
+<div id="docente-modal-overlay" class="dm-overlay" style="display:none">
+    <div class="dm-panel">
+        <div class="dm-header">
+            <div class="dm-header-info">
+                <div class="dm-avatar">&#128100;</div>
+                <div>
+                    <div class="dm-name" id="dm-name"></div>
+                    <div class="dm-dept" id="dm-dept"></div>
+                    <div class="dm-ppg-row" id="dm-ppg-row"></div>
+                </div>
+            </div>
+            <button class="dm-close" id="dm-close" title="Fechar">&#10005;</button>
+        </div>
+        <div class="dm-stats" id="dm-stats"></div>
+        <div class="dm-body" id="dm-body"></div>
+    </div>
+</div>
+
 </body>
 </html>

@@ -605,8 +605,30 @@ function initPPG() {
 
     const tbody = document.querySelector('#ppg-table tbody');
     tbody.innerHTML = DATA.ppg.map(p =>
-        `<tr><td><strong>${p.sg}</strong></td><td>${p.nm}</td><td>${p.nv||''}</td><td>${p.cp||''}</td><td>${p.nd||''}</td></tr>`
+        `<tr class="ppg-row-link" data-sg="${p.sg}" title="Ver análise: ${p.nm}">
+            <td><strong style="color:var(--blue)">${p.sg}</strong></td>
+            <td>${p.nm}</td><td>${p.nv||''}</td><td>${p.cp||''}</td><td>${p.nd||''}</td>
+            <td style="color:var(--blue);text-align:center;font-weight:800">&#8594;</td>
+        </tr>`
     ).join('');
+
+    tbody.querySelectorAll('.ppg-row-link').forEach(row => {
+        row.style.cursor = 'pointer';
+        row.addEventListener('click', () => {
+            const sg = row.dataset.sg;
+            document.querySelectorAll('.nav-link').forEach(l => l.classList.remove('active'));
+            document.querySelector('[data-page="analise-ppg"]').classList.add('active');
+            document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+            document.getElementById('analise-ppg').classList.add('active');
+            initPage('analise-ppg');
+            setTimeout(() => {
+                const sel = document.getElementById('ppg-select');
+                sel.value = sg;
+                renderPPGAnalysis(sg);
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+            }, 50);
+        });
+    });
 }
 
 /* ============================================================
@@ -653,8 +675,11 @@ function renderDocentesFiltered() {
     const pageData = paginate(base, docPage, ROWS_PER_PAGE);
     const tbody = document.querySelector('#doc-table tbody');
     tbody.innerHTML = pageData.map(p =>
-        `<tr><td>${p.n}</td><td>${p.s}</td><td>${p.d||''}</td><td>${p.pesq}</td><td>${p.ext}</td><td>${p.ppg ? p.ppg.join(', ') : ''}</td></tr>`
+        `<tr><td>${makeClickableName(p.n, p.s)}</td><td>${p.s}</td><td>${p.d||''}</td><td>${p.pesq}</td><td>${p.ext}</td><td>${p.ppg ? p.ppg.join(', ') : ''}</td></tr>`
     ).join('');
+    tbody.querySelectorAll('.doc-name-link').forEach(el => {
+        el.addEventListener('click', () => openDocenteModal(el.dataset.siape));
+    });
     renderPagination('doc-pagination', base.length, docPage, ROWS_PER_PAGE, pg => { docPage = pg; renderDocentesFiltered(); });
 }
 
@@ -828,8 +853,11 @@ function renderPPGAnalysis(sigla) {
     const tbody = document.querySelector('#ppg-doc-table tbody');
     tbody.innerHTML = ppgDocs.map(d => {
         const prof = DATA.profProfiles[d.s];
-        return `<tr><td>${d.n}</td><td>${d.s}</td><td>${prof ? prof.pesq : 0}</td><td>${prof ? prof.ext : 0}</td></tr>`;
+        return `<tr><td>${makeClickableName(d.n, d.s)}</td><td>${d.s}</td><td>${prof ? prof.pesq : 0}</td><td>${prof ? prof.ext : 0}</td></tr>`;
     }).join('');
+    tbody.querySelectorAll('.doc-name-link').forEach(el => {
+        el.addEventListener('click', () => openDocenteModal(el.dataset.siape));
+    });
 }
 
 /* ============================================================
@@ -918,3 +946,127 @@ function renderDocenteAnalysis(siape) {
 
 // Mark visao-geral as initialized
 initializedPages['visao-geral'] = true;
+
+
+/* ============================================================
+   MODAL DOCENTE - painel lateral com projetos do docente
+   ============================================================ */
+
+function toTitleCase(str) {
+    if (!str) return '';
+    const lowers = ['de','da','do','das','dos','e','em','a','o','as','os','na','no'];
+    return str.toLowerCase().split(' ').map((w, i) =>
+        i === 0 || !lowers.includes(w) ? w.charAt(0).toUpperCase() + w.slice(1) : w
+    ).join(' ');
+}
+
+function openDocenteModal(siape) {
+    const prof = DATA.profProfiles[siape];
+    if (!prof) return;
+
+    const overlay = document.getElementById('docente-modal-overlay');
+
+    // Name & dept
+    document.getElementById('dm-name').textContent = toTitleCase(prof.n);
+    const deptShort = (prof.d || '').replace(/FACULDADE DE /i, 'Fac. ').replace(/CIÊNCIAS /i, 'Ciências ');
+    document.getElementById('dm-dept').textContent = deptShort || 'Departamento não informado';
+
+    // PPG badges
+    const ppgRow = document.getElementById('dm-ppg-row');
+    ppgRow.innerHTML = '';
+    if (prof.ppg && prof.ppg.length) {
+        prof.ppg.forEach(sg => {
+            const prog = DATA.ppg.find(p => p.sg === sg);
+            const sp = document.createElement('span');
+            sp.className = 'dm-ppg-badge';
+            sp.textContent = sg + (prog ? ' · ' + toTitleCase(prog.nm) : '');
+            ppgRow.appendChild(sp);
+        });
+    }
+
+    // Stats
+    const pesqProjs = DATA.pesq.filter(p => p.s === siape);
+    const extAcoes  = DATA.ext.filter(e => e.s === siape);
+    const statsDiv  = document.getElementById('dm-stats');
+    statsDiv.innerHTML = `
+        <div class="dm-stat"><div class="dsv">${pesqProjs.length}</div><div class="dsl">Projetos de Pesquisa</div></div>
+        <div class="dm-stat"><div class="dsv">${extAcoes.length}</div><div class="dsl">Ações de Extensão</div></div>
+        <div class="dm-stat"><div class="dsv">${prof.ppg ? prof.ppg.length : 0}</div><div class="dsl">Programas PPG</div></div>
+    `;
+
+    // Body - cards
+    const body = document.getElementById('dm-body');
+    body.innerHTML = '';
+
+    // --- Pesquisa cards ---
+    if (pesqProjs.length) {
+        const secP = document.createElement('div');
+        secP.className = 'dm-section-title';
+        secP.innerHTML = '&#128270; Projetos de Pesquisa';
+        body.appendChild(secP);
+
+        pesqProjs.forEach(p => {
+            const card = document.createElement('div');
+            card.className = 'dm-card';
+            card.innerHTML = `
+                <div class="dm-card-type pesq">&#128270; Pesquisa</div>
+                <div class="dm-card-title">${p.t || 'Título não informado'}</div>
+                <div class="dm-card-meta">
+                    ${p.c  ? `<span class="dm-meta-tag">&#128196; ${p.c}</span>` : ''}
+                    ${p.a  ? `<span class="dm-meta-tag">&#127991; ${p.a}</span>` : ''}
+                    ${p.y  ? `<span class="dm-meta-tag">&#128197; ${p.y}</span>` : ''}
+                    ${p.dp ? `<span class="dm-meta-tag">&#127979; ${p.dp.replace('FACULDADE DE ','').replace('FACULDADE ','')}</span>` : ''}
+                </div>`;
+            body.appendChild(card);
+        });
+    }
+
+    // --- Extensão cards ---
+    if (extAcoes.length) {
+        const secE = document.createElement('div');
+        secE.className = 'dm-section-title';
+        secE.innerHTML = '&#127758; Ações de Extensão';
+        body.appendChild(secE);
+
+        extAcoes.forEach(e => {
+            const card = document.createElement('div');
+            card.className = 'dm-card ext';
+            card.innerHTML = `
+                <div class="dm-card-type ext">&#127758; ${e.tp || 'Extensão'}</div>
+                <div class="dm-card-title">${e.t || 'Título não informado'}</div>
+                <div class="dm-card-meta">
+                    ${e.at ? `<span class="dm-meta-tag">&#127991; ${e.at}</span>` : ''}
+                    ${e.y  ? `<span class="dm-meta-tag">&#128197; ${e.y}</span>` : ''}
+                    ${e.dp ? `<span class="dm-meta-tag">&#127979; ${e.dp.replace('FACULDADE DE ','').replace('FACULDADE ','')}</span>` : ''}
+                </div>`;
+            body.appendChild(card);
+        });
+    }
+
+    if (!pesqProjs.length && !extAcoes.length) {
+        body.innerHTML = '<div class="dm-empty">Nenhum projeto ou ação registrada para este docente.</div>';
+    }
+
+    overlay.style.display = 'flex';
+    document.body.style.overflow = 'hidden';
+}
+
+function closeDocenteModal() {
+    document.getElementById('docente-modal-overlay').style.display = 'none';
+    document.body.style.overflow = '';
+}
+
+// Setup modal close events (run once after DOM ready)
+document.addEventListener('DOMContentLoaded', () => {
+    document.getElementById('dm-close').addEventListener('click', closeDocenteModal);
+    document.getElementById('docente-modal-overlay').addEventListener('click', function(e) {
+        if (e.target === this) closeDocenteModal();
+    });
+    document.addEventListener('keydown', e => { if (e.key === 'Escape') closeDocenteModal(); });
+});
+
+/* Helper: wrap a docente name cell to be clickable */
+function makeClickableName(name, siape) {
+    if (!siape) return name;
+    return `<span class="doc-name-link" data-siape="${siape}" title="Ver projetos de ${toTitleCase(name)}">${toTitleCase(name)}</span>`;
+}

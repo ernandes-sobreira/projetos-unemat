@@ -157,7 +157,6 @@ document.addEventListener('DOMContentLoaded', async () => {
         if (DATA.ppg)         DATA.ppg.sort((a, b) => (a.nm || '').localeCompare(b.nm || '', 'pt-BR'));
         setupNavigation();
         setupGlobalFilters();
-        setupModalEvents();
         initVisaoGeral();
     } catch(e) {
         console.error('Failed to load data:', e);
@@ -684,10 +683,10 @@ function renderDocentesFiltered() {
     const pageData = paginate(base, docPage, ROWS_PER_PAGE);
     const tbody = document.querySelector('#doc-table tbody');
     tbody.innerHTML = pageData.map(p =>
-        `<tr><td>${makeClickableName(p.n, p.s)}</td><td>${p.s}</td><td>${p.d||''}</td><td>${p.pesq}</td><td>${p.ext}</td><td>${p.ppg ? p.ppg.join(', ') : ''}</td></tr>`
+        `<tr class="doc-clickable" data-siape="${p.s}"><td><span class="doc-name-link">${toTitleCase(p.n)}</span></td><td>${p.s}</td><td>${p.d||''}</td><td>${p.pesq}</td><td>${p.ext}</td><td>${p.ppg ? p.ppg.join(', ') : ''}</td></tr>`
     ).join('');
-    tbody.querySelectorAll('.doc-name-link').forEach(el => {
-        el.addEventListener('click', () => openDocenteModal(el.dataset.siape));
+    tbody.querySelectorAll('tr.doc-clickable').forEach(row => {
+        row.addEventListener('click', () => showDocentePanel(row.dataset.siape));
     });
     renderPagination('doc-pagination', base.length, docPage, ROWS_PER_PAGE, pg => { docPage = pg; renderDocentesFiltered(); });
 }
@@ -862,10 +861,10 @@ function renderPPGAnalysis(sigla) {
     const tbody = document.querySelector('#ppg-doc-table tbody');
     tbody.innerHTML = ppgDocs.map(d => {
         const prof = DATA.profProfiles[d.s];
-        return `<tr><td>${makeClickableName(d.n, d.s)}</td><td>${d.s}</td><td>${prof ? prof.pesq : 0}</td><td>${prof ? prof.ext : 0}</td></tr>`;
+        return `<tr class="doc-clickable" data-siape="${d.s}"><td><span class="doc-name-link">${toTitleCase(d.n)}</span></td><td>${d.s}</td><td>${prof ? prof.pesq : 0}</td><td>${prof ? prof.ext : 0}</td></tr>`;
     }).join('');
-    tbody.querySelectorAll('.doc-name-link').forEach(el => {
-        el.addEventListener('click', () => openDocenteModal(el.dataset.siape));
+    tbody.querySelectorAll('tr.doc-clickable').forEach(row => {
+        row.addEventListener('click', () => showDocentePanel(row.dataset.siape));
     });
 }
 
@@ -958,116 +957,133 @@ initializedPages['visao-geral'] = true;
 
 
 /* ============================================================
-   MODAL DOCENTE - painel lateral com projetos do docente
+   PAINEL DOCENTE - slide-in lateral simples e robusto
    ============================================================ */
 
-function openDocenteModal(siape) {
+function toTitleCase(str) {
+    if (!str) return str;
+    const skip = ['de','da','do','das','dos','e','em','a','o','as','os','na','no'];
+    return str.toLowerCase().split(' ').map((w,i) =>
+        (i===0 || !skip.includes(w)) ? w.charAt(0).toUpperCase()+w.slice(1) : w
+    ).join(' ');
+}
+
+function showDocentePanel(siape) {
+    if (!siape || !DATA) return;
     const prof = DATA.profProfiles[siape];
     if (!prof) return;
 
-    const overlay = document.getElementById('docente-modal-overlay');
+    // Remove existing panel if any
+    const old = document.getElementById('dp-panel');
+    if (old) old.remove();
 
-    // Name & dept
-    document.getElementById('dm-name').textContent = toTitleCase(prof.n);
-    const deptShort = (prof.d || '').replace(/FACULDADE DE /i, 'Fac. ').replace(/CIÊNCIAS /i, 'Ciências ');
-    document.getElementById('dm-dept').textContent = deptShort || 'Departamento não informado';
-
-    // PPG badges
-    const ppgRow = document.getElementById('dm-ppg-row');
-    ppgRow.innerHTML = '';
-    if (prof.ppg && prof.ppg.length) {
-        prof.ppg.forEach(sg => {
-            const prog = DATA.ppg.find(p => p.sg === sg);
-            const sp = document.createElement('span');
-            sp.className = 'dm-ppg-badge';
-            sp.textContent = sg + (prog ? ' · ' + toTitleCase(prog.nm) : '');
-            ppgRow.appendChild(sp);
-        });
-    }
-
-    // Stats
     const pesqProjs = DATA.pesq.filter(p => p.s === siape);
     const extAcoes  = DATA.ext.filter(e => e.s === siape);
-    const statsDiv  = document.getElementById('dm-stats');
-    statsDiv.innerHTML = `
-        <div class="dm-stat"><div class="dsv">${pesqProjs.length}</div><div class="dsl">Projetos de Pesquisa</div></div>
-        <div class="dm-stat"><div class="dsv">${extAcoes.length}</div><div class="dsl">Ações de Extensão</div></div>
-        <div class="dm-stat"><div class="dsv">${prof.ppg ? prof.ppg.length : 0}</div><div class="dsl">Programas PPG</div></div>
-    `;
 
-    // Body - cards
-    const body = document.getElementById('dm-body');
-    body.innerHTML = '';
+    // Build PPG badges
+    let ppgHtml = '';
+    if (prof.ppg && prof.ppg.length) {
+        ppgHtml = prof.ppg.map(sg => {
+            const pg = DATA.ppg.find(x => x.sg === sg);
+            return `<span style="background:#e8f5e9;color:#2e7d32;border:1px solid #81c784;border-radius:20px;padding:3px 10px;font-size:0.72em;font-weight:800;display:inline-block;margin:2px">${sg}${pg ? ' · '+toTitleCase(pg.nm) : ''}</span>`;
+        }).join('');
+    }
 
-    // --- Pesquisa cards ---
+    // Build project cards
+    let cardsHtml = '';
+
     if (pesqProjs.length) {
-        const secP = document.createElement('div');
-        secP.className = 'dm-section-title';
-        secP.innerHTML = '&#128270; Projetos de Pesquisa';
-        body.appendChild(secP);
-
+        cardsHtml += `<div style="font-size:0.7em;font-weight:800;letter-spacing:1px;text-transform:uppercase;color:#6b7a99;margin:18px 0 10px;display:flex;align-items:center;gap:8px">&#128270; Projetos de Pesquisa <span style="flex:1;height:1px;background:#e0e7ef;display:block"></span></div>`;
         pesqProjs.forEach(p => {
-            const card = document.createElement('div');
-            card.className = 'dm-card';
-            card.innerHTML = `
-                <div class="dm-card-type pesq">&#128270; Pesquisa</div>
-                <div class="dm-card-title">${p.t || 'Título não informado'}</div>
-                <div class="dm-card-meta">
-                    ${p.c  ? `<span class="dm-meta-tag">&#128196; ${p.c}</span>` : ''}
-                    ${p.a  ? `<span class="dm-meta-tag">&#127991; ${p.a}</span>` : ''}
-                    ${p.y  ? `<span class="dm-meta-tag">&#128197; ${p.y}</span>` : ''}
-                    ${p.dp ? `<span class="dm-meta-tag">&#127979; ${p.dp.replace('FACULDADE DE ','').replace('FACULDADE ','')}</span>` : ''}
-                </div>`;
-            body.appendChild(card);
+            cardsHtml += `
+            <div style="background:#f0f7ff;border:1.5px solid #e0e7ef;border-left:4px solid #1e88e5;border-radius:10px;padding:13px 15px;margin-bottom:10px">
+                <div style="display:inline-block;background:#e3f2fd;color:#1565c0;border-radius:20px;padding:3px 10px;font-size:0.68em;font-weight:800;letter-spacing:0.8px;text-transform:uppercase;margin-bottom:8px">&#128270; PESQUISA</div>
+                <div style="font-size:0.9em;font-weight:700;color:#1a2340;line-height:1.45;margin-bottom:8px">${p.t || 'Título não informado'}</div>
+                <div style="display:flex;flex-wrap:wrap;gap:6px">
+                    ${p.c  ? `<span style="background:#fff;border:1px solid #e0e7ef;border-radius:6px;padding:3px 9px;font-size:0.72em;font-weight:700;color:#6b7a99">&#128196; ${p.c}</span>` : ''}
+                    ${p.a  ? `<span style="background:#fff;border:1px solid #e0e7ef;border-radius:6px;padding:3px 9px;font-size:0.72em;font-weight:700;color:#6b7a99">&#127991; ${p.a}</span>` : ''}
+                    ${p.y  ? `<span style="background:#fff;border:1px solid #e0e7ef;border-radius:6px;padding:3px 9px;font-size:0.72em;font-weight:700;color:#6b7a99">&#128197; ${p.y}</span>` : ''}
+                </div>
+            </div>`;
         });
     }
 
-    // --- Extensão cards ---
     if (extAcoes.length) {
-        const secE = document.createElement('div');
-        secE.className = 'dm-section-title';
-        secE.innerHTML = '&#127758; Ações de Extensão';
-        body.appendChild(secE);
-
+        cardsHtml += `<div style="font-size:0.7em;font-weight:800;letter-spacing:1px;text-transform:uppercase;color:#6b7a99;margin:18px 0 10px;display:flex;align-items:center;gap:8px">&#127758; Ações de Extensão <span style="flex:1;height:1px;background:#e0e7ef;display:block"></span></div>`;
         extAcoes.forEach(e => {
-            const card = document.createElement('div');
-            card.className = 'dm-card ext';
-            card.innerHTML = `
-                <div class="dm-card-type ext">&#127758; ${e.tp || 'Extensão'}</div>
-                <div class="dm-card-title">${e.t || 'Título não informado'}</div>
-                <div class="dm-card-meta">
-                    ${e.at ? `<span class="dm-meta-tag">&#127991; ${e.at}</span>` : ''}
-                    ${e.y  ? `<span class="dm-meta-tag">&#128197; ${e.y}</span>` : ''}
-                    ${e.dp ? `<span class="dm-meta-tag">&#127979; ${e.dp.replace('FACULDADE DE ','').replace('FACULDADE ','')}</span>` : ''}
-                </div>`;
-            body.appendChild(card);
+            cardsHtml += `
+            <div style="background:#f1fbf2;border:1.5px solid #e0e7ef;border-left:4px solid #2e7d32;border-radius:10px;padding:13px 15px;margin-bottom:10px">
+                <div style="display:inline-block;background:#e8f5e9;color:#2e7d32;border-radius:20px;padding:3px 10px;font-size:0.68em;font-weight:800;letter-spacing:0.8px;text-transform:uppercase;margin-bottom:8px">&#127758; ${e.tp || 'EXTENSÃO'}</div>
+                <div style="font-size:0.9em;font-weight:700;color:#1a2340;line-height:1.45;margin-bottom:8px">${e.t || 'Título não informado'}</div>
+                <div style="display:flex;flex-wrap:wrap;gap:6px">
+                    ${e.at ? `<span style="background:#fff;border:1px solid #e0e7ef;border-radius:6px;padding:3px 9px;font-size:0.72em;font-weight:700;color:#6b7a99">&#127991; ${e.at}</span>` : ''}
+                    ${e.y  ? `<span style="background:#fff;border:1px solid #e0e7ef;border-radius:6px;padding:3px 9px;font-size:0.72em;font-weight:700;color:#6b7a99">&#128197; ${e.y}</span>` : ''}
+                </div>
+            </div>`;
         });
     }
 
-    if (!pesqProjs.length && !extAcoes.length) {
-        body.innerHTML = '<div class="dm-empty">Nenhum projeto ou ação registrada para este docente.</div>';
+    if (!cardsHtml) {
+        cardsHtml = `<div style="text-align:center;padding:40px 20px;color:#aaa;font-weight:600">Nenhum projeto registrado para este docente.</div>`;
     }
 
-    overlay.classList.add('dm-open');
+    // Build the full panel HTML
+    const panel = document.createElement('div');
+    panel.id = 'dp-panel';
+    panel.innerHTML = `
+        <!-- Overlay escuro -->
+        <div id="dp-overlay" style="position:fixed;inset:0;background:rgba(20,40,80,0.4);z-index:1000"></div>
+        <!-- Painel lateral -->
+        <div id="dp-drawer" style="position:fixed;top:0;right:0;width:540px;max-width:95vw;height:100vh;background:#fff;z-index:1001;overflow-y:auto;box-shadow:-6px 0 40px rgba(20,40,80,0.18);display:flex;flex-direction:column">
+            <!-- Header -->
+            <div style="padding:22px 20px 16px;background:linear-gradient(135deg,#e3f2fd,#e8f5e9);border-bottom:2px solid #e0e7ef;flex-shrink:0">
+                <div style="display:flex;justify-content:space-between;align-items:flex-start">
+                    <div style="display:flex;gap:14px;align-items:flex-start">
+                        <div style="font-size:2em;width:50px;height:50px;background:#fff;border-radius:50%;border:2.5px solid #1e88e5;display:flex;align-items:center;justify-content:center;flex-shrink:0">&#128100;</div>
+                        <div>
+                            <div style="font-family:'Barlow Condensed',sans-serif;font-size:1.3em;font-weight:800;color:#1565c0;line-height:1.2">${toTitleCase(prof.n)}</div>
+                            <div style="font-size:0.75em;color:#6b7a99;font-weight:600;margin-top:3px">${(prof.d||'').replace(/^FACULDADE DE /i,'Fac. ')}</div>
+                            <div style="margin-top:8px">${ppgHtml || '<span style="color:#aaa;font-size:0.78em">Sem vínculo PPG registrado</span>'}</div>
+                        </div>
+                    </div>
+                    <button id="dp-close-btn" style="background:none;border:none;font-size:1.4em;cursor:pointer;color:#6b7a99;padding:4px 8px;border-radius:6px;line-height:1;flex-shrink:0">&#10005;</button>
+                </div>
+            </div>
+            <!-- Stats -->
+            <div style="display:flex;border-bottom:1.5px solid #e0e7ef;flex-shrink:0">
+                <div style="flex:1;text-align:center;padding:14px 8px">
+                    <div style="font-family:'Barlow Condensed',sans-serif;font-size:2em;font-weight:800;color:#1e88e5">${pesqProjs.length}</div>
+                    <div style="font-size:0.72em;font-weight:700;color:#6b7a99">Proj. de Pesquisa</div>
+                </div>
+                <div style="flex:1;text-align:center;padding:14px 8px;border-left:1px solid #e0e7ef">
+                    <div style="font-family:'Barlow Condensed',sans-serif;font-size:2em;font-weight:800;color:#2e7d32">${extAcoes.length}</div>
+                    <div style="font-size:0.72em;font-weight:700;color:#6b7a99">Ações de Extensão</div>
+                </div>
+                <div style="flex:1;text-align:center;padding:14px 8px;border-left:1px solid #e0e7ef">
+                    <div style="font-family:'Barlow Condensed',sans-serif;font-size:2em;font-weight:800;color:#1e88e5">${prof.ppg ? prof.ppg.length : 0}</div>
+                    <div style="font-size:0.72em;font-weight:700;color:#6b7a99">Programas PPG</div>
+                </div>
+            </div>
+            <!-- Cards -->
+            <div style="padding:18px 20px 30px;flex:1;overflow-y:auto">${cardsHtml}</div>
+        </div>`;
+
+    document.body.appendChild(panel);
     document.body.style.overflow = 'hidden';
+
+    // Close handlers - direct, simple
+    document.getElementById('dp-close-btn').onclick = closeDocentePanel;
+    document.getElementById('dp-overlay').onclick   = closeDocentePanel;
+    document.addEventListener('keydown', escHandler);
 }
 
-function closeDocenteModal() {
-    document.getElementById('docente-modal-overlay').classList.remove('dm-open');
+function escHandler(e) {
+    if (e.key === 'Escape') closeDocentePanel();
+}
+
+function closeDocentePanel() {
+    const panel = document.getElementById('dp-panel');
+    if (panel) panel.remove();
     document.body.style.overflow = '';
-}
-
-// Modal close events setup - called from main init
-function setupModalEvents() {
-    document.getElementById('dm-close').addEventListener('click', closeDocenteModal);
-    document.getElementById('docente-modal-overlay').addEventListener('click', function(e) {
-        if (e.target === this) closeDocenteModal();
-    });
-    document.addEventListener('keydown', e => { if (e.key === 'Escape') closeDocenteModal(); });
-}
-
-/* Helper: wrap a docente name cell to be clickable */
-function makeClickableName(name, siape) {
-    if (!siape) return name;
-    return `<span class="doc-name-link" data-siape="${siape}" title="Ver projetos de ${toTitleCase(name)}">${toTitleCase(name)}</span>`;
+    document.removeEventListener('keydown', escHandler);
 }

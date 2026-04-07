@@ -285,7 +285,8 @@ function makeStatCard(value, label) {
     d.innerHTML = `<div class="stat-value">${Number(value).toLocaleString('pt-BR')}</div><div class="stat-label">${label}</div>`;
     return d;
 }
-function renderWordCloud(containerId, words, maxWords) {
+// source: 'pesquisa' | 'extensao' | 'ambos' | null
+function renderWordCloud(containerId, words, maxWords, source) {
     const container = document.getElementById(containerId);
     if (!container) return;
     container.innerHTML = '';
@@ -294,16 +295,19 @@ function renderWordCloud(containerId, words, maxWords) {
     const maxC = Math.max(...subset.map(w => w.c));
     const minC = Math.min(...subset.map(w => w.c));
     const colors = ['#1e88e5','#2e7d32','#00838f','#ef6c00','#ad1457','#6a1b9a','#f9a825','#d84315','#0277bd','#558b2f'];
+    const src = source || 'ambos';
     subset.forEach((item, i) => {
         const ratio = maxC === minC ? 0.5 : (item.c - minC) / (maxC - minC);
         const size = 12 + ratio * 34;
         const span = document.createElement('span');
-        span.className = 'wc-word';
+        span.className = 'wc-word wc-clickable';
         span.textContent = item.w;
-        span.title = `${item.w}: ${item.c}`;
+        span.title = `${item.w} (${item.c} ocorrências) — clique para ver projetos`;
         span.style.fontSize = size + 'px';
         span.style.color = colors[i % colors.length];
         span.style.opacity = 0.65 + ratio * 0.35;
+        span.style.cursor = 'pointer';
+        span.addEventListener('click', () => showWordProjects(item.w, src));
         container.appendChild(span);
     });
 }
@@ -501,7 +505,7 @@ function initPesquisa() {
         }
     });
 
-    renderWordCloud('wc-pesquisa', DATA.wordCloud, 80);
+    renderWordCloud('wc-pesquisa', DATA.wordCloud, 80, 'pesquisa');
 
     const yearFilter = document.getElementById('pesq-year-filter');
     pesqYears.forEach(y => { const o = document.createElement('option'); o.value = y; o.textContent = y; yearFilter.appendChild(o); });
@@ -585,7 +589,7 @@ function initExtensao() {
         options: { responsive: true, indexAxis: 'y', plugins: { legend: { display: false } }, scales: { x: { beginAtZero: true } } }
     });
 
-    renderWordCloud('wc-extensao', DATA.extWordCloud, 80);
+    renderWordCloud('wc-extensao', DATA.extWordCloud, 80, 'extensao');
 
     const yearFilter = document.getElementById('ext-year-filter');
     const typeFilter = document.getElementById('ext-type-filter');
@@ -919,7 +923,7 @@ function renderPPGAnalysis(sigla) {
         options: { responsive: true, indexAxis: 'y', plugins: { legend: { display: false } }, scales: { x: { beginAtZero: true } } }
     });
 
-    renderWordCloud('wc-ppg', DATA.ppgWordClouds[sigla], 60);
+    renderWordCloud('wc-ppg', DATA.ppgWordClouds[sigla], 60, 'ambos');
 
     const ppgDocs = DATA.ppgDoc.filter(d => d.sg === sigla);
     const tbody = document.querySelector('#ppg-doc-table tbody');
@@ -1019,6 +1023,142 @@ function renderDocenteAnalysis(siape) {
 // Mark visao-geral as initialized
 initializedPages['visao-geral'] = true;
 
+
+
+
+/* ============================================================
+   PAINEL DE PALAVRA - projetos ligados a uma palavra da nuvem
+   ============================================================ */
+
+function showWordProjects(word, source) {
+    const kw = word.toLowerCase();
+
+    // Find matching records
+    let pesqMatches = [];
+    let extMatches  = [];
+
+    if (source === 'pesquisa' || source === 'ambos') {
+        pesqMatches = DATA.pesq.filter(p =>
+            (p.t || '').toLowerCase().includes(kw) ||
+            (p.a || '').toLowerCase().includes(kw)
+        );
+    }
+    if (source === 'extensao' || source === 'ambos') {
+        extMatches = DATA.ext.filter(e =>
+            (e.t || '').toLowerCase().includes(kw) ||
+            (e.at || '').toLowerCase().includes(kw)
+        );
+    }
+
+    const total = pesqMatches.length + extMatches.length;
+
+    // Remove existing panel
+    const old = document.getElementById('wp-panel');
+    if (old) old.remove();
+
+    // Build cards HTML
+    let cardsHtml = '';
+
+    if (pesqMatches.length) {
+        cardsHtml += `<div class="wp-section-title">&#128270; Pesquisa <span class="wp-count">${pesqMatches.length}</span></div>`;
+        pesqMatches.forEach(p => {
+            const title = highlightWord(p.t || 'Sem título', kw);
+            cardsHtml += `
+            <div class="wp-card wp-pesq">
+                <div class="wp-card-type">&#128270; PESQUISA</div>
+                <div class="wp-card-title">${title}</div>
+                <div class="wp-card-meta">
+                    ${p.a  ? `<span class="wp-tag">&#127991; ${p.a}</span>` : ''}
+                    ${p.y  ? `<span class="wp-tag">&#128197; ${p.y}</span>` : ''}
+                    ${p.n  ? `<span class="wp-tag">&#128100; ${toTitleCase(p.n)}</span>` : ''}
+                    ${p.c  ? `<span class="wp-tag">&#128196; ${p.c}</span>` : ''}
+                </div>
+            </div>`;
+        });
+    }
+
+    if (extMatches.length) {
+        cardsHtml += `<div class="wp-section-title">&#127758; Extensão <span class="wp-count">${extMatches.length}</span></div>`;
+        extMatches.forEach(e => {
+            const title = highlightWord(e.t || 'Sem título', kw);
+            cardsHtml += `
+            <div class="wp-card wp-ext">
+                <div class="wp-card-type">&#127758; ${e.tp || 'EXTENSÃO'}</div>
+                <div class="wp-card-title">${title}</div>
+                <div class="wp-card-meta">
+                    ${e.at ? `<span class="wp-tag">&#127991; ${e.at}</span>` : ''}
+                    ${e.y  ? `<span class="wp-tag">&#128197; ${e.y}</span>` : ''}
+                    ${e.co ? `<span class="wp-tag">&#128100; ${toTitleCase(e.co)}</span>` : ''}
+                </div>
+            </div>`;
+        });
+    }
+
+    if (!cardsHtml) {
+        cardsHtml = `<div style="text-align:center;padding:40px;color:#aaa;font-weight:600">Nenhum projeto encontrado para "<strong>${word}</strong>".</div>`;
+    }
+
+    // Build panel
+    const panel = document.createElement('div');
+    panel.id = 'wp-panel';
+    panel.innerHTML = `
+        <div id="wp-overlay" style="position:fixed;inset:0;background:rgba(20,40,80,0.4);z-index:1000"></div>
+        <div id="wp-drawer" style="position:fixed;top:0;right:0;width:580px;max-width:96vw;height:100vh;background:#fff;z-index:1001;display:flex;flex-direction:column;box-shadow:-6px 0 40px rgba(20,40,80,0.18)">
+            <!-- Header -->
+            <div style="padding:20px 22px 16px;background:linear-gradient(135deg,#e3f2fd,#e8f5e9);border-bottom:2px solid #e0e7ef;flex-shrink:0">
+                <div style="display:flex;justify-content:space-between;align-items:center">
+                    <div>
+                        <div style="font-family:'Barlow Condensed',sans-serif;font-size:1.5em;font-weight:800;color:#1565c0">
+                            &#128269; Palavra: <span style="color:#2e7d32">"${word}"</span>
+                        </div>
+                        <div style="font-size:0.8em;color:#6b7a99;font-weight:600;margin-top:4px">
+                            ${total} projeto${total !== 1 ? 's' : ''} encontrado${total !== 1 ? 's' : ''}
+                            ${pesqMatches.length ? ` · ${pesqMatches.length} pesquisa` : ''}
+                            ${extMatches.length  ? ` · ${extMatches.length} extensão` : ''}
+                        </div>
+                    </div>
+                    <button id="wp-close-btn" style="background:none;border:none;font-size:1.4em;cursor:pointer;color:#6b7a99;padding:4px 8px;border-radius:6px;line-height:1">&#10005;</button>
+                </div>
+                <!-- Download button -->
+                <button id="wp-dl-btn" style="margin-top:12px;display:inline-flex;align-items:center;gap:6px;padding:8px 16px;background:#2e7d32;color:#fff;border:none;border-radius:8px;font-family:'Nunito',sans-serif;font-size:0.82em;font-weight:800;cursor:pointer">
+                    &#128190; Baixar lista em CSV
+                </button>
+            </div>
+            <!-- Cards -->
+            <div style="padding:18px 20px 30px;overflow-y:auto;flex:1">${cardsHtml}</div>
+        </div>`;
+
+    document.body.appendChild(panel);
+    document.body.style.overflow = 'hidden';
+
+    // Events
+    document.getElementById('wp-close-btn').onclick = closeWordPanel;
+    document.getElementById('wp-overlay').onclick   = closeWordPanel;
+    document.getElementById('wp-dl-btn').onclick    = () => {
+        const rows = [
+            ...pesqMatches.map(p => ['Pesquisa', p.c||'', p.t||'', p.a||'', p.y||'', p.n||'', p.dp||'']),
+            ...extMatches.map(e  => ['Extensão', '',      e.t||'', e.at||'',e.y||'', e.co||'',e.dp||''])
+        ];
+        downloadCSV(rows, ['Tipo','Código','Título','Área/Tema','Ano','Coordenador','Departamento'],
+            'palavra_' + word.replace(/\s+/g,'_'));
+    };
+    document.addEventListener('keydown', wpEscHandler);
+}
+
+function highlightWord(text, kw) {
+    // Highlight the keyword in the title (case-insensitive)
+    const re = new RegExp('(' + kw.replace(/[.*+?^${}()|[\]\\]/g, '\\$&') + ')', 'gi');
+    return text.replace(re, '<mark style="background:#fff176;border-radius:3px;padding:0 2px">$1</mark>');
+}
+
+function wpEscHandler(e) { if (e.key === 'Escape') closeWordPanel(); }
+
+function closeWordPanel() {
+    const panel = document.getElementById('wp-panel');
+    if (panel) panel.remove();
+    document.body.style.overflow = '';
+    document.removeEventListener('keydown', wpEscHandler);
+}
 
 /* ============================================================
    PAINEL DOCENTE - slide-in lateral simples e robusto

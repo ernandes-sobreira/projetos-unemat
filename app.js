@@ -144,6 +144,9 @@ document.addEventListener('DOMContentLoaded', async () => {
         const resp = await fetch('data.json');
         DATA = await resp.json();
         console.log('Data loaded:', Object.keys(DATA));
+        // Sort PPG lists alphabetically by full name for all dropdowns/tables
+        if (DATA.ppgAnalysis) DATA.ppgAnalysis.sort((a, b) => a.nm.localeCompare(b.nm, 'pt-BR'));
+        if (DATA.ppg)         DATA.ppg.sort((a, b) => (a.nm || '').localeCompare(b.nm || '', 'pt-BR'));
         setupNavigation();
         setupGlobalFilters();
         initVisaoGeral();

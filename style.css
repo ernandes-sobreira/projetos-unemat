@@ -728,13 +728,15 @@ tbody tr:nth-child(even):hover { background: var(--blue-light); }
     inset: 0;
     background: rgba(20, 40, 80, 0.45);
     z-index: 1000;
-    display: flex !important;
+    display: none;
     align-items: flex-start;
     justify-content: flex-end;
     backdrop-filter: blur(3px);
+}
+.dm-overlay.dm-open {
+    display: flex;
     animation: dmFadeIn 0.2s ease;
 }
-.dm-overlay.dm-hidden { display: none !important; }
 
 @keyframes dmFadeIn {
     from { opacity: 0; }

@@ -1048,12 +1048,12 @@ function openDocenteModal(siape) {
         body.innerHTML = '<div class="dm-empty">Nenhum projeto ou ação registrada para este docente.</div>';
     }
 
-    overlay.style.display = 'flex';
+    overlay.classList.add('dm-open');
     document.body.style.overflow = 'hidden';
 }
 
 function closeDocenteModal() {
-    document.getElementById('docente-modal-overlay').style.display = 'none';
+    document.getElementById('docente-modal-overlay').classList.remove('dm-open');
     document.body.style.overflow = '';
 }
 

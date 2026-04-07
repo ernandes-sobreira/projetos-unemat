@@ -733,3 +733,44 @@ tbody tr:nth-child(even):hover { background: var(--blue-light); }
     color: var(--blue);
     border-bottom-style: solid;
 }
+
+/* ======================================
+   DOWNLOAD BUTTONS
+   ====================================== */
+.dl-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    padding: 7px 14px;
+    background: var(--green);
+    color: #fff;
+    border: none;
+    border-radius: var(--radius-sm);
+    font-family: 'Nunito', sans-serif;
+    font-size: 0.8em;
+    font-weight: 800;
+    cursor: pointer;
+    transition: background 0.15s, transform 0.1s;
+    white-space: nowrap;
+    flex-shrink: 0;
+}
+.dl-btn:hover {
+    background: #1b5e20;
+    transform: translateY(-1px);
+}
+.dl-btn:active { transform: translateY(0); }
+
+.dl-btn-chart {
+    background: var(--blue);
+    font-size: 0.72em;
+    padding: 4px 10px;
+    border-radius: 6px;
+    flex-shrink: 0;
+}
+.dl-btn-chart:hover { background: var(--blue-dark); }
+
+.chart-box h3 {
+    display: flex !important;
+    align-items: center;
+    justify-content: space-between;
+}

@@ -258,6 +258,25 @@ function createChart(canvasId, config) {
     const ctx = document.getElementById(canvasId);
     if (!ctx) return null;
     chartInstances[canvasId] = new Chart(ctx.getContext('2d'), config);
+    // Auto-attach download button to chart box
+    setTimeout(() => {
+        const box = ctx.closest('.chart-box');
+        if (!box) return;
+        const existing = box.querySelector('.dl-btn-chart');
+        if (existing) existing.remove();
+        const h3 = box.querySelector('h3');
+        if (!h3) return;
+        const btn = document.createElement('button');
+        btn.className = 'dl-btn dl-btn-chart';
+        btn.innerHTML = '&#128247; PNG';
+        btn.title = 'Baixar gráfico como imagem';
+        btn.style.cssText = 'margin-left:auto;float:right;';
+        btn.addEventListener('click', () => downloadChartPNG(canvasId, canvasId));
+        h3.style.display = 'flex';
+        h3.style.alignItems = 'center';
+        h3.style.justifyContent = 'space-between';
+        h3.appendChild(btn);
+    }, 100);
     return chartInstances[canvasId];
 }
 function makeStatCard(value, label) {
@@ -489,18 +508,33 @@ function initPesquisa() {
 
     document.getElementById('pesq-search').addEventListener('input', (e)     => { pesqLocalSearch = e.target.value; pesqPage = 1; renderPesqFiltered(); });
     document.getElementById('pesq-year-filter').addEventListener('change', (e) => { pesqLocalYear  = e.target.value; pesqPage = 1; renderPesqFiltered(); });
+
+    // Download button
+    const pesqDlBtn = makeDlBtn('Baixar CSV', '&#128190;', () => {
+        const base = getPesqFiltered();
+        downloadCSV(
+            base.map(p => [p.c||'', p.t||'', p.a||'', p.y||'', p.n||'', p.dp||'']),
+            ['Código','Título','Área','Ano','Coordenador','Departamento'],
+            'pesquisa_filtrado'
+        );
+    });
+    document.querySelector('.table-controls').appendChild(pesqDlBtn);
+
     renderPesqFiltered();
 }
 
-function renderPesqFiltered() {
+function getPesqFiltered() {
     let base = filterData(DATA.pesq, 'pesquisa');
-
-    // Additional local filters
     if (pesqLocalYear) base = base.filter(p => p.y === pesqLocalYear);
     if (pesqLocalSearch) {
         const kw = pesqLocalSearch.toLowerCase();
         base = base.filter(p => `${p.c} ${p.t} ${p.a} ${p.n} ${p.dp}`.toLowerCase().includes(kw));
     }
+    return base;
+}
+
+function renderPesqFiltered() {
+    let base = getPesqFiltered();
 
     const total = DATA.pesq.length;
     setCountTag('pesq-count-tag', base.length, total);
@@ -563,10 +597,22 @@ function initExtensao() {
     document.getElementById('ext-search').addEventListener('input',       (e) => { extLocalSearch = e.target.value; extPage = 1; renderExtFiltered(); });
     document.getElementById('ext-year-filter').addEventListener('change', (e) => { extLocalYear   = e.target.value; extPage = 1; renderExtFiltered(); });
     document.getElementById('ext-type-filter').addEventListener('change', (e) => { extLocalType   = e.target.value; extPage = 1; renderExtFiltered(); });
+
+    // Download button
+    const extDlBtn = makeDlBtn('Baixar CSV', '&#128190;', () => {
+        const base = getExtFiltered();
+        downloadCSV(
+            base.map(e => [e.t||'', e.tp||'', e.y||'', e.co||'', e.at||'', e.dp||'']),
+            ['Título','Tipo','Ano','Coordenador','Tema','Departamento'],
+            'extensao_filtrado'
+        );
+    });
+    document.getElementById('ext-search').closest('.table-controls').appendChild(extDlBtn);
+
     renderExtFiltered();
 }
 
-function renderExtFiltered() {
+function getExtFiltered() {
     let base = filterData(DATA.ext, 'extensao');
     if (extLocalYear)   base = base.filter(e => e.y === extLocalYear);
     if (extLocalType)   base = base.filter(e => e.tp === extLocalType);
@@ -574,6 +620,11 @@ function renderExtFiltered() {
         const kw = extLocalSearch.toLowerCase();
         base = base.filter(e => `${e.t} ${e.co} ${e.at} ${e.dp}`.toLowerCase().includes(kw));
     }
+    return base;
+}
+
+function renderExtFiltered() {
+    let base = getExtFiltered();
 
     const total = DATA.ext.length;
     setCountTag('ext-count-tag', base.length, total);
@@ -658,24 +709,37 @@ function initDocentes() {
 
     document.getElementById('doc-search').addEventListener('input',       (e) => { docLocalSearch = e.target.value; docPage = 1; renderDocentesFiltered(); });
     document.getElementById('doc-filter').addEventListener('change',      (e) => { docLocalFilter = e.target.value; docPage = 1; renderDocentesFiltered(); });
+
+    const docDlBtn = makeDlBtn('Baixar CSV', '&#128190;', () => {
+        const base = getDocentesFiltered();
+        downloadCSV(
+            base.map(p => [p.n||'', p.s||'', p.d||'', p.pesq, p.ext, p.ppg ? p.ppg.join('; ') : '']),
+            ['Nome','SIAPE','Departamento','Pesquisa','Extensão','PPG'],
+            'docentes_filtrado'
+        );
+    });
+    document.getElementById('doc-search').closest('.table-controls').appendChild(docDlBtn);
+
     renderDocentesFiltered();
 }
 
-function renderDocentesFiltered() {
+function getDocentesFiltered() {
     const profiles = DATA.profProfiles;
     let base = filterData(Object.values(profiles), 'docentes');
-
     if (docLocalFilter === 'pesq')   base = base.filter(p => p.pesq > 0);
     if (docLocalFilter === 'ext')    base = base.filter(p => p.ext > 0);
     if (docLocalFilter === 'ppg')    base = base.filter(p => p.ppg && p.ppg.length > 0);
     if (docLocalFilter === 'tripla') base = base.filter(p => p.pesq > 0 && p.ext > 0 && p.ppg && p.ppg.length > 0);
-
     if (docLocalSearch) {
         const kw = docLocalSearch.toLowerCase();
         base = base.filter(p => `${p.n} ${p.s} ${p.d}`.toLowerCase().includes(kw));
     }
-
     base.sort((a, b) => a.n.localeCompare(b.n));
+    return base;
+}
+
+function renderDocentesFiltered() {
+    let base = getDocentesFiltered();
     const total = Object.keys(profiles).length;
     setCountTag('doc-count-tag', base.length, total);
     showFilterBanner('doc-filter-banner', total, base.length);
@@ -967,6 +1031,73 @@ function toTitleCase(str) {
         (i===0 || !skip.includes(w)) ? w.charAt(0).toUpperCase()+w.slice(1) : w
     ).join(' ');
 }
+
+/* ============================================================
+   DOWNLOAD UTILITIES - CSV e PNG
+   ============================================================ */
+
+function downloadCSV(rows, headers, filename) {
+    const BOM = '\uFEFF'; // UTF-8 BOM para Excel reconhecer acentos
+    const escape = v => {
+        const s = String(v === null || v === undefined ? '' : v);
+        return s.includes(',') || s.includes('"') || s.includes('\n')
+            ? '"' + s.replace(/"/g, '""') + '"'
+            : s;
+    };
+    const lines = [headers.map(escape).join(',')];
+    rows.forEach(r => lines.push(r.map(escape).join(',')));
+    const blob = new Blob([BOM + lines.join('\n')], { type: 'text/csv;charset=utf-8;' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url; a.download = filename + '.csv';
+    a.click(); URL.revokeObjectURL(url);
+}
+
+function downloadChartPNG(canvasId, filename) {
+    const canvas = document.getElementById(canvasId);
+    if (!canvas) return;
+    // Create white background version
+    const offscreen = document.createElement('canvas');
+    offscreen.width  = canvas.width;
+    offscreen.height = canvas.height;
+    const ctx = offscreen.getContext('2d');
+    ctx.fillStyle = '#ffffff';
+    ctx.fillRect(0, 0, offscreen.width, offscreen.height);
+    ctx.drawImage(canvas, 0, 0);
+    const a = document.createElement('a');
+    a.href = offscreen.toDataURL('image/png');
+    a.download = filename + '.png';
+    a.click();
+}
+
+function makeDlBtn(label, icon, onclick) {
+    const btn = document.createElement('button');
+    btn.className = 'dl-btn';
+    btn.innerHTML = icon + ' ' + label;
+    btn.addEventListener('click', onclick);
+    return btn;
+}
+
+function makeChartDlBtn(canvasId, filename) {
+    const btn = document.createElement('button');
+    btn.className = 'dl-btn dl-btn-chart';
+    btn.innerHTML = '&#128247; PNG';
+    btn.title = 'Baixar gráfico como imagem';
+    btn.addEventListener('click', () => downloadChartPNG(canvasId, filename));
+    return btn;
+}
+
+function addChartDownload(canvasId, filename) {
+    const canvas = document.getElementById(canvasId);
+    if (!canvas) return;
+    const box = canvas.closest('.chart-box');
+    if (!box) return;
+    // Remove existing button
+    box.querySelector('.dl-btn-chart') && box.querySelector('.dl-btn-chart').remove();
+    const h3 = box.querySelector('h3');
+    if (h3) h3.appendChild(makeChartDlBtn(canvasId, filename));
+}
+
 
 function showDocentePanel(siape) {
     if (!siape || !DATA) return;

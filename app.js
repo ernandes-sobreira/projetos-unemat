@@ -150,7 +150,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     } catch(e) {
         console.error('Failed to load data:', e);
         document.getElementById('content').innerHTML =
-            '<div class="loading-msg">Erro ao carregar dados. Verifique se data.json esta no mesmo diretorio.</div>';
+            '<div class="loading-msg">Erro ao carregar dados. Verifique se data.json está no mesmo diretório.</div>';
     }
 });
 
@@ -163,7 +163,8 @@ function setupGlobalFilters() {
     DATA.ppgAnalysis.forEach(p => {
         const o = document.createElement('option');
         o.value = p.sg;
-        o.textContent = `${p.sg} - ${p.nm}`;
+        const nmTitle = p.nm.charAt(0) + p.nm.slice(1).toLowerCase().replace(/(e|de|da|do|das|dos|em|a|o|as|os)/g, w => w).replace(/pro[- ]/gi, m => m.toUpperCase());
+        o.textContent = `${p.sg} — Prog. Pós-Grad. em ${nmTitle} (${p.cp})`;
         progSel.appendChild(o);
     });
 
@@ -333,8 +334,8 @@ function renderVisaoGeralFiltered() {
     const grid = document.getElementById('stats-cards');
     grid.innerHTML = '';
     if (hasFilter) {
-        grid.appendChild(makeStatCard(pesqFiltered.length, 'Registros Pesquisa (filtrado)'));
-        grid.appendChild(makeStatCard(extFiltered.length,  'Acoes Extensao (filtrado)'));
+        grid.appendChild(makeStatCard(pesqFiltered.length, 'Registros de Pesquisa (filtrado)'));
+        grid.appendChild(makeStatCard(extFiltered.length,  'Ações de Extensão (filtrado)'));
         const docsInFilter = new Set([
             ...pesqFiltered.map(p => p.s),
             ...extFiltered.map(e => e.s)
@@ -343,10 +344,10 @@ function renderVisaoGeralFiltered() {
     } else {
         grid.appendChild(makeStatCard(s.total_docentes,  'Docentes'));
         grid.appendChild(makeStatCard(s.reg_pesq,        'Registros de Pesquisa'));
-        grid.appendChild(makeStatCard(s.acoes_ext,       'Acoes de Extensao'));
+        grid.appendChild(makeStatCard(s.acoes_ext,       'Ações de Extensão'));
         grid.appendChild(makeStatCard(s.progs_ppg,       'Programas PPG'));
         grid.appendChild(makeStatCard(s.com_pesquisa,    'Docentes c/ Pesquisa'));
-        grid.appendChild(makeStatCard(s.com_extensao,    'Docentes c/ Extensao'));
+        grid.appendChild(makeStatCard(s.com_extensao,    'Docentes c/ Extensão'));
         grid.appendChild(makeStatCard(s.em_ppg,          'Docentes em PPG'));
         grid.appendChild(makeStatCard(s.tripla,          'Pesq+Ext+PPG'));
     }
@@ -383,7 +384,7 @@ function renderVisaoGeralFiltered() {
         data: {
             labels: extYears,
             datasets: [{
-                label: 'Acoes de Extensao',
+                label: 'Ações de Extensão',
                 data: extYears.map(y => hasFilter ? (extYearMap[y] || 0) : DATA.extYear[y]),
                 backgroundColor: '#2e7d32',
                 borderRadius: 6
@@ -396,7 +397,7 @@ function renderVisaoGeralFiltered() {
     createChart('chart-doc-perfil', {
         type: 'doughnut',
         data: {
-            labels: ['So Pesquisa','So Extensao','Pesq+Ext','Pesq+PPG','Ext+PPG','Pesq+Ext+PPG','Sem registro'],
+            labels: ['Só Pesquisa','Só Extensão','Pesq+Ext','Pesq+PPG','Ext+PPG','Pesq+Ext+PPG','Sem registro'],
             datasets: [{
                 data: [
                     s.com_pesquisa - s.pesq_ext - s.pesq_ppg + s.tripla,
@@ -516,7 +517,7 @@ function initExtensao() {
         type: 'bar',
         data: {
             labels: extYears,
-            datasets: [{ label: 'Acoes', data: extYears.map(y => DATA.extYear[y]), backgroundColor: '#2e7d32', borderRadius: 6 }]
+            datasets: [{ label: 'Ações', data: extYears.map(y => DATA.extYear[y]), backgroundColor: '#2e7d32', borderRadius: 6 }]
         },
         options: chartOpts(false)
     });
@@ -534,7 +535,7 @@ function initExtensao() {
         type: 'bar',
         data: {
             labels: temas.map(t => t.a),
-            datasets: [{ label: 'Acoes', data: temas.map(t => t.c), backgroundColor: COLORS.slice(0, 15), borderRadius: 4 }]
+            datasets: [{ label: 'Ações', data: temas.map(t => t.c), backgroundColor: COLORS.slice(0, 15), borderRadius: 4 }]
         },
         options: { responsive: true, indexAxis: 'y', plugins: { legend: { display: false } }, scales: { x: { beginAtZero: true } } }
     });
@@ -618,9 +619,9 @@ function initDocentes() {
     grid.innerHTML = '';
     grid.appendChild(makeStatCard(s.total_docentes, 'Total Docentes'));
     grid.appendChild(makeStatCard(s.com_pesquisa,   'Com Pesquisa'));
-    grid.appendChild(makeStatCard(s.com_extensao,   'Com Extensao'));
+    grid.appendChild(makeStatCard(s.com_extensao,   'Com Extensão'));
     grid.appendChild(makeStatCard(s.em_ppg,         'Em PPG'));
-    grid.appendChild(makeStatCard(s.tripla,         'Tripla Atuacao'));
+    grid.appendChild(makeStatCard(s.tripla,         'Tripla Atuação'));
 
     document.getElementById('doc-search').addEventListener('input',       (e) => { docLocalSearch = e.target.value; docPage = 1; renderDocentesFiltered(); });
     document.getElementById('doc-filter').addEventListener('change',      (e) => { docLocalFilter = e.target.value; docPage = 1; renderDocentesFiltered(); });
@@ -662,7 +663,8 @@ function initSankey() {
     DATA.ppgAnalysis.forEach(p => {
         const opt = document.createElement('option');
         opt.value = p.sg;
-        opt.textContent = `${p.sg} - ${p.nm}`;
+        const nmT2 = p.nm.charAt(0) + p.nm.slice(1).toLowerCase();
+        opt.textContent = `${p.sg} — ${nmT2} (${p.cp})`;
         ppgFilter.appendChild(opt);
     });
     document.getElementById('sankey-update').addEventListener('click', renderSankeyDiagram);
@@ -688,7 +690,7 @@ function renderSankeyDiagram() {
 
         if (rightAxis === 'atividade') {
             if (prog.np > 0) links.push({ source: leftName, target: 'Pesquisa',  value: prog.np });
-            if (prog.ne > 0) links.push({ source: leftName, target: 'Extensao', value: prog.ne });
+            if (prog.ne > 0) links.push({ source: leftName, target: 'Extensão', value: prog.ne });
         } else if (rightAxis === 'area_pesq') {
             (prog.areas || []).slice(0, 5).forEach(a => {
                 if (a.c > 0) links.push({ source: leftName, target: a.a, value: a.c });
@@ -777,7 +779,8 @@ function initAnalisePPG() {
     DATA.ppgAnalysis.forEach(p => {
         const opt = document.createElement('option');
         opt.value = p.sg;
-        opt.textContent = `${p.sg} - ${p.nm} (${p.cp})`;
+        const nmT = p.nm.charAt(0) + p.nm.slice(1).toLowerCase();
+        opt.textContent = `${p.sg} — Programa de Pós-Graduação em ${nmT} (${p.cp})`;
         select.appendChild(opt);
     });
     select.addEventListener('change', () => { if (select.value) renderPPGAnalysis(select.value); });
@@ -790,10 +793,10 @@ function renderPPGAnalysis(sigla) {
     const grid = document.getElementById('ppg-analysis-stats');
     grid.innerHTML = '';
     grid.appendChild(makeStatCard(prog.nd,   'Docentes'));
-    grid.appendChild(makeStatCard(prog.np,   'Projetos Pesquisa'));
-    grid.appendChild(makeStatCard(prog.ne,   'Acoes Extensao'));
+    grid.appendChild(makeStatCard(prog.np,   'Projetos de Pesquisa'));
+    grid.appendChild(makeStatCard(prog.ne,   'Ações de Extensão'));
     grid.appendChild(makeStatCard(prog.dpesq,'Docentes c/ Pesquisa'));
-    grid.appendChild(makeStatCard(prog.dext, 'Docentes c/ Extensao'));
+    grid.appendChild(makeStatCard(prog.dext, 'Docentes c/ Extensão'));
     grid.appendChild(makeStatCard(prog.dboth,'Pesq + Ext'));
 
     const areas = (prog.areas || []).slice(0, 10);
@@ -811,7 +814,7 @@ function renderPPGAnalysis(sigla) {
         type: 'bar',
         data: {
             labels: temas.map(t => t.a),
-            datasets: [{ label: 'Acoes', data: temas.map(t => t.c), backgroundColor: COLORS.slice(0, temas.length), borderRadius: 4 }]
+            datasets: [{ label: 'Ações', data: temas.map(t => t.c), backgroundColor: COLORS.slice(0, temas.length), borderRadius: 4 }]
         },
         options: { responsive: true, indexAxis: 'y', plugins: { legend: { display: false } }, scales: { x: { beginAtZero: true } } }
     });
@@ -861,8 +864,8 @@ function renderDocenteAnalysis(siape) {
 
     const grid = document.getElementById('docente-stats');
     grid.innerHTML = '';
-    grid.appendChild(makeStatCard(prof.pesq, 'Projetos Pesquisa'));
-    grid.appendChild(makeStatCard(prof.ext,  'Acoes Extensao'));
+    grid.appendChild(makeStatCard(prof.pesq, 'Projetos de Pesquisa'));
+    grid.appendChild(makeStatCard(prof.ext,  'Ações de Extensão'));
     grid.appendChild(makeStatCard(prof.ppg ? prof.ppg.length : 0, 'Programas PPG'));
 
     const areas = (prof.pesqAreas || []).slice(0, 10);
@@ -880,7 +883,7 @@ function renderDocenteAnalysis(siape) {
     if (temas.length) {
         createChart('chart-docente-temas', {
             type: 'bar',
-            data: { labels: temas.map(t => t.a), datasets: [{ label: 'Acoes', data: temas.map(t => t.c), backgroundColor: COLORS.slice(0, temas.length), borderRadius: 4 }] },
+            data: { labels: temas.map(t => t.a), datasets: [{ label: 'Ações', data: temas.map(t => t.c), backgroundColor: COLORS.slice(0, temas.length), borderRadius: 4 }] },
             options: { responsive: true, indexAxis: 'y', plugins: { legend: { display: false } }, scales: { x: { beginAtZero: true } } }
         });
     } else {
@@ -897,7 +900,7 @@ function renderDocenteAnalysis(siape) {
     const extTbody = document.querySelector('#docente-ext-table tbody');
     extTbody.innerHTML = extAcoes.length
         ? extAcoes.map(e => `<tr><td>${e.t||''}</td><td>${e.tp||''}</td><td>${e.y||''}</td><td>${e.at||''}</td></tr>`).join('')
-        : '<tr><td colspan="4" style="color:#aaa;text-align:center;padding:20px">Nenhuma acao de extensao</td></tr>';
+        : '<tr><td colspan="4" style="color:#aaa;text-align:center;padding:20px">Nenhuma ação de extensão</td></tr>';
 
     const ppgDiv = document.getElementById('docente-ppg-info');
     if (prof.ppg && prof.ppg.length) {
@@ -906,7 +909,7 @@ function renderDocenteAnalysis(siape) {
             return `<span class="ppg-badge">${sg} - ${prog ? prog.nm : ''}</span>`;
         }).join('');
     } else {
-        ppgDiv.innerHTML = '<p style="color:#aaa;padding:10px">Nao vinculado a programas de pos-graduacao</p>';
+        ppgDiv.innerHTML = '<p style="color:#aaa;padding:10px">Não vinculado a programas de pós-graduação</p>';
     }
 }
 

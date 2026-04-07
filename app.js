@@ -14,6 +14,14 @@ const COLORS = [
     '#e65100','#01579b','#880e4f','#311b92','#004d40','#bf360c'
 ];
 
+function toTitleCase(str) {
+    if (!str) return '';
+    const lowers = ['de','da','do','das','dos','e','em','a','o','as','os','na','no'];
+    return str.toLowerCase().split(' ').map((w, i) =>
+        i === 0 || !lowers.includes(w) ? w.charAt(0).toUpperCase() + w.slice(1) : w
+    ).join(' ');
+}
+
 /* ============================================================
    GLOBAL FILTER STATE
    ============================================================ */
@@ -149,6 +157,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         if (DATA.ppg)         DATA.ppg.sort((a, b) => (a.nm || '').localeCompare(b.nm || '', 'pt-BR'));
         setupNavigation();
         setupGlobalFilters();
+        setupModalEvents();
         initVisaoGeral();
     } catch(e) {
         console.error('Failed to load data:', e);
@@ -952,14 +961,6 @@ initializedPages['visao-geral'] = true;
    MODAL DOCENTE - painel lateral com projetos do docente
    ============================================================ */
 
-function toTitleCase(str) {
-    if (!str) return '';
-    const lowers = ['de','da','do','das','dos','e','em','a','o','as','os','na','no'];
-    return str.toLowerCase().split(' ').map((w, i) =>
-        i === 0 || !lowers.includes(w) ? w.charAt(0).toUpperCase() + w.slice(1) : w
-    ).join(' ');
-}
-
 function openDocenteModal(siape) {
     const prof = DATA.profProfiles[siape];
     if (!prof) return;
@@ -1056,14 +1057,14 @@ function closeDocenteModal() {
     document.body.style.overflow = '';
 }
 
-// Setup modal close events (run once after DOM ready)
-document.addEventListener('DOMContentLoaded', () => {
+// Modal close events setup - called from main init
+function setupModalEvents() {
     document.getElementById('dm-close').addEventListener('click', closeDocenteModal);
     document.getElementById('docente-modal-overlay').addEventListener('click', function(e) {
         if (e.target === this) closeDocenteModal();
     });
     document.addEventListener('keydown', e => { if (e.key === 'Escape') closeDocenteModal(); });
-});
+}
 
 /* Helper: wrap a docente name cell to be clickable */
 function makeClickableName(name, siape) {

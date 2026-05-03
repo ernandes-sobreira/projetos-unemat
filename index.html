@@ -893,7 +893,6 @@ tbody tr:nth-child(even):hover { background: var(--blue-light); }
         <li><a href="#" class="nav-link" data-page="docentes"><span class="nav-icon">&#128105;</span><span class="nav-label">Docentes</span></a></li>
         <li><a href="#" class="nav-link" data-page="sankey"><span class="nav-icon">&#128336;</span><span class="nav-label">Sankey</span></a></li>
         <li><a href="#" class="nav-link" data-page="analise-ppg"><span class="nav-icon">&#128196;</span><span class="nav-label">Análise por PPG</span></a></li>
-        <li><a href="#" class="nav-link" data-page="analise-docentes"><span class="nav-icon">&#128100;</span><span class="nav-label">Análise por Docente</span></a></li>
     </ul>
     <div class="nav-section-label">Pós-Graduação</div>
     <ul class="nav-menu">
@@ -1111,8 +1110,26 @@ tbody tr:nth-child(even):hover { background: var(--blue-light); }
         </div>
         <div id="doc-filter-banner" class="filter-results-banner"></div>
         <div class="stats-grid" id="doc-stats-cards"></div>
+
+        <!-- BUSCA RÁPIDA POR DOCENTE (autocomplete → abre painel lateral) -->
+        <div class="chart-box full-width" style="margin-bottom:18px">
+            <h3>&#128269; Busca Rápida por Docente</h3>
+            <div style="position:relative;max-width:560px">
+                <input type="text" id="doc-quick-search"
+                    placeholder="Digite o nome do docente para ver o perfil completo..."
+                    class="search-input"
+                    style="width:100%;padding-right:42px"
+                    autocomplete="off">
+                <span style="position:absolute;right:12px;top:50%;transform:translateY(-50%);font-size:1.1em;pointer-events:none">&#128100;</span>
+                <div id="doc-quick-suggestions" class="suggestions-list"></div>
+            </div>
+            <div style="margin-top:8px;font-size:0.78em;color:#6b7a99;font-weight:600">
+                Clique no nome para abrir o perfil individual com projetos, gráficos e vinculações PPG
+            </div>
+        </div>
+
         <div class="chart-box full-width">
-            <h3>Busca de Docentes</h3>
+            <h3>Lista de Docentes</h3>
             <div class="table-controls">
                 <input type="text" id="doc-search" placeholder="&#128269; Nome, SIAPE, departamento..." class="search-input">
                 <select id="doc-filter" class="filter-select">
@@ -1211,56 +1228,6 @@ tbody tr:nth-child(even):hover { background: var(--blue-light); }
         </div>
     </section>
 
-    <!-- ANALISE DOCENTES -->
-    <section id="analise-docentes" class="page">
-        <div class="page-header">
-            <div class="page-header-icon">&#128100;</div>
-            <div>
-                <h1>Análise por Docente</h1>
-                <div class="ph-sub">Perfil individual de produção acadêmica</div>
-            </div>
-        </div>
-        <div class="control-group" style="margin-bottom:20px;max-width:640px;position:relative">
-            <label>Buscar Docente</label>
-            <input type="text" id="docente-search-input" placeholder="Digite o nome do docente..." class="search-input" style="width:100%;max-width:640px">
-            <div id="docente-suggestions" class="suggestions-list"></div>
-        </div>
-        <div id="docente-analysis-content" style="display:none">
-            <div class="stats-grid" id="docente-stats"></div>
-            <div class="charts-row">
-                <div class="chart-box">
-                    <h3>Áreas de Pesquisa</h3>
-                    <canvas id="chart-docente-areas"></canvas>
-                </div>
-                <div class="chart-box">
-                    <h3>Temas de Extensão</h3>
-                    <canvas id="chart-docente-temas"></canvas>
-                </div>
-            </div>
-            <div class="chart-box full-width">
-                <h3>Projetos de Pesquisa</h3>
-                <div class="table-wrapper">
-                    <table id="docente-pesq-table">
-                        <thead><tr><th>Codigo</th><th>Titulo</th><th>Area</th><th>Ano</th></tr></thead>
-                        <tbody></tbody>
-                    </table>
-                </div>
-            </div>
-            <div class="chart-box full-width">
-                <h3>Ações de Extensão</h3>
-                <div class="table-wrapper">
-                    <table id="docente-ext-table">
-                        <thead><tr><th>Titulo</th><th>Tipo</th><th>Ano</th><th>Tema</th></tr></thead>
-                        <tbody></tbody>
-                    </table>
-                </div>
-            </div>
-            <div class="chart-box full-width">
-                <h3>Vinculação a Programas PPG</h3>
-                <div id="docente-ppg-info"></div>
-            </div>
-        </div>
-    </section>
 
     <!-- SOBRE -->
     <section id="sobre" class="page">
@@ -1347,7 +1314,6 @@ tbody tr:nth-child(even):hover { background: var(--blue-light); }
             </div>
         </div>
         <div id="admin-content-box" style="display:none;height:calc(100vh - 32px);margin:-28px -28px -40px -28px;flex-direction:column;">
-            <!-- Admin tab bar -->
             <div style="display:flex;align-items:center;gap:0;background:#fff;border-bottom:2px solid #e0e7ef;padding:0 18px;height:46px;flex-shrink:0;box-shadow:0 2px 8px rgba(106,27,154,0.07);">
                 <span style="font-family:'Barlow Condensed',sans-serif;font-size:1em;font-weight:800;color:#4a148c;margin-right:16px;letter-spacing:.3px;">&#128274; ADMIN</span>
                 <button id="atab-revisao" onclick="switchAdminTab('revisao')"
@@ -1620,7 +1586,6 @@ function initPage(page) {
         case 'docentes':          initDocentes();         break;
         case 'sankey':            initSankey();           break;
         case 'analise-ppg':       initAnalisePPG();       break;
-        case 'analise-docentes':  initAnaliseDocentes();  break;
     }
 }
 
@@ -2093,6 +2058,29 @@ function initDocentes() {
 
     document.getElementById('doc-search').addEventListener('input',       (e) => { docLocalSearch = e.target.value; docPage = 1; renderDocentesFiltered(); });
     document.getElementById('doc-filter').addEventListener('change',      (e) => { docLocalFilter = e.target.value; docPage = 1; renderDocentesFiltered(); });
+
+    // Quick-search autocomplete → opens profile panel directly
+    const qInput = document.getElementById('doc-quick-search');
+    const qSug   = document.getElementById('doc-quick-suggestions');
+    const allProfsQ = Object.values(DATA.profProfiles).sort((a,b) => a.n.localeCompare(b.n));
+    qInput.addEventListener('input', () => {
+        const q = qInput.value.toLowerCase().trim();
+        if (q.length < 2) { qSug.classList.remove('show'); return; }
+        const matches = allProfsQ.filter(p => p.n.toLowerCase().includes(q)).slice(0, 15);
+        if (!matches.length) { qSug.classList.remove('show'); return; }
+        qSug.innerHTML = matches.map(p =>
+            `<div class="suggestion-item" data-siape="${p.s}"><strong>${toTitleCase(p.n)}</strong><div class="sub">${(p.d||'').replace(/^FACULDADE DE /i,'Fac. ')} · SIAPE: ${p.s}</div></div>`
+        ).join('');
+        qSug.classList.add('show');
+        qSug.querySelectorAll('.suggestion-item').forEach(item => {
+            item.addEventListener('click', () => {
+                qSug.classList.remove('show');
+                qInput.value = toTitleCase(DATA.profProfiles[item.dataset.siape].n);
+                showDocentePanel(item.dataset.siape);
+            });
+        });
+    });
+    qInput.addEventListener('blur', () => { setTimeout(() => qSug.classList.remove('show'), 200); });
 
     const docDlBtn = makeDlBtn('Baixar CSV', '&#128190;', () => {
         const base = getDocentesFiltered();
@@ -2766,7 +2754,6 @@ function showAdminContent() {
     document.getElementById('admin-login-box').style.display = 'none';
     const box = document.getElementById('admin-content-box');
     box.style.display = 'flex';
-    // Load revisao iframe if not yet loaded
     const iframe = document.getElementById('admin-iframe');
     if (!iframe.src || iframe.src === window.location.href || iframe.src === '') {
         iframe.src = 'revisao.html';
@@ -2781,15 +2768,12 @@ function adminLogout() {
 }
 
 function switchAdminTab(tab) {
-    // Toggle panes
     document.getElementById('atab-pane-revisao').style.display = tab === 'revisao' ? 'block' : 'none';
     document.getElementById('atab-pane-teia').style.display    = tab === 'teia'    ? 'block' : 'none';
-    // Toggle tab button styles
-    const activeStyle  = 'padding:10px 18px;border:none;background:none;font-family:\'Nunito\',sans-serif;font-size:.85em;font-weight:800;color:#4a148c;cursor:pointer;border-bottom:3px solid #6a1b9a;margin-bottom:-2px;';
+    const activeStyle   = 'padding:10px 18px;border:none;background:none;font-family:\'Nunito\',sans-serif;font-size:.85em;font-weight:800;color:#4a148c;cursor:pointer;border-bottom:3px solid #6a1b9a;margin-bottom:-2px;';
     const inactiveStyle = 'padding:10px 18px;border:none;background:none;font-family:\'Nunito\',sans-serif;font-size:.85em;font-weight:800;color:#6b7a99;cursor:pointer;border-bottom:3px solid transparent;margin-bottom:-2px;';
     document.getElementById('atab-revisao').style.cssText = tab === 'revisao' ? activeStyle : inactiveStyle;
     document.getElementById('atab-teia').style.cssText    = tab === 'teia'    ? activeStyle : inactiveStyle;
-    // Lazy-load teia iframe
     if (tab === 'teia') {
         const tf = document.getElementById('admin-teia-iframe');
         if (!tf.src || tf.src === window.location.href || tf.src === '') {
@@ -2798,7 +2782,6 @@ function switchAdminTab(tab) {
     }
 }
 
-// Ao navegar para a aba admin, verificar se já autenticado
 document.addEventListener('DOMContentLoaded', function() {
     document.querySelector('[data-page="admin-revisao"]').addEventListener('click', function() {
         setTimeout(function() {

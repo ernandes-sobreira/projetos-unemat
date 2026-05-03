@@ -1217,21 +1217,20 @@ tbody tr:nth-child(even):hover { background: var(--blue-light); }
             <div class="page-header-icon">&#128100;</div>
             <div>
                 <h1>Análise por Docente</h1>
-                <div class="ph-sub">Perfil individual de produção acadêmica — gráficos, projetos e vinculações</div>
+                <div class="ph-sub">Perfil individual com gráficos, projetos e vinculações PPG</div>
             </div>
         </div>
         <div class="control-group" style="margin-bottom:20px;max-width:640px;position:relative">
             <label>Buscar Docente</label>
-            <div style="display:flex;gap:8px;align-items:flex-start">
+            <div style="display:flex;gap:8px">
                 <div style="flex:1;position:relative">
-                    <input type="text" id="docente-search-input" placeholder="Digite o nome do docente..." class="search-input" style="width:100%" autocomplete="off">
+                    <input type="text" id="docente-search-input" placeholder="Digite o nome e pressione Enter ou clique em Buscar..." class="search-input" style="width:100%" autocomplete="off">
                     <div id="docente-suggestions" class="suggestions-list"></div>
                 </div>
-                <button id="docente-search-btn" style="padding:9px 18px;background:var(--blue);color:#fff;border:none;border-radius:var(--radius-sm);font-family:'Nunito',sans-serif;font-size:.88em;font-weight:800;cursor:pointer;white-space:nowrap;flex-shrink:0">
+                <button id="docente-search-btn" style="padding:9px 18px;background:var(--blue);color:#fff;border:none;border-radius:var(--radius-sm);font-family:'Nunito',sans-serif;font-size:.88em;font-weight:800;cursor:pointer;white-space:nowrap;flex-shrink:0;transition:background .15s" onmouseover="this.style.background='#1565c0'" onmouseout="this.style.background='var(--blue)'">
                     &#128269; Buscar
                 </button>
             </div>
-            <div style="margin-top:6px;font-size:0.76em;color:#6b7a99;font-weight:600">Digite o nome e pressione Enter ou clique em Buscar</div>
         </div>
         <div id="docente-analysis-content" style="display:none">
             <div class="stats-grid" id="docente-stats"></div>
@@ -1357,18 +1356,9 @@ tbody tr:nth-child(even):hover { background: var(--blue-light); }
         <div id="admin-content-box" style="display:none;height:calc(100vh - 32px);margin:-28px -28px -40px -28px;flex-direction:column;">
             <div style="display:flex;align-items:center;gap:0;background:#fff;border-bottom:2px solid #e0e7ef;padding:0 18px;height:46px;flex-shrink:0;box-shadow:0 2px 8px rgba(106,27,154,0.07);">
                 <span style="font-family:'Barlow Condensed',sans-serif;font-size:1em;font-weight:800;color:#4a148c;margin-right:16px;letter-spacing:.3px;">&#128274; ADMIN</span>
-                <button id="atab-revisao" onclick="switchAdminTab('revisao')"
-                    style="padding:10px 18px;border:none;background:none;font-family:'Nunito',sans-serif;font-size:.85em;font-weight:800;color:#4a148c;cursor:pointer;border-bottom:3px solid #6a1b9a;margin-bottom:-2px;">
-                    &#128196; Revisão de Programas
-                </button>
-                <button id="atab-teia" onclick="switchAdminTab('teia')"
-                    style="padding:10px 18px;border:none;background:none;font-family:'Nunito',sans-serif;font-size:.85em;font-weight:800;color:#6b7a99;cursor:pointer;border-bottom:3px solid transparent;margin-bottom:-2px;">
-                    &#127760; Teia de Congregações
-                </button>
-                <button onclick="adminLogout()"
-                    style="margin-left:auto;padding:6px 14px;background:#ffebee;color:#c62828;border:1.5px solid #ef9a9a;border-radius:8px;font-family:'Nunito',sans-serif;font-size:.78em;font-weight:800;cursor:pointer;">
-                    Sair
-                </button>
+                <button id="atab-revisao" onclick="switchAdminTab('revisao')" style="padding:10px 18px;border:none;background:none;font-family:'Nunito',sans-serif;font-size:.85em;font-weight:800;color:#4a148c;cursor:pointer;border-bottom:3px solid #6a1b9a;margin-bottom:-2px;">&#128196; Revisão de Programas</button>
+                <button id="atab-teia" onclick="switchAdminTab('teia')" style="padding:10px 18px;border:none;background:none;font-family:'Nunito',sans-serif;font-size:.85em;font-weight:800;color:#6b7a99;cursor:pointer;border-bottom:3px solid transparent;margin-bottom:-2px;">&#127760; Teia de Congregações</button>
+                <button onclick="adminLogout()" style="margin-left:auto;padding:6px 14px;background:#ffebee;color:#c62828;border:1.5px solid #ef9a9a;border-radius:8px;font-family:'Nunito',sans-serif;font-size:.78em;font-weight:800;cursor:pointer;">Sair</button>
             </div>
             <div id="atab-pane-revisao" style="flex:1;display:block;overflow:hidden;">
                 <iframe id="admin-iframe" src="" style="width:100%;height:calc(100vh - 78px);border:none;display:block;"></iframe>
@@ -2131,7 +2121,7 @@ function getDocentesFiltered() {
 
 function renderDocentesFiltered() {
     let base = getDocentesFiltered();
-    const total = Object.keys(profiles).length;
+    const total = Object.keys(DATA.profProfiles).length;
     setCountTag('doc-count-tag', base.length, total);
     showFilterBanner('doc-filter-banner', total, base.length);
 
@@ -2331,34 +2321,29 @@ function initAnaliseDocentes() {
     const sugDiv = document.getElementById('docente-suggestions');
     const btn    = document.getElementById('docente-search-btn');
     const allProfs = Object.values(DATA.profProfiles).sort((a, b) => a.n.localeCompare(b.n));
-
     let lastMatches = [];
+
+    function pickAndRender(prof) {
+        sugDiv.classList.remove('show');
+        input.value = prof.n;
+        lastMatches = [prof];
+        renderDocenteAnalysis(prof.s);
+        // Scroll to content
+        setTimeout(() => {
+            const el = document.getElementById('docente-analysis-content');
+            if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }, 100);
+    }
 
     function doSearch() {
         const q = input.value.toLowerCase().trim();
         if (!q) return;
-        // Exact or best match
-        const exact = allProfs.find(p => p.n.toLowerCase() === q);
-        if (exact) {
-            sugDiv.classList.remove('show');
-            input.value = exact.n;
-            renderDocenteAnalysis(exact.s);
-            return;
-        }
-        if (lastMatches.length === 1) {
-            sugDiv.classList.remove('show');
-            input.value = lastMatches[0].n;
-            renderDocenteAnalysis(lastMatches[0].s);
-            return;
-        }
-        if (lastMatches.length > 1) {
-            // pick highest score match (starts-with > contains)
-            const sw = lastMatches.find(p => p.n.toLowerCase().startsWith(q));
-            const pick = sw || lastMatches[0];
-            sugDiv.classList.remove('show');
-            input.value = pick.n;
-            renderDocenteAnalysis(pick.s);
-        }
+        if (lastMatches.length === 0) lastMatches = allProfs.filter(p => p.n.toLowerCase().includes(q));
+        if (lastMatches.length === 0) return;
+        // Prefer exact match, then starts-with, then first result
+        const exact = lastMatches.find(p => p.n.toLowerCase() === q);
+        const sw    = lastMatches.find(p => p.n.toLowerCase().startsWith(q));
+        pickAndRender(exact || sw || lastMatches[0]);
     }
 
     input.addEventListener('input', () => {
@@ -2367,26 +2352,19 @@ function initAnaliseDocentes() {
         lastMatches = allProfs.filter(p => p.n.toLowerCase().includes(q)).slice(0, 15);
         if (!lastMatches.length) { sugDiv.classList.remove('show'); return; }
         sugDiv.innerHTML = lastMatches.map(p =>
-            `<div class="suggestion-item" data-siape="${p.s}"><strong>${toTitleCase(p.n)}</strong><div class="sub">${(p.d||'')} | SIAPE: ${p.s}</div></div>`
+            `<div class="suggestion-item" data-siape="${p.s}"><strong>${toTitleCase(p.n)}</strong><div class="sub">${p.d||''} | SIAPE: ${p.s}</div></div>`
         ).join('');
         sugDiv.classList.add('show');
         sugDiv.querySelectorAll('.suggestion-item').forEach(item => {
             item.addEventListener('mousedown', (e) => {
                 e.preventDefault();
-                sugDiv.classList.remove('show');
-                input.value = DATA.profProfiles[item.dataset.siape].n;
-                lastMatches = [DATA.profProfiles[item.dataset.siape]];
-                renderDocenteAnalysis(item.dataset.siape);
+                pickAndRender(DATA.profProfiles[item.dataset.siape]);
             });
         });
     });
 
-    input.addEventListener('keydown', (e) => {
-        if (e.key === 'Enter') { e.preventDefault(); doSearch(); }
-    });
-
+    input.addEventListener('keydown', (e) => { if (e.key === 'Enter') { e.preventDefault(); doSearch(); } });
     btn.addEventListener('click', doSearch);
-
     input.addEventListener('blur', () => { setTimeout(() => sugDiv.classList.remove('show'), 150); });
 }
 
@@ -2828,22 +2806,20 @@ function adminLogout() {
 function switchAdminTab(tab) {
     document.getElementById('atab-pane-revisao').style.display = tab === 'revisao' ? 'block' : 'none';
     document.getElementById('atab-pane-teia').style.display    = tab === 'teia'    ? 'block' : 'none';
-    const activeStyle   = 'padding:10px 18px;border:none;background:none;font-family:\'Nunito\',sans-serif;font-size:.85em;font-weight:800;color:#4a148c;cursor:pointer;border-bottom:3px solid #6a1b9a;margin-bottom:-2px;';
-    const inactiveStyle = 'padding:10px 18px;border:none;background:none;font-family:\'Nunito\',sans-serif;font-size:.85em;font-weight:800;color:#6b7a99;cursor:pointer;border-bottom:3px solid transparent;margin-bottom:-2px;';
-    document.getElementById('atab-revisao').style.cssText = tab === 'revisao' ? activeStyle : inactiveStyle;
-    document.getElementById('atab-teia').style.cssText    = tab === 'teia'    ? activeStyle : inactiveStyle;
+    const on  = 'padding:10px 18px;border:none;background:none;font-family:\'Nunito\',sans-serif;font-size:.85em;font-weight:800;color:#4a148c;cursor:pointer;border-bottom:3px solid #6a1b9a;margin-bottom:-2px;';
+    const off = 'padding:10px 18px;border:none;background:none;font-family:\'Nunito\',sans-serif;font-size:.85em;font-weight:800;color:#6b7a99;cursor:pointer;border-bottom:3px solid transparent;margin-bottom:-2px;';
+    document.getElementById('atab-revisao').style.cssText = tab === 'revisao' ? on : off;
+    document.getElementById('atab-teia').style.cssText    = tab === 'teia'    ? on : off;
     if (tab === 'teia') {
         const tf = document.getElementById('admin-teia-iframe');
-        if (!tf.src || tf.src === window.location.href || tf.src === '') {
-            tf.src = 'teia_congregacoes.html';
-        }
+        if (!tf.src || tf.src === window.location.href || tf.src === '') tf.src = 'teia_congregacoes.html';
     }
 }
 
 document.addEventListener('DOMContentLoaded', function() {
     document.querySelector('[data-page="admin-revisao"]').addEventListener('click', function() {
         setTimeout(function() {
-            if (sessionStorage.getItem('hub_admin_auth') === '1') { showAdminContent(); }
+            if (sessionStorage.getItem('hub_admin_auth') === '1') showAdminContent();
         }, 50);
     });
 });

@@ -1227,7 +1227,7 @@ tbody tr:nth-child(even):hover { background: var(--blue-light); }
                     <input type="text" id="docente-search-input" placeholder="Digite o nome e pressione Enter ou clique em Buscar..." class="search-input" style="width:100%" autocomplete="off">
                     <div id="docente-suggestions" class="suggestions-list"></div>
                 </div>
-                <button id="docente-search-btn" style="padding:9px 18px;background:var(--blue);color:#fff;border:none;border-radius:var(--radius-sm);font-family:'Nunito',sans-serif;font-size:.88em;font-weight:800;cursor:pointer;white-space:nowrap;flex-shrink:0;transition:background .15s" onmouseover="this.style.background='#1565c0'" onmouseout="this.style.background='var(--blue)'">
+                <button id="docente-search-btn" style="padding:9px 18px;background:var(--blue);color:#fff;border:none;border-radius:var(--radius-sm);font-family:'Nunito',sans-serif;font-size:.88em;font-weight:800;cursor:pointer;white-space:nowrap;flex-shrink:0;" onmouseover="this.style.background='#1565c0'" onmouseout="this.style.background='var(--blue)'">
                     &#128269; Buscar
                 </button>
             </div>
@@ -1419,11 +1419,11 @@ function filterData(items, type) {
     if (!hasFilters) return items;
 
     return items.filter(item => {
-        // Tipo filter
-        if (GF.tipo && GF.tipo !== type) return false;
+        // Tipo filter — does NOT apply to docentes (they have no "type")
+        if (GF.tipo && type !== 'docentes' && GF.tipo !== type) return false;
 
-        // Ano filter
-        if (GF.ano) {
+        // Ano filter — does NOT apply to docentes (no year field on profiles)
+        if (GF.ano && type !== 'docentes') {
             const itemYear = String(item.y || item.yr || '');
             if (itemYear !== GF.ano) return false;
         }
@@ -1431,7 +1431,6 @@ function filterData(items, type) {
         // Programa filter
         if (GF.programa) {
             if (type === 'pesquisa') {
-                // Match by coordenador SIAPE -> find their PPG
                 const prof = DATA.profProfiles[item.s];
                 if (!prof || !prof.ppg || !prof.ppg.includes(GF.programa)) return false;
             } else if (type === 'extensao') {
@@ -2328,7 +2327,6 @@ function initAnaliseDocentes() {
         input.value = prof.n;
         lastMatches = [prof];
         renderDocenteAnalysis(prof.s);
-        // Scroll to content
         setTimeout(() => {
             const el = document.getElementById('docente-analysis-content');
             if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' });
@@ -2340,7 +2338,6 @@ function initAnaliseDocentes() {
         if (!q) return;
         if (lastMatches.length === 0) lastMatches = allProfs.filter(p => p.n.toLowerCase().includes(q));
         if (lastMatches.length === 0) return;
-        // Prefer exact match, then starts-with, then first result
         const exact = lastMatches.find(p => p.n.toLowerCase() === q);
         const sw    = lastMatches.find(p => p.n.toLowerCase().startsWith(q));
         pickAndRender(exact || sw || lastMatches[0]);

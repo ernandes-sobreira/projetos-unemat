@@ -1,0 +1,344 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Mapa dos PPGs — UNEMAT</title>
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&family=Barlow+Condensed:wght@600;700;800&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
+body{font-family:'Nunito',sans-serif;background:#f4f7fb;color:#1a2340;display:flex;flex-direction:column;height:100vh;overflow:hidden;}
+
+/* HEADER */
+.hdr{
+  background:linear-gradient(135deg,#1b5e20,#2e7d32 55%,#388e3c);
+  color:#fff;padding:14px 22px;display:flex;align-items:center;gap:16px;
+  flex-shrink:0;box-shadow:0 2px 10px rgba(0,0,0,.15);
+}
+.hdr h1{font-family:'Barlow Condensed',sans-serif;font-size:1.5em;font-weight:800;letter-spacing:.3px;}
+.hdr p{font-size:.8em;opacity:.85;margin-top:1px;}
+.hdr-badges{display:flex;gap:8px;margin-left:auto;flex-wrap:wrap;}
+.hbdg{background:rgba(255,255,255,.18);border:1px solid rgba(255,255,255,.3);border-radius:20px;padding:4px 12px;font-size:.74em;font-weight:700;white-space:nowrap;}
+
+/* CONTROLS */
+.controls{
+  background:#fff;border-bottom:1.5px solid #e0e7ef;
+  padding:10px 18px;display:flex;gap:10px;flex-wrap:wrap;align-items:center;
+  flex-shrink:0;box-shadow:0 1px 6px rgba(0,0,0,.05);
+}
+.ctrl-btn{
+  padding:7px 14px;border:1.5px solid #e0e7ef;border-radius:8px;
+  font-family:'Nunito',sans-serif;font-size:.8em;font-weight:800;
+  cursor:pointer;background:#fff;color:#6b7a99;transition:all .15s;
+  display:flex;align-items:center;gap:5px;
+}
+.ctrl-btn:hover{background:#e3f2fd;border-color:#1e88e5;color:#1565c0;}
+.ctrl-btn.active{background:#2e7d32;border-color:#2e7d32;color:#fff;}
+.ctrl-sep{width:1px;height:28px;background:#e0e7ef;flex-shrink:0;}
+.ctrl-info{font-size:.78em;font-weight:700;color:#6b7a99;margin-left:auto;}
+
+/* MAP */
+#map{flex:1;z-index:1;}
+
+/* LEGEND */
+.legend{
+  position:absolute;bottom:28px;right:12px;z-index:1000;
+  background:#fff;border-radius:12px;padding:14px 16px;
+  box-shadow:0 4px 20px rgba(0,0,0,.15);border:1.5px solid #e0e7ef;
+  min-width:170px;
+}
+.legend h4{font-size:.75em;font-weight:800;color:#6b7a99;letter-spacing:.8px;text-transform:uppercase;margin-bottom:10px;}
+.leg-item{display:flex;align-items:center;gap:8px;margin-bottom:7px;font-size:.8em;font-weight:700;cursor:pointer;transition:opacity .15s;}
+.leg-item:hover{opacity:.75;}
+.leg-item:last-child{margin-bottom:0;}
+.leg-dot{width:14px;height:14px;border-radius:50%;border:2px solid #fff;box-shadow:0 1px 4px rgba(0,0,0,.2);flex-shrink:0;}
+
+/* POPUP CUSTOM */
+.ppg-popup{min-width:240px;max-width:300px;font-family:'Nunito',sans-serif;}
+.ppg-popup .pp-campus{
+  font-family:'Barlow Condensed',sans-serif;font-size:1.25em;font-weight:800;
+  color:#2e7d32;border-bottom:2px solid #e8f5e9;padding-bottom:7px;margin-bottom:10px;
+}
+.ppg-popup .pp-prog{
+  padding:6px 10px;border-radius:8px;margin-bottom:6px;
+  border-left:3px solid;
+}
+.ppg-popup .pp-prog .pp-sigla{font-size:.78em;font-weight:800;margin-bottom:2px;}
+.ppg-popup .pp-prog .pp-nome{font-size:.78em;font-weight:600;color:#444;line-height:1.35;}
+.ppg-popup .pp-prog .pp-tags{display:flex;gap:4px;margin-top:4px;flex-wrap:wrap;}
+.ppg-popup .pp-prog .pp-tag{font-size:.65em;font-weight:800;padding:2px 7px;border-radius:10px;text-transform:uppercase;}
+.ppg-popup .pp-footer{margin-top:10px;padding-top:8px;border-top:1px solid #e0e7ef;font-size:.74em;color:#9e9e9e;font-weight:600;}
+
+/* STATS PANEL */
+.stats-panel{
+  position:absolute;top:70px;left:12px;z-index:1000;
+  background:#fff;border-radius:12px;padding:14px 16px;
+  box-shadow:0 4px 20px rgba(0,0,0,.15);border:1.5px solid #e0e7ef;
+  min-width:160px;
+}
+.stats-panel h4{font-size:.72em;font-weight:800;color:#6b7a99;letter-spacing:.8px;text-transform:uppercase;margin-bottom:10px;}
+.stat-row{display:flex;align-items:center;gap:8px;margin-bottom:6px;font-size:.8em;font-weight:700;}
+.stat-row:last-child{margin-bottom:0;}
+.stat-num{font-family:'Barlow Condensed',sans-serif;font-size:1.4em;font-weight:800;color:#2e7d32;min-width:28px;}
+</style>
+</head>
+<body>
+
+<div class="hdr">
+  <div>
+    <h1>📍 Mapa dos Programas de Pós-Graduação</h1>
+    <p>Distribuição geográfica dos 27 PPGs da UNEMAT — Mato Grosso</p>
+  </div>
+  <div class="hdr-badges">
+    <span class="hbdg">27 Programas</span>
+    <span class="hbdg">8 Câmpus</span>
+    <span class="hbdg">MT · Brasil</span>
+  </div>
+</div>
+
+<div class="controls">
+  <button class="ctrl-btn active" id="btn-all" onclick="filterType('all',this)">🔵 Todos</button>
+  <button class="ctrl-btn" id="btn-ma" onclick="filterType('ma',this)">📘 Mestrado Acadêmico</button>
+  <button class="ctrl-btn" id="btn-mp" onclick="filterType('mp',this)">📗 Mestrado Profissional</button>
+  <button class="ctrl-btn" id="btn-do" onclick="filterType('do',this)">📙 Doutorado</button>
+  <button class="ctrl-btn" id="btn-rd" onclick="filterType('rd',this)">🔗 Em Rede</button>
+  <div class="ctrl-sep"></div>
+  <button class="ctrl-btn" onclick="map.setView([-13.5, -55.0], 5.5)">🗺 Ver MT inteiro</button>
+  <span class="ctrl-info" id="ctrl-info">27 programas visíveis</span>
+</div>
+
+<div id="map"></div>
+
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<script>
+// ============================================================
+// DATA: campus + programs
+// ============================================================
+const CAMPI = [
+  {
+    id: 'caceres', name: 'Cáceres', lat: -16.0698, lng: -57.6788,
+    color: '#1565c0',
+    progs: [
+      { sigla:'PPGCA',    nome:'Ciências Ambientais',             tipos:['ma','do'], color:'#1565c0' },
+      { sigla:'PPGEDU',   nome:'Educação',                        tipos:['ma','do'], color:'#1565c0' },
+      { sigla:'PPGGEO',   nome:'Geografia',                       tipos:['ma','do'], color:'#1565c0' },
+      { sigla:'PPGL',     nome:'Linguística',                     tipos:['ma','do'], color:'#1565c0' },
+      { sigla:'PGMP',     nome:'Genética e Melhoramento de Plantas', tipos:['ma'],   color:'#1565c0' },
+      { sigla:'PROFHISTÓRIA', nome:'Ensino de História (ProfHistória)', tipos:['mp','rd'], color:'#1565c0' },
+      { sigla:'PROFLETRAS-CAC', nome:'Letras – Mestrado Prof. em Rede', tipos:['mp','rd'], color:'#1565c0' },
+      { sigla:'PROFÁGUA', nome:'Gestão e Regulação de Recursos Hídricos', tipos:['mp','rd'], color:'#1565c0' },
+      { sigla:'BIONORTE', nome:'Biodiversidade e Biotecnologia – Bionorte', tipos:['do','rd'], color:'#1565c0' },
+    ]
+  },
+  {
+    id: 'tangara', name: 'Tangará da Serra', lat: -14.6218, lng: -57.4944,
+    color: '#2e7d32',
+    progs: [
+      { sigla:'PPGASP',   nome:'Ambiente e Sistemas de Produção Agrícola', tipos:['ma'], color:'#2e7d32' },
+      { sigla:'PPGEL',    nome:'Estudos Literários',             tipos:['ma','do'], color:'#2e7d32' },
+      { sigla:'PROFBIO',  nome:'Ensino de Biologia (ProfBio)',   tipos:['mp','rd'], color:'#2e7d32' },
+    ]
+  },
+  {
+    id: 'altafloresta', name: 'Alta Floresta', lat: -9.8754, lng: -56.0862,
+    color: '#00838f',
+    progs: [
+      { sigla:'PPGBIOAGRO', nome:'Biodiversidade e Agroecossistemas Amazônicos', tipos:['ma'], color:'#00838f' },
+    ]
+  },
+  {
+    id: 'sinop', name: 'Sinop', lat: -11.8642, lng: -55.5108,
+    color: '#ef6c00',
+    progs: [
+      { sigla:'PROFEI',    nome:'Educação Inclusiva',              tipos:['mp','rd'], color:'#ef6c00' },
+      { sigla:'PPGLETRAS', nome:'Letras',                          tipos:['ma','do'], color:'#ef6c00' },
+      { sigla:'PROFLETRAS',nome:'Letras – Mestrado Prof. em Rede', tipos:['mp','rd'], color:'#ef6c00' },
+      { sigla:'PROFMAT',   nome:'Matemática em Rede Nacional',     tipos:['mp','rd'], color:'#ef6c00' },
+      { sigla:'PROFNIT',   nome:'Propriedade Intelectual e Inovação', tipos:['mp','rd'], color:'#ef6c00' },
+      { sigla:'PROFSOCIO', nome:'Sociologia em Rede Nacional',     tipos:['mp','rd'], color:'#ef6c00' },
+    ]
+  },
+  {
+    id: 'bbg', name: 'Barra do Bugres', lat: -15.0621, lng: -57.1793,
+    color: '#6a1b9a',
+    progs: [
+      { sigla:'PPGECM',   nome:'Ensino de Ciências e Matemática', tipos:['ma','do'], color:'#6a1b9a' },
+      { sigla:'PPGECII',  nome:'Ensino em Contexto Indígena Intercultural', tipos:['mp'], color:'#6a1b9a' },
+      { sigla:'PROFMAT-BBG', nome:'Matemática em Rede Nacional',  tipos:['mp','rd'], color:'#6a1b9a' },
+    ]
+  },
+  {
+    id: 'nvx', name: 'Nova Xavantina', lat: -14.6685, lng: -52.3540,
+    color: '#2e7d32',
+    progs: [
+      { sigla:'PPGEC', nome:'Ecologia e Conservação', tipos:['ma','do'], color:'#2e7d32' },
+    ]
+  },
+  {
+    id: 'altoareguaia', name: 'Alto Araguaia', lat: -17.3148, lng: -53.2126,
+    color: '#c62828',
+    progs: [
+      { sigla:'PROFEDUCATEC', nome:'Processos e Tecnologias Educacionais', tipos:['mp'], color:'#c62828' },
+    ]
+  },
+  {
+    id: 'cuiaba', name: 'Cuiabá / Rede', lat: -15.5980, lng: -56.0974,
+    color: '#4527a0',
+    progs: [
+      { sigla:'REDEPROCENTRO', nome:'Biotecnologia e Biodiversidade – Rede Pró-Centro-Oeste', tipos:['do','rd'], color:'#4527a0' },
+      { sigla:'REAMEC',        nome:'Educação em Ciências e Matemática – REAMEC',             tipos:['do','rd'], color:'#4527a0' },
+      { sigla:'PROFNIT-CBA',   nome:'Propriedade Intelectual e Inovação – Cuiabá',            tipos:['mp','rd'], color:'#4527a0' },
+    ]
+  },
+];
+
+// ============================================================
+// MAP INIT
+// ============================================================
+const map = L.map('map', { zoomControl: true }).setView([-13.8, -55.5], 6);
+
+L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png', {
+  attribution: '© OpenStreetMap © CARTO',
+  maxZoom: 18,
+}).addTo(map);
+
+// ============================================================
+// CUSTOM MARKER
+// ============================================================
+function makeIcon(campus, count) {
+  const size = Math.max(36, 28 + count * 4);
+  const html = `
+    <div style="
+      width:${size}px;height:${size}px;border-radius:50%;
+      background:${campus.color};border:3px solid #fff;
+      box-shadow:0 3px 12px rgba(0,0,0,.28);
+      display:flex;align-items:center;justify-content:center;
+      font-family:'Barlow Condensed',sans-serif;font-size:${size > 42 ? 14 : 12}px;
+      font-weight:800;color:#fff;cursor:pointer;
+      transition:transform .15s;
+    ">${count}</div>`;
+  return L.divIcon({
+    html, className: '',
+    iconSize: [size, size],
+    iconAnchor: [size/2, size/2],
+    popupAnchor: [0, -size/2 - 4],
+  });
+}
+
+// ============================================================
+// MARKERS
+// ============================================================
+let allMarkers = [];
+let activeFilter = 'all';
+
+CAMPI.forEach(campus => {
+  const marker = L.marker([campus.lat, campus.lng], {
+    icon: makeIcon(campus, campus.progs.length)
+  });
+
+  // Build popup
+  const progsHtml = campus.progs.map(p => {
+    const tagHtml = p.tipos.map(t => {
+      const labels = {ma:'Mest. Acad.',mp:'Mest. Prof.',do:'Doutorado',rd:'Em Rede'};
+      const colors = {ma:'#e3f2fd;color:#1565c0',mp:'#e8f5e9;color:#2e7d32',do:'#f3e5f5;color:#6a1b9a',rd:'#fff3e0;color:#e65100'};
+      return `<span class="pp-tag" style="background:${colors[t]}">${labels[t]}</span>`;
+    }).join('');
+    return `<div class="pp-prog" style="background:${p.color}11;border-left-color:${p.color}">
+      <div class="pp-sigla" style="color:${p.color}">${p.sigla}</div>
+      <div class="pp-nome">${p.nome}</div>
+      <div class="pp-tags">${tagHtml}</div>
+    </div>`;
+  }).join('');
+
+  const popupContent = `<div class="ppg-popup">
+    <div class="pp-campus">📍 ${campus.name}</div>
+    ${progsHtml}
+    <div class="pp-footer">${campus.progs.length} programa${campus.progs.length>1?'s':''} neste câmpus</div>
+  </div>`;
+
+  marker.bindPopup(popupContent, { maxWidth: 320, maxHeight: 420 });
+  marker.addTo(map);
+  allMarkers.push({ marker, campus });
+
+  // Hover tooltip
+  marker.on('mouseover', function() {
+    this.openPopup();
+  });
+});
+
+// ============================================================
+// MT STATE OUTLINE (approximate bounding box highlight)
+// ============================================================
+const mtBounds = [[-7.97, -61.60], [-18.04, -50.22]];
+L.rectangle(mtBounds, {
+  color: '#2e7d32', weight: 1.5, fill: false,
+  dashArray: '6,5', opacity: 0.3
+}).addTo(map);
+
+// ============================================================
+// FILTER LOGIC
+// ============================================================
+function filterType(type, btn) {
+  activeFilter = type;
+  document.querySelectorAll('.ctrl-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+
+  let visible = 0;
+  allMarkers.forEach(({ marker, campus }) => {
+    const match = type === 'all' || campus.progs.some(p => p.tipos.includes(type));
+    if (match) {
+      const count = type === 'all'
+        ? campus.progs.length
+        : campus.progs.filter(p => p.tipos.includes(type)).length;
+      marker.setIcon(makeIcon(campus, count));
+      if (!map.hasLayer(marker)) marker.addTo(map);
+      visible += count;
+    } else {
+      if (map.hasLayer(marker)) map.removeLayer(marker);
+    }
+  });
+
+  const labels = {all:'programas',ma:'Mestrado Acadêmico',mp:'Mestrado Profissional',do:'Doutorado',rd:'em rede'};
+  document.getElementById('ctrl-info').textContent = visible + ' ' + (labels[type]||'programas') + ' visíveis';
+}
+
+// ============================================================
+// LEGEND
+// ============================================================
+const legend = L.control({ position: 'bottomright' });
+legend.onAdd = function() {
+  const div = L.DomUtil.create('div', 'legend');
+  div.innerHTML = `
+    <h4>Câmpus</h4>
+    ${CAMPI.map(c => `
+      <div class="leg-item" onclick="map.setView([${c.lat},${c.lng}],10)">
+        <div class="leg-dot" style="background:${c.color}"></div>
+        <span>${c.name} <span style="color:#bbb;font-weight:600">(${c.progs.length})</span></span>
+      </div>`).join('')}`;
+  return div;
+};
+legend.addTo(map);
+
+// ============================================================
+// STATS PANEL
+// ============================================================
+const stats = L.control({ position: 'topleft' });
+stats.onAdd = function() {
+  const div = L.DomUtil.create('div', 'stats-panel');
+  const ma = CAMPI.flatMap(c=>c.progs).filter(p=>p.tipos.includes('ma')).length;
+  const mp = CAMPI.flatMap(c=>c.progs).filter(p=>p.tipos.includes('mp')).length;
+  const dout = CAMPI.flatMap(c=>c.progs).filter(p=>p.tipos.includes('do')).length;
+  const rede = CAMPI.flatMap(c=>c.progs).filter(p=>p.tipos.includes('rd')).length;
+  div.innerHTML = `
+    <h4>Distribuição</h4>
+    <div class="stat-row"><div class="stat-num">${ma}</div><div>Mest. Acadêmico</div></div>
+    <div class="stat-row"><div class="stat-num">${mp}</div><div>Mest. Profissional</div></div>
+    <div class="stat-row"><div class="stat-num" style="color:#6a1b9a">${dout}</div><div>Doutorado</div></div>
+    <div class="stat-row"><div class="stat-num" style="color:#ef6c00">${rede}</div><div>Em Rede</div></div>`;
+  return div;
+};
+stats.addTo(map);
+</script>
+</body>
+</html>

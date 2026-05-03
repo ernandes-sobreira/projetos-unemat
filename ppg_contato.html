@@ -1,0 +1,610 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Programas de Pós-Graduação – UNEMAT</title>
+  <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&family=Barlow+Condensed:wght@600;700;800&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --verde:#2e7d32; --verde-c:#43a047; --verde-bg:#e8f5e9;
+      --azul:#1565c0; --roxo:#6a1b9a; --laranja:#e65100;
+      --cinza:#f5f5f5; --texto:#1a2340; --sub:#6b7a99;
+      --borda:#c8e6c9; --white:#fff;
+      --r:12px; --sh:0 2px 10px rgba(46,125,50,0.09);
+    }
+    *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+    body{font-family:'Nunito',sans-serif;background:#f4f7fb;color:var(--texto);}
+
+    /* HEADER */
+    .hdr{
+      background:linear-gradient(135deg,#1b5e20 0%,#2e7d32 55%,#388e3c 100%);
+      color:#fff;padding:36px 28px 30px;text-align:center;
+    }
+    .hdr .badge{
+      display:inline-block;background:rgba(255,255,255,.18);
+      border:1px solid rgba(255,255,255,.32);border-radius:20px;
+      padding:4px 16px;font-size:.78em;margin-bottom:14px;
+      letter-spacing:1.2px;text-transform:uppercase;font-weight:700;
+    }
+    .hdr h1{font-family:'Barlow Condensed',sans-serif;font-size:2em;font-weight:800;letter-spacing:.4px;margin-bottom:7px;}
+    .hdr p{font-size:.9em;opacity:.88;max-width:660px;margin:0 auto;}
+    .hdr-stats{display:flex;gap:24px;justify-content:center;margin-top:18px;flex-wrap:wrap;}
+    .hdr-stat{text-align:center;}
+    .hdr-stat .sv{font-family:'Barlow Condensed',sans-serif;font-size:1.8em;font-weight:800;}
+    .hdr-stat .sl{font-size:.75em;opacity:.8;font-weight:700;}
+
+    /* FILTROS */
+    .filtros{
+      display:flex;flex-wrap:wrap;gap:10px;justify-content:center;
+      padding:20px 22px 14px;background:var(--white);
+      border-bottom:1.5px solid #e0e7ef;position:sticky;top:0;z-index:50;
+      box-shadow:0 2px 8px rgba(0,0,0,.06);
+    }
+    .filtros input[type="text"]{
+      flex:1 1 260px;max-width:380px;padding:10px 14px;
+      border:1.5px solid var(--borda);border-radius:var(--r);
+      font-family:'Nunito',sans-serif;font-size:.9em;font-weight:600;outline:none;
+      transition:border .18s;color:var(--texto);
+    }
+    .filtros input:focus{border-color:var(--verde);}
+    .filtros select{
+      padding:10px 13px;border:1.5px solid var(--borda);border-radius:var(--r);
+      font-family:'Nunito',sans-serif;font-size:.9em;font-weight:600;
+      background:var(--white);cursor:pointer;outline:none;color:var(--texto);
+    }
+    .filtros select:focus{border-color:var(--verde);}
+    .total-badge{
+      padding:10px 16px;background:var(--verde-bg);border-radius:var(--r);
+      font-size:.87em;color:var(--verde);font-weight:800;white-space:nowrap;
+    }
+
+    /* GRID */
+    .grid{
+      display:grid;grid-template-columns:repeat(auto-fill,minmax(330px,1fr));
+      gap:18px;padding:24px 22px;max-width:1400px;margin:0 auto;
+    }
+
+    /* CARD */
+    .card{
+      background:var(--white);border:1.5px solid var(--borda);border-radius:var(--r);
+      overflow:hidden;box-shadow:var(--sh);
+      transition:transform .18s,box-shadow .18s;
+      display:flex;flex-direction:column;
+    }
+    .card:hover{transform:translateY(-3px);box-shadow:0 8px 22px rgba(46,125,50,0.14);}
+
+    .card-top{padding:16px 18px 13px;color:#fff;position:relative;}
+    .card-top::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;}
+
+    .ct-verde{background:linear-gradient(135deg,#1b5e20,#2e7d32 60%,#388e3c);}
+    .ct-azul{background:linear-gradient(135deg,#0d47a1,#1565c0 60%,#1976d2);}
+    .ct-roxo{background:linear-gradient(135deg,#4a148c,#6a1b9a 60%,#7b1fa2);}
+    .ct-teal{background:linear-gradient(135deg,#004d40,#00695c 60%,#00838f);}
+    .ct-laranja{background:linear-gradient(135deg,#bf360c,#d84315 60%,#e64a19);}
+
+    .card-sigla{font-family:'Barlow Condensed',sans-serif;font-size:1.3em;font-weight:800;letter-spacing:.4px;margin-bottom:2px;}
+    .card-nome{font-size:.84em;opacity:.9;line-height:1.4;}
+    .card-tags{display:flex;flex-wrap:wrap;gap:5px;margin-top:9px;}
+    .tag{
+      font-size:.68em;font-weight:800;padding:3px 9px;border-radius:10px;
+      text-transform:uppercase;letter-spacing:.5px;
+      background:rgba(255,255,255,.18);border:1px solid rgba(255,255,255,.32);
+    }
+    .tag-m{background:rgba(21,101,192,.85);}
+    .tag-d{background:rgba(106,27,154,.85);}
+    .tag-r{background:rgba(230,81,0,.85);}
+    .tag-p{background:rgba(0,105,92,.8);}
+
+    /* BODY */
+    .card-body{padding:14px 18px 16px;flex:1;display:flex;flex-direction:column;gap:9px;}
+    .info-row{display:flex;align-items:flex-start;gap:9px;font-size:.88em;}
+    .info-icon{
+      flex-shrink:0;width:28px;height:28px;border-radius:50%;
+      background:var(--verde-bg);display:flex;align-items:center;
+      justify-content:center;font-size:.82em;margin-top:1px;
+    }
+    .info-content{flex:1;}
+    .info-label{font-size:.7em;text-transform:uppercase;color:var(--sub);letter-spacing:.6px;font-weight:800;margin-bottom:1px;}
+    .info-value{color:var(--texto);font-weight:600;line-height:1.4;}
+    .info-value a{color:var(--verde);text-decoration:none;word-break:break-all;}
+    .info-value a:hover{text-decoration:underline;}
+    .sem-dados{font-size:.82em;color:#bbb;font-style:italic;}
+
+    /* FOOTER */
+    .card-footer{
+      padding:10px 18px;background:var(--cinza);
+      border-top:1.5px solid #e0e7ef;
+      display:flex;align-items:center;justify-content:space-between;gap:8px;
+    }
+    .campus-badge{
+      font-size:.76em;background:var(--verde-bg);color:var(--verde);
+      border-radius:6px;padding:3px 10px;font-weight:800;
+    }
+    .site-link{
+      font-size:.78em;color:var(--verde);text-decoration:none;
+      font-weight:800;display:flex;align-items:center;gap:4px;
+      transition:color .15s;
+    }
+    .site-link:hover{color:#1b5e20;}
+
+    /* SEM RESULTADO */
+    .sem-resultado{
+      grid-column:1/-1;text-align:center;
+      padding:60px 20px;color:var(--sub);font-size:.95em;font-weight:700;
+    }
+
+    @media(max-width:600px){
+      .hdr h1{font-size:1.5em;}
+      .grid{grid-template-columns:1fr;padding:14px;}
+      .filtros{padding:14px;}
+    }
+  </style>
+</head>
+<body>
+
+<!-- HEADER -->
+<header class="hdr">
+  <div class="badge">HUB da Pós-Graduação · UNEMAT</div>
+  <h1>Programas de Pós-Graduação Stricto Sensu</h1>
+  <p>Universidade do Estado de Mato Grosso — 27 Programas aprovados pela CAPES</p>
+  <div class="hdr-stats">
+    <div class="hdr-stat"><div class="sv">27</div><div class="sl">Programas</div></div>
+    <div class="hdr-stat"><div class="sv">8</div><div class="sl">Câmpus</div></div>
+    <div class="hdr-stat"><div class="sv">283</div><div class="sl">Docentes</div></div>
+    <div class="hdr-stat"><div class="sv">6</div><div class="sl">Estados</div></div>
+  </div>
+</header>
+
+<!-- FILTROS -->
+<div class="filtros">
+  <input type="text" id="busca" placeholder="🔍  Buscar por nome, sigla, coordenador, câmpus..." oninput="filtrar()"/>
+  <select id="filtroTipo" onchange="filtrar()">
+    <option value="">Todos os tipos</option>
+    <option value="Mestrado Acadêmico">Mestrado Acadêmico</option>
+    <option value="Mestrado Profissional">Mestrado Profissional</option>
+    <option value="Doutorado">Doutorado</option>
+    <option value="Rede">Em Rede</option>
+  </select>
+  <select id="filtroCampus" onchange="filtrar()">
+    <option value="">Todos os câmpus</option>
+    <option value="Tangará da Serra">Tangará da Serra</option>
+    <option value="Alta Floresta">Alta Floresta</option>
+    <option value="Cáceres">Cáceres</option>
+    <option value="Nova Xavantina">Nova Xavantina</option>
+    <option value="Barra do Bugres">Barra do Bugres</option>
+    <option value="Sinop">Sinop</option>
+    <option value="Alto Araguaia">Alto Araguaia</option>
+    <option value="Cuiabá">Cuiabá / Rede</option>
+  </select>
+  <div class="total-badge" id="totalBadge">27 programas</div>
+</div>
+
+<!-- GRID -->
+<main class="grid" id="grid">
+
+  <!-- 1 PPGASP -->
+  <article class="card" data-nome="Ambiente e Sistemas de Produção Agrícola" data-sigla="PPGASP" data-tipo="Mestrado Acadêmico" data-campus="Tangará da Serra" data-coord="Rafael Cesar Tieppo">
+    <div class="card-top ct-verde">
+      <div class="card-sigla">PPGASP</div>
+      <div class="card-nome">Ambiente e Sistemas de Produção Agrícola</div>
+      <div class="card-tags"><span class="tag tag-m">Mestrado Acadêmico</span></div>
+    </div>
+    <div class="card-body">
+      <div class="info-row"><div class="info-icon">👤</div><div class="info-content"><div class="info-label">Coordenador</div><div class="info-value">Prof. Dr. Rafael Cesar Tieppo</div></div></div>
+      <div class="info-row"><div class="info-icon">✉️</div><div class="info-content"><div class="info-label">E-mail</div><div class="info-value"><a href="mailto:ppgasp@unemat.br">ppgasp@unemat.br</a></div></div></div>
+      <div class="info-row"><div class="info-icon">📞</div><div class="info-content"><div class="info-label">Telefone</div><div class="info-value"><a href="tel:+556533114934">(65) 3311-4934</a></div></div></div>
+    </div>
+    <div class="card-footer"><span class="campus-badge">Tangará da Serra/MT</span><a class="site-link" href="https://tangaradaserra.unemat.br/faculdades/facabes/stricto/ppgasp/" target="_blank">↗ Site do Programa</a></div>
+  </article>
+
+  <!-- 2 PPGBIOAGRO -->
+  <article class="card" data-nome="Biodiversidade e Agroecossistemas Amazônicos" data-sigla="PPGBIOAGRO" data-tipo="Mestrado Acadêmico" data-campus="Alta Floresta" data-coord="Juliana Garlet">
+    <div class="card-top ct-teal">
+      <div class="card-sigla">PPGBIOAGRO</div>
+      <div class="card-nome">Biodiversidade e Agroecossistemas Amazônicos</div>
+      <div class="card-tags"><span class="tag tag-m">Mestrado Acadêmico</span></div>
+    </div>
+    <div class="card-body">
+      <div class="info-row"><div class="info-icon">👤</div><div class="info-content"><div class="info-label">Coordenadora</div><div class="info-value">Prof.ª Dr.ª Juliana Garlet</div></div></div>
+      <div class="info-row"><div class="info-icon">✉️</div><div class="info-content"><div class="info-label">E-mail</div><div class="info-value"><a href="mailto:ppgbioagro@unemat.br">ppgbioagro@unemat.br</a></div></div></div>
+      <div class="info-row"><div class="info-icon">📞</div><div class="info-content"><div class="info-label">Telefone</div><div class="info-value"><a href="tel:+556635211098">(66) 3521-1098</a></div></div></div>
+    </div>
+    <div class="card-footer"><span class="campus-badge">Alta Floresta/MT</span><a class="site-link" href="https://altafloresta.unemat.br/faculdades/facba/stricto/ppgbioagro/" target="_blank">↗ Site do Programa</a></div>
+  </article>
+
+  <!-- 3 BIONORTE -->
+  <article class="card" data-nome="Biodiversidade e Biotecnologia da Amazônia Legal Rede Bionorte" data-sigla="BIONORTE" data-tipo="Doutorado Rede" data-campus="Cuiabá" data-coord="">
+    <div class="card-top ct-laranja">
+      <div class="card-sigla">BIONORTE</div>
+      <div class="card-nome">Biodiversidade e Biotecnologia da Amazônia Legal – Rede Bionorte</div>
+      <div class="card-tags"><span class="tag tag-d">Doutorado</span><span class="tag tag-r">Em Rede</span></div>
+    </div>
+    <div class="card-body">
+      <div class="info-row"><div class="info-icon">👤</div><div class="info-content"><div class="info-label">Coordenação UNEMAT</div><div class="info-value sem-dados">Consultar site do programa</div></div></div>
+      <div class="info-row"><div class="info-icon">🌐</div><div class="info-content"><div class="info-label">Site da Rede</div><div class="info-value"><a href="https://bionorte.org.br" target="_blank">bionorte.org.br</a></div></div></div>
+    </div>
+    <div class="card-footer"><span class="campus-badge">Cuiabá/MT – Rede</span><a class="site-link" href="https://reitoria.unemat.br/stricto/bionorte/" target="_blank">↗ Site UNEMAT</a></div>
+  </article>
+
+  <!-- 4 REDEPROCENTRO -->
+  <article class="card" data-nome="Biotecnologia e Biodiversidade Rede Pró-Centro-Oeste" data-sigla="REDEPROCENTRO" data-tipo="Doutorado Rede" data-campus="Cuiabá" data-coord="Willian Krause">
+    <div class="card-top ct-laranja">
+      <div class="card-sigla">REDEPROCENTRO</div>
+      <div class="card-nome">Biotecnologia e Biodiversidade – Rede Pró-Centro-Oeste</div>
+      <div class="card-tags"><span class="tag tag-d">Doutorado</span><span class="tag tag-r">Em Rede</span></div>
+    </div>
+    <div class="card-body">
+      <div class="info-row"><div class="info-icon">👤</div><div class="info-content"><div class="info-label">Coordenador UNEMAT</div><div class="info-value">Prof. Dr. Willian Krause</div></div></div>
+      <div class="info-row"><div class="info-icon">✉️</div><div class="info-content"><div class="info-label">E-mail</div><div class="info-value"><a href="mailto:ppgbiotecnologia@unemat.br">ppgbiotecnologia@unemat.br</a></div></div></div>
+      <div class="info-row"><div class="info-icon">📞</div><div class="info-content"><div class="info-label">Telefone</div><div class="info-value"><a href="tel:+556533114966">(65) 3311-4966</a></div></div></div>
+    </div>
+    <div class="card-footer"><span class="campus-badge">Cuiabá/MT – Rede</span><a class="site-link" href="https://reitoria.unemat.br/stricto/redeprocentro/" target="_blank">↗ Site do Programa</a></div>
+  </article>
+
+  <!-- 5 PPGCA -->
+  <article class="card" data-nome="Ciências Ambientais" data-sigla="PPGCA" data-tipo="Doutorado" data-campus="Cáceres" data-coord="Claumir Cesar Muniz">
+    <div class="card-top ct-verde">
+      <div class="card-sigla">PPGCA</div>
+      <div class="card-nome">Ciências Ambientais</div>
+      <div class="card-tags"><span class="tag tag-m">Mestrado Acadêmico</span><span class="tag tag-d">Doutorado</span></div>
+    </div>
+    <div class="card-body">
+      <div class="info-row"><div class="info-icon">👤</div><div class="info-content"><div class="info-label">Coordenador</div><div class="info-value">Prof. Dr. Claumir Cesar Muniz</div></div></div>
+      <div class="info-row"><div class="info-icon">✉️</div><div class="info-content"><div class="info-label">E-mail</div><div class="info-value"><a href="mailto:ppg_ca@unemat.br">ppg_ca@unemat.br</a></div></div></div>
+      <div class="info-row"><div class="info-icon">📞</div><div class="info-content"><div class="info-label">Telefone</div><div class="info-value"><a href="tel:+556532210040">(65) 3221-0040</a></div></div></div>
+    </div>
+    <div class="card-footer"><span class="campus-badge">Cáceres/MT</span><a class="site-link" href="https://caceres.unemat.br/faculdades/facab/stricto/ppgca/" target="_blank">↗ Site do Programa</a></div>
+  </article>
+
+  <!-- 6 PPGEC -->
+  <article class="card" data-nome="Ecologia e Conservação" data-sigla="PPGEC" data-tipo="Doutorado" data-campus="Nova Xavantina" data-coord="Ricardo Keichi Umetsu">
+    <div class="card-top ct-teal">
+      <div class="card-sigla">PPGEC</div>
+      <div class="card-nome">Ecologia e Conservação</div>
+      <div class="card-tags"><span class="tag tag-m">Mestrado Acadêmico</span><span class="tag tag-d">Doutorado</span></div>
+    </div>
+    <div class="card-body">
+      <div class="info-row"><div class="info-icon">👤</div><div class="info-content"><div class="info-label">Coordenador</div><div class="info-value">Prof. Dr. Ricardo Keichi Umetsu</div></div></div>
+      <div class="info-row"><div class="info-icon">✉️</div><div class="info-content"><div class="info-label">E-mail</div><div class="info-value"><a href="mailto:ecologianx@unemat.br">ecologianx@unemat.br</a></div></div></div>
+      <div class="info-row"><div class="info-icon">📞</div><div class="info-content"><div class="info-label">Telefone</div><div class="info-value"><a href="tel:+556634385333">(66) 3438-5333</a></div></div></div>
+    </div>
+    <div class="card-footer"><span class="campus-badge">Nova Xavantina/MT</span><a class="site-link" href="https://novaxavantina.unemat.br/faculdades/fabis/stricto/ppgec/" target="_blank">↗ Site do Programa</a></div>
+  </article>
+
+  <!-- 7 PPGEDU -->
+  <article class="card" data-nome="Educação" data-sigla="PPGEDU" data-tipo="Doutorado" data-campus="Cáceres" data-coord="Loriege Pessoa Bitencourt">
+    <div class="card-top ct-azul">
+      <div class="card-sigla">PPGEDU</div>
+      <div class="card-nome">Educação</div>
+      <div class="card-tags"><span class="tag tag-m">Mestrado Acadêmico</span><span class="tag tag-d">Doutorado</span></div>
+    </div>
+    <div class="card-body">
+      <div class="info-row"><div class="info-icon">👤</div><div class="info-content"><div class="info-label">Coordenadora</div><div class="info-value">Prof.ª Dr.ª Loriege Pessoa Bitencourt</div></div></div>
+      <div class="info-row"><div class="info-icon">✉️</div><div class="info-content"><div class="info-label">E-mail</div><div class="info-value"><a href="mailto:ppgedu@unemat.br">ppgedu@unemat.br</a></div></div></div>
+      <div class="info-row"><div class="info-icon">📞</div><div class="info-content"><div class="info-label">Telefone</div><div class="info-value"><a href="tel:+556532210539">(65) 3221-0539</a></div></div></div>
+    </div>
+    <div class="card-footer"><span class="campus-badge">Cáceres/MT</span><a class="site-link" href="https://caceres.unemat.br/faculdades/facel/stricto/ppgedu/" target="_blank">↗ Site do Programa</a></div>
+  </article>
+
+  <!-- 8 REAMEC -->
+  <article class="card" data-nome="Educação em Ciências e Matemática REAMEC" data-sigla="REAMEC" data-tipo="Doutorado Rede" data-campus="Cuiabá" data-coord="">
+    <div class="card-top ct-laranja">
+      <div class="card-sigla">REAMEC</div>
+      <div class="card-nome">Educação em Ciências e Matemática – REAMEC</div>
+      <div class="card-tags"><span class="tag tag-d">Doutorado</span><span class="tag tag-r">Em Rede</span></div>
+    </div>
+    <div class="card-body">
+      <div class="info-row"><div class="info-icon">👤</div><div class="info-content"><div class="info-label">Coordenação UNEMAT</div><div class="info-value sem-dados">Consultar site do programa</div></div></div>
+      <div class="info-row"><div class="info-icon">🌐</div><div class="info-content"><div class="info-label">Site da Rede (UFPA)</div><div class="info-value"><a href="https://www.iemci.ufpa.br" target="_blank">iemci.ufpa.br</a></div></div></div>
+    </div>
+    <div class="card-footer"><span class="campus-badge">Cuiabá/MT – Rede</span><a class="site-link" href="https://reitoria.unemat.br/stricto/ppgreamec/" target="_blank">↗ Site UNEMAT</a></div>
+  </article>
+
+  <!-- 9 PPGECM -->
+  <article class="card" data-nome="Ensino de Ciências e Matemática" data-sigla="PPGECM" data-tipo="Doutorado" data-campus="Barra do Bugres" data-coord="">
+    <div class="card-top ct-azul">
+      <div class="card-sigla">PPGECM</div>
+      <div class="card-nome">Ensino de Ciências e Matemática</div>
+      <div class="card-tags"><span class="tag tag-m">Mestrado Acadêmico</span><span class="tag tag-d">Doutorado</span></div>
+    </div>
+    <div class="card-body">
+      <div class="info-row"><div class="info-icon">👤</div><div class="info-content"><div class="info-label">Coordenação</div><div class="info-value sem-dados">Consultar site do programa</div></div></div>
+      <div class="info-row"><div class="info-icon">✉️</div><div class="info-content"><div class="info-label">E-mail</div><div class="info-value"><a href="mailto:ppgecm@unemat.br">ppgecm@unemat.br</a></div></div></div>
+    </div>
+    <div class="card-footer"><span class="campus-badge">Barra do Bugres/MT</span><a class="site-link" href="https://barradobugres.unemat.br/faculdades/faccen/stricto/ppgecm/" target="_blank">↗ Site do Programa</a></div>
+  </article>
+
+  <!-- 10 PPGECII -->
+  <article class="card" data-nome="Ensino em Contexto Indígena Intercultural" data-sigla="PPGECII" data-tipo="Mestrado Profissional" data-campus="Barra do Bugres" data-coord="Waldineia Antunes de Alcantara Ferreira">
+    <div class="card-top ct-roxo">
+      <div class="card-sigla">PPGECII</div>
+      <div class="card-nome">Ensino em Contexto Indígena Intercultural</div>
+      <div class="card-tags"><span class="tag tag-p">Mestrado Profissional</span></div>
+    </div>
+    <div class="card-body">
+      <div class="info-row"><div class="info-icon">👤</div><div class="info-content"><div class="info-label">Coordenadora</div><div class="info-value">Prof.ª Dr.ª Waldineia Antunes de Alcantara Ferreira</div></div></div>
+      <div class="info-row"><div class="info-icon">✉️</div><div class="info-content"><div class="info-label">E-mail</div><div class="info-value"><a href="mailto:ppgecii@unemat.br">ppgecii@unemat.br</a></div></div></div>
+      <div class="info-row"><div class="info-icon">📞</div><div class="info-content"><div class="info-label">Telefone</div><div class="info-value"><a href="tel:+556533616466">(65) 3361-6466</a></div></div></div>
+    </div>
+    <div class="card-footer"><span class="campus-badge">Barra do Bugres/MT</span><a class="site-link" href="https://barradobugres.unemat.br/faculdades/faind/stricto/ppgecii/" target="_blank">↗ Site do Programa</a></div>
+  </article>
+
+  <!-- 11 PPGEL -->
+  <article class="card" data-nome="Estudos Literários" data-sigla="PPGEL" data-tipo="Doutorado" data-campus="Tangará da Serra" data-coord="Madalena Aparecida Machado">
+    <div class="card-top ct-roxo">
+      <div class="card-sigla">PPGEL</div>
+      <div class="card-nome">Estudos Literários</div>
+      <div class="card-tags"><span class="tag tag-m">Mestrado Acadêmico</span><span class="tag tag-d">Doutorado</span></div>
+    </div>
+    <div class="card-body">
+      <div class="info-row"><div class="info-icon">👤</div><div class="info-content"><div class="info-label">Coordenadora</div><div class="info-value">Prof.ª Dr.ª Madalena Aparecida Machado</div></div></div>
+      <div class="info-row"><div class="info-icon">✉️</div><div class="info-content"><div class="info-label">E-mail</div><div class="info-value"><a href="mailto:ppgel@unemat.br">ppgel@unemat.br</a></div></div></div>
+      <div class="info-row"><div class="info-icon">📞</div><div class="info-content"><div class="info-label">Telefone</div><div class="info-value"><a href="tel:+556533114917">(65) 3311-4917</a></div></div></div>
+    </div>
+    <div class="card-footer"><span class="campus-badge">Tangará da Serra/MT</span><a class="site-link" href="https://tangaradaserra.unemat.br/faculdades/facsal/stricto/ppgel/" target="_blank">↗ Site do Programa</a></div>
+  </article>
+
+  <!-- 12 PGMP -->
+  <article class="card" data-nome="Genética e Melhoramento de Plantas" data-sigla="PGMP" data-tipo="Mestrado Acadêmico" data-campus="Tangará da Serra" data-coord="Maurecilne Lemes da Silva Carvalho">
+    <div class="card-top ct-verde">
+      <div class="card-sigla">PGMP</div>
+      <div class="card-nome">Genética e Melhoramento de Plantas</div>
+      <div class="card-tags"><span class="tag tag-m">Mestrado Acadêmico</span></div>
+    </div>
+    <div class="card-body">
+      <div class="info-row"><div class="info-icon">👤</div><div class="info-content"><div class="info-label">Coordenadora</div><div class="info-value">Prof.ª Dr.ª Maurecilne Lemes da Silva Carvalho</div></div></div>
+      <div class="info-row"><div class="info-icon">✉️</div><div class="info-content"><div class="info-label">E-mail</div><div class="info-value"><a href="mailto:pgmp@unemat.br">pgmp@unemat.br</a></div></div></div>
+      <div class="info-row"><div class="info-icon">📞</div><div class="info-content"><div class="info-label">Telefone</div><div class="info-value"><a href="tel:+556533114934">(65) 3311-4934</a></div></div></div>
+    </div>
+    <div class="card-footer"><span class="campus-badge">Tangará da Serra/MT</span><a class="site-link" href="https://tangaradaserra.unemat.br/faculdades/facabes/stricto/pgmp/" target="_blank">↗ Site do Programa</a></div>
+  </article>
+
+  <!-- 13 PPGGEO -->
+  <article class="card" data-nome="Geografia" data-sigla="PPGGEO" data-tipo="Doutorado" data-campus="Cáceres" data-coord="Sandra Mara Alves da Silva Neves">
+    <div class="card-top ct-teal">
+      <div class="card-sigla">PPGGEO</div>
+      <div class="card-nome">Geografia</div>
+      <div class="card-tags"><span class="tag tag-m">Mestrado Acadêmico</span><span class="tag tag-d">Doutorado</span></div>
+    </div>
+    <div class="card-body">
+      <div class="info-row"><div class="info-icon">👤</div><div class="info-content"><div class="info-label">Coordenadora</div><div class="info-value">Prof.ª Dr.ª Sandra Mara Alves da Silva Neves</div></div></div>
+      <div class="info-row"><div class="info-icon">✉️</div><div class="info-content"><div class="info-label">E-mail</div><div class="info-value"><a href="mailto:ppggeo@unemat.br">ppggeo@unemat.br</a></div></div></div>
+      <div class="info-row"><div class="info-icon">📞</div><div class="info-content"><div class="info-label">Telefone</div><div class="info-value"><a href="tel:+556532210515">(65) 3221-0515</a></div></div></div>
+    </div>
+    <div class="card-footer"><span class="campus-badge">Cáceres/MT</span><a class="site-link" href="https://caceres.unemat.br/faculdades/fach/stricto/ppggeo/" target="_blank">↗ Site do Programa</a></div>
+  </article>
+
+  <!-- 14 PROFAGUA -->
+  <article class="card" data-nome="Gestão e Regulação de Recursos Hídricos ProfÁgua" data-sigla="PROFÁGUA" data-tipo="Mestrado Profissional Rede" data-campus="Cuiabá" data-coord="Ernandes Sobreira Oliveira Junior">
+    <div class="card-top ct-teal">
+      <div class="card-sigla">PROFÁGUA</div>
+      <div class="card-nome">Gestão e Regulação de Recursos Hídricos</div>
+      <div class="card-tags"><span class="tag tag-p">Mestrado Profissional</span><span class="tag tag-r">Em Rede</span></div>
+    </div>
+    <div class="card-body">
+      <div class="info-row"><div class="info-icon">👤</div><div class="info-content"><div class="info-label">Coordenador UNEMAT</div><div class="info-value">Prof. Dr. Ernandes Sobreira Oliveira Junior</div></div></div>
+      <div class="info-row"><div class="info-icon">✉️</div><div class="info-content"><div class="info-label">E-mail</div><div class="info-value"><a href="mailto:profagua@unemat.br">profagua@unemat.br</a></div></div></div>
+      <div class="info-row"><div class="info-icon">🌐</div><div class="info-content"><div class="info-label">Site da Rede</div><div class="info-value"><a href="https://profagua.unesp.br" target="_blank">profagua.unesp.br</a></div></div></div>
+    </div>
+    <div class="card-footer"><span class="campus-badge">Cáceres/MT – Rede</span><a class="site-link" href="https://caceres.unemat.br/faculdades/facab/stricto/profagua/" target="_blank">↗ Site do Programa</a></div>
+  </article>
+
+  <!-- 15 PROFBIO -->
+  <article class="card" data-nome="Ensino de Biologia ProfBio" data-sigla="PROFBIO" data-tipo="Mestrado Profissional Rede" data-campus="Tangará da Serra" data-coord="">
+    <div class="card-top ct-verde">
+      <div class="card-sigla">PROFBIO</div>
+      <div class="card-nome">Ensino de Biologia em Rede Nacional</div>
+      <div class="card-tags"><span class="tag tag-p">Mestrado Profissional</span><span class="tag tag-r">Em Rede</span></div>
+    </div>
+    <div class="card-body">
+      <div class="info-row"><div class="info-icon">👤</div><div class="info-content"><div class="info-label">Coordenação UNEMAT</div><div class="info-value sem-dados">Consultar site do programa</div></div></div>
+      <div class="info-row"><div class="info-icon">✉️</div><div class="info-content"><div class="info-label">E-mail</div><div class="info-value"><a href="mailto:profbio@unemat.br">profbio@unemat.br</a></div></div></div>
+    </div>
+    <div class="card-footer"><span class="campus-badge">Tangará da Serra/MT</span><a class="site-link" href="https://tangaradaserra.unemat.br/faculdades/facabes/stricto/profbio/" target="_blank">↗ Site do Programa</a></div>
+  </article>
+
+  <!-- 16 PROFEI -->
+  <article class="card" data-nome="Educação Inclusiva PROFEI" data-sigla="PROFEI" data-tipo="Mestrado Profissional Rede" data-campus="Sinop" data-coord="">
+    <div class="card-top ct-azul">
+      <div class="card-sigla">PROFEI</div>
+      <div class="card-nome">Educação Inclusiva</div>
+      <div class="card-tags"><span class="tag tag-p">Mestrado Profissional</span><span class="tag tag-r">Em Rede</span></div>
+    </div>
+    <div class="card-body">
+      <div class="info-row"><div class="info-icon">👤</div><div class="info-content"><div class="info-label">Coordenação UNEMAT</div><div class="info-value sem-dados">Consultar site do programa</div></div></div>
+      <div class="info-row"><div class="info-icon">✉️</div><div class="info-content"><div class="info-label">E-mail</div><div class="info-value"><a href="mailto:profei.sinop@unemat.br">profei.sinop@unemat.br</a></div></div></div>
+    </div>
+    <div class="card-footer"><span class="campus-badge">Sinop/MT</span><a class="site-link" href="https://sinop.unemat.br/stricto/profei/" target="_blank">↗ Site do Programa</a></div>
+  </article>
+
+  <!-- 17 PROFHISTÓRIA-CAC -->
+  <article class="card" data-nome="Ensino de História ProfHistória" data-sigla="PROFHISTÓRIA" data-tipo="Mestrado Profissional Rede" data-campus="Cáceres" data-coord="Regiane Cristina Custodio de Figueiredo">
+    <div class="card-top ct-roxo">
+      <div class="card-sigla">PROFHISTÓRIA</div>
+      <div class="card-nome">Ensino de História em Rede Nacional</div>
+      <div class="card-tags"><span class="tag tag-p">Mestrado Prof.</span><span class="tag tag-r">Em Rede</span></div>
+    </div>
+    <div class="card-body">
+      <div class="info-row"><div class="info-icon">👤</div><div class="info-content"><div class="info-label">Coordenadora</div><div class="info-value">Prof.ª Dr.ª Regiane Cristina Custodio de Figueiredo</div></div></div>
+      <div class="info-row"><div class="info-icon">✉️</div><div class="info-content"><div class="info-label">E-mail Coordenação</div><div class="info-value"><a href="mailto:profhistoria@unemat.br">profhistoria@unemat.br</a></div></div></div>
+      <div class="info-row"><div class="info-icon">📞</div><div class="info-content"><div class="info-label">Telefone</div><div class="info-value"><a href="tel:+556532210515">(65) 3221-0515</a></div></div></div>
+    </div>
+    <div class="card-footer"><span class="campus-badge">Cáceres/MT</span><a class="site-link" href="https://caceres.unemat.br/faculdades/fach/stricto/profhistoria/" target="_blank">↗ Site do Programa</a></div>
+  </article>
+
+  <!-- 18 PPGL -->
+  <article class="card" data-nome="Linguística" data-sigla="PPGL" data-tipo="Doutorado" data-campus="Cáceres" data-coord="">
+    <div class="card-top ct-azul">
+      <div class="card-sigla">PPGL</div>
+      <div class="card-nome">Linguística</div>
+      <div class="card-tags"><span class="tag tag-m">Mestrado Acadêmico</span><span class="tag tag-d">Doutorado</span></div>
+    </div>
+    <div class="card-body">
+      <div class="info-row"><div class="info-icon">👤</div><div class="info-content"><div class="info-label">Coordenação</div><div class="info-value sem-dados">Consultar site do programa</div></div></div>
+      <div class="info-row"><div class="info-icon">✉️</div><div class="info-content"><div class="info-label">E-mail</div><div class="info-value"><a href="mailto:ppgl@unemat.br">ppgl@unemat.br</a></div></div></div>
+      <div class="info-row"><div class="info-icon">📞</div><div class="info-content"><div class="info-label">Telefone</div><div class="info-value"><a href="tel:+556532210539">(65) 3221-0539</a></div></div></div>
+    </div>
+    <div class="card-footer"><span class="campus-badge">Cáceres/MT</span><a class="site-link" href="https://caceres.unemat.br/faculdades/facel/stricto/ppgl/" target="_blank">↗ Site do Programa</a></div>
+  </article>
+
+  <!-- 19 PPGLETRAS-SNP -->
+  <article class="card" data-nome="Letras Sinop" data-sigla="PPGLETRAS" data-tipo="Doutorado" data-campus="Sinop" data-coord="">
+    <div class="card-top ct-roxo">
+      <div class="card-sigla">PPGLETRAS</div>
+      <div class="card-nome">Letras</div>
+      <div class="card-tags"><span class="tag tag-m">Mestrado Acadêmico</span><span class="tag tag-d">Doutorado</span></div>
+    </div>
+    <div class="card-body">
+      <div class="info-row"><div class="info-icon">👤</div><div class="info-content"><div class="info-label">Coordenação</div><div class="info-value sem-dados">Consultar site do programa</div></div></div>
+      <div class="info-row"><div class="info-icon">✉️</div><div class="info-content"><div class="info-label">E-mail</div><div class="info-value"><a href="mailto:ppgletras@unemat.br">ppgletras@unemat.br</a></div></div></div>
+    </div>
+    <div class="card-footer"><span class="campus-badge">Sinop/MT</span><a class="site-link" href="https://sinop.unemat.br/stricto/ppgletras/" target="_blank">↗ Site do Programa</a></div>
+  </article>
+
+  <!-- 20 PROFLETRAS-SNP -->
+  <article class="card" data-nome="Letras Profissional Sinop PROFLETRAS" data-sigla="PROFLETRAS" data-tipo="Mestrado Profissional Rede" data-campus="Sinop" data-coord="">
+    <div class="card-top ct-roxo">
+      <div class="card-sigla">PROFLETRAS</div>
+      <div class="card-nome">Letras – Mestrado Profissional em Rede</div>
+      <div class="card-tags"><span class="tag tag-p">Mestrado Prof.</span><span class="tag tag-r">Em Rede</span></div>
+    </div>
+    <div class="card-body">
+      <div class="info-row"><div class="info-icon">👤</div><div class="info-content"><div class="info-label">Coordenação</div><div class="info-value sem-dados">Consultar site do programa</div></div></div>
+      <div class="info-row"><div class="info-icon">✉️</div><div class="info-content"><div class="info-label">E-mail</div><div class="info-value"><a href="mailto:profletras.sinop@unemat.br">profletras.sinop@unemat.br</a></div></div></div>
+    </div>
+    <div class="card-footer"><span class="campus-badge">Sinop/MT</span><a class="site-link" href="https://sinop.unemat.br/stricto/profletras/" target="_blank">↗ Site do Programa</a></div>
+  </article>
+
+  <!-- 21 PROFLETRAS-CAC -->
+  <article class="card" data-nome="Letras Profissional Cáceres PROFLETRAS" data-sigla="PROFLETRAS-CAC" data-tipo="Mestrado Profissional Rede" data-campus="Cáceres" data-coord="">
+    <div class="card-top ct-roxo">
+      <div class="card-sigla">PROFLETRAS-CAC</div>
+      <div class="card-nome">Letras – Mestrado Profissional em Rede</div>
+      <div class="card-tags"><span class="tag tag-p">Mestrado Prof.</span><span class="tag tag-r">Em Rede</span></div>
+    </div>
+    <div class="card-body">
+      <div class="info-row"><div class="info-icon">👤</div><div class="info-content"><div class="info-label">Coordenação</div><div class="info-value sem-dados">Consultar site do programa</div></div></div>
+      <div class="info-row"><div class="info-icon">✉️</div><div class="info-content"><div class="info-label">E-mail</div><div class="info-value"><a href="mailto:profletras.cac@unemat.br">profletras.cac@unemat.br</a></div></div></div>
+    </div>
+    <div class="card-footer"><span class="campus-badge">Cáceres/MT</span><a class="site-link" href="https://caceres.unemat.br/faculdades/facel/stricto/profletras/" target="_blank">↗ Site do Programa</a></div>
+  </article>
+
+  <!-- 22 PROFMAT-SNP -->
+  <article class="card" data-nome="Matemática PROFMAT Sinop" data-sigla="PROFMAT" data-tipo="Mestrado Profissional Rede" data-campus="Sinop" data-coord="">
+    <div class="card-top ct-azul">
+      <div class="card-sigla">PROFMAT</div>
+      <div class="card-nome">Matemática em Rede Nacional</div>
+      <div class="card-tags"><span class="tag tag-p">Mestrado Prof.</span><span class="tag tag-r">Em Rede</span></div>
+    </div>
+    <div class="card-body">
+      <div class="info-row"><div class="info-icon">👤</div><div class="info-content"><div class="info-label">Coordenação</div><div class="info-value sem-dados">Consultar site do programa</div></div></div>
+      <div class="info-row"><div class="info-icon">✉️</div><div class="info-content"><div class="info-label">E-mail</div><div class="info-value"><a href="mailto:profmat.sinop@unemat.br">profmat.sinop@unemat.br</a></div></div></div>
+    </div>
+    <div class="card-footer"><span class="campus-badge">Sinop/MT</span><a class="site-link" href="https://sinop.unemat.br/stricto/profmat/" target="_blank">↗ Site do Programa</a></div>
+  </article>
+
+  <!-- 23 PROFMAT-BBG -->
+  <article class="card" data-nome="Matemática PROFMAT Barra do Bugres" data-sigla="PROFMAT-BBG" data-tipo="Mestrado Profissional Rede" data-campus="Barra do Bugres" data-coord="">
+    <div class="card-top ct-azul">
+      <div class="card-sigla">PROFMAT-BBG</div>
+      <div class="card-nome">Matemática em Rede Nacional</div>
+      <div class="card-tags"><span class="tag tag-p">Mestrado Prof.</span><span class="tag tag-r">Em Rede</span></div>
+    </div>
+    <div class="card-body">
+      <div class="info-row"><div class="info-icon">👤</div><div class="info-content"><div class="info-label">Coordenação</div><div class="info-value sem-dados">Consultar site do programa</div></div></div>
+      <div class="info-row"><div class="info-icon">✉️</div><div class="info-content"><div class="info-label">E-mail</div><div class="info-value"><a href="mailto:profmat.bbg@unemat.br">profmat.bbg@unemat.br</a></div></div></div>
+    </div>
+    <div class="card-footer"><span class="campus-badge">Barra do Bugres/MT</span><a class="site-link" href="https://barradobugres.unemat.br/stricto/profmat/" target="_blank">↗ Site do Programa</a></div>
+  </article>
+
+  <!-- 24 PROFNIT-SNP -->
+  <article class="card" data-nome="Propriedade Intelectual e Transferência de Tecnologia para Inovação PROFNIT Sinop" data-sigla="PROFNIT" data-tipo="Mestrado Profissional Rede" data-campus="Sinop" data-coord="">
+    <div class="card-top ct-laranja">
+      <div class="card-sigla">PROFNIT</div>
+      <div class="card-nome">Propriedade Intelectual e Transferência de Tecnologia para Inovação</div>
+      <div class="card-tags"><span class="tag tag-p">Mestrado Prof.</span><span class="tag tag-r">Em Rede</span></div>
+    </div>
+    <div class="card-body">
+      <div class="info-row"><div class="info-icon">👤</div><div class="info-content"><div class="info-label">Coordenação</div><div class="info-value sem-dados">Consultar site do programa</div></div></div>
+      <div class="info-row"><div class="info-icon">✉️</div><div class="info-content"><div class="info-label">E-mail</div><div class="info-value"><a href="mailto:profnit@unemat.br">profnit@unemat.br</a></div></div></div>
+    </div>
+    <div class="card-footer"><span class="campus-badge">Sinop/MT</span><a class="site-link" href="https://sinop.unemat.br/stricto/profnit/" target="_blank">↗ Site do Programa</a></div>
+  </article>
+
+  <!-- 25 PROFSOCIO -->
+  <article class="card" data-nome="Sociologia PROFSOCIO" data-sigla="PROFSOCIO" data-tipo="Mestrado Profissional Rede" data-campus="Sinop" data-coord="">
+    <div class="card-top ct-roxo">
+      <div class="card-sigla">PROFSOCIO</div>
+      <div class="card-nome">Sociologia em Rede Nacional</div>
+      <div class="card-tags"><span class="tag tag-p">Mestrado Prof.</span><span class="tag tag-r">Em Rede</span></div>
+    </div>
+    <div class="card-body">
+      <div class="info-row"><div class="info-icon">👤</div><div class="info-content"><div class="info-label">Coordenação</div><div class="info-value sem-dados">Consultar site do programa</div></div></div>
+      <div class="info-row"><div class="info-icon">✉️</div><div class="info-content"><div class="info-label">E-mail</div><div class="info-value"><a href="mailto:profsocio@unemat.br">profsocio@unemat.br</a></div></div></div>
+    </div>
+    <div class="card-footer"><span class="campus-badge">Sinop/MT</span><a class="site-link" href="https://sinop.unemat.br/stricto/profsocio/" target="_blank">↗ Site do Programa</a></div>
+  </article>
+
+  <!-- 26 PROFEDUCATEC -->
+  <article class="card" data-nome="Processos e Tecnologias Educacionais PROFEDUCATEC" data-sigla="PROFEDUCATEC" data-tipo="Mestrado Profissional" data-campus="Alto Araguaia" data-coord="">
+    <div class="card-top ct-azul">
+      <div class="card-sigla">PROFEDUCATEC</div>
+      <div class="card-nome">Processos e Tecnologias Educacionais</div>
+      <div class="card-tags"><span class="tag tag-p">Mestrado Profissional</span></div>
+    </div>
+    <div class="card-body">
+      <div class="info-row"><div class="info-icon">👤</div><div class="info-content"><div class="info-label">Coordenação</div><div class="info-value sem-dados">Consultar site do programa</div></div></div>
+      <div class="info-row"><div class="info-icon">✉️</div><div class="info-content"><div class="info-label">E-mail</div><div class="info-value"><a href="mailto:profeducatec@unemat.br">profeducatec@unemat.br</a></div></div></div>
+    </div>
+    <div class="card-footer"><span class="campus-badge">Alto Araguaia/MT</span><a class="site-link" href="https://altoareguaia.unemat.br/stricto/profeducatec/" target="_blank">↗ Site do Programa</a></div>
+  </article>
+
+  <!-- 27 PROFNIT-CBA -->
+  <article class="card" data-nome="Propriedade Intelectual e Transferência de Tecnologia para Inovação PROFNIT Cuiabá" data-sigla="PROFNIT-CBA" data-tipo="Mestrado Profissional Rede" data-campus="Cuiabá" data-coord="">
+    <div class="card-top ct-laranja">
+      <div class="card-sigla">PROFNIT-CBA</div>
+      <div class="card-nome">Propriedade Intelectual e Transf. de Tecnologia – Cuiabá</div>
+      <div class="card-tags"><span class="tag tag-p">Mestrado Prof.</span><span class="tag tag-r">Em Rede</span></div>
+    </div>
+    <div class="card-body">
+      <div class="info-row"><div class="info-icon">👤</div><div class="info-content"><div class="info-label">Coordenação</div><div class="info-value sem-dados">Consultar site do programa</div></div></div>
+      <div class="info-row"><div class="info-icon">✉️</div><div class="info-content"><div class="info-label">E-mail</div><div class="info-value"><a href="mailto:profnit.cba@unemat.br">profnit.cba@unemat.br</a></div></div></div>
+    </div>
+    <div class="card-footer"><span class="campus-badge">Cuiabá/MT – Rede</span><a class="site-link" href="https://reitoria.unemat.br/stricto/profnit-cba/" target="_blank">↗ Site do Programa</a></div>
+  </article>
+
+  <div class="sem-resultado" id="semResultado">Nenhum programa encontrado para os filtros selecionados.</div>
+
+</main>
+
+<script>
+function filtrar() {
+  const busca  = document.getElementById('busca').value.toLowerCase();
+  const tipo   = document.getElementById('filtroTipo').value.toLowerCase();
+  const campus = document.getElementById('filtroCampus').value.toLowerCase();
+  const cards  = document.querySelectorAll('.card');
+  let visivel  = 0;
+
+  cards.forEach(card => {
+    const nome   = (card.dataset.nome   || '').toLowerCase();
+    const sigla  = (card.dataset.sigla  || '').toLowerCase();
+    const dtipo  = (card.dataset.tipo   || '').toLowerCase();
+    const dcampus= (card.dataset.campus || '').toLowerCase();
+    const coord  = (card.dataset.coord  || '').toLowerCase();
+
+    const matchBusca  = !busca  || nome.includes(busca)  || sigla.includes(busca) || coord.includes(busca) || dcampus.includes(busca);
+    const matchTipo   = !tipo   || dtipo.includes(tipo);
+    const matchCampus = !campus || dcampus.includes(campus);
+
+    const show = matchBusca && matchTipo && matchCampus;
+    card.style.display = show ? '' : 'none';
+    if (show) visivel++;
+  });
+
+  document.getElementById('totalBadge').textContent = visivel + ' programa' + (visivel !== 1 ? 's' : '');
+  document.getElementById('semResultado').style.display = visivel === 0 ? 'block' : 'none';
+}
+</script>
+</body>
+</html>

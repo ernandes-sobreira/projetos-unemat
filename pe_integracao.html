@@ -1,0 +1,738 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Integração Pesquisa & Extensão — HUB da Pós UNEMAT</title>
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&family=Barlow+Condensed:wght@600;700;800&display=swap" rel="stylesheet">
+<style>
+:root {
+  --blue:#1e88e5; --blue-d:#1565c0; --blue-l:#e3f2fd;
+  --green:#2e7d32; --green-l:#e8f5e9;
+  --orange:#ef6c00; --orange-l:#fff3e0;
+  --purple:#6a1b9a; --purple-l:#f3e5f5;
+  --teal:#00838f; --teal-l:#e0f7fa;
+  --bg:#f4f7fb; --white:#fff; --border:#e0e7ef;
+  --text:#1a2340; --muted:#6b7a99;
+  --r:14px; --rs:8px;
+  --sh:0 2px 14px rgba(30,136,229,.10);
+  --shm:0 6px 28px rgba(30,136,229,.16);
+}
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
+body{font-family:'Nunito',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;}
+
+/* HEADER */
+.page-hdr{background:linear-gradient(135deg,#0d47a1 0%,#1e88e5 50%,#2e7d32 100%);padding:22px 28px 18px;color:#fff;}
+.page-hdr h1{font-family:'Barlow Condensed',sans-serif;font-size:2em;font-weight:800;letter-spacing:.5px;}
+.page-hdr p{font-size:.85em;opacity:.85;margin-top:4px;}
+.hdr-badges{display:flex;gap:10px;margin-top:12px;flex-wrap:wrap;}
+.hbdg{background:rgba(255,255,255,.18);border:1px solid rgba(255,255,255,.3);border-radius:20px;padding:4px 14px;font-size:.76em;font-weight:700;}
+
+/* KPI ROW */
+.kpi-row{display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:14px;padding:20px 24px 0;max-width:1400px;margin:0 auto;}
+.kpi-card{background:var(--white);border-radius:var(--r);padding:18px 16px 14px;box-shadow:var(--sh);border:1.5px solid var(--border);text-align:center;position:relative;overflow:hidden;}
+.kpi-card::before{content:'';position:absolute;top:0;left:0;right:0;height:4px;}
+.kpi-card.c-blue::before{background:var(--blue);}
+.kpi-card.c-green::before{background:var(--green);}
+.kpi-card.c-orange::before{background:var(--orange);}
+.kpi-card.c-purple::before{background:var(--purple);}
+.kpi-card.c-teal::before{background:var(--teal);}
+.kpi-val{font-family:'Barlow Condensed',sans-serif;font-size:2.4em;font-weight:800;line-height:1;margin-top:4px;}
+.kpi-card.c-blue .kpi-val{color:var(--blue);}
+.kpi-card.c-green .kpi-val{color:var(--green);}
+.kpi-card.c-orange .kpi-val{color:var(--orange);}
+.kpi-card.c-purple .kpi-val{color:var(--purple);}
+.kpi-card.c-teal .kpi-val{color:var(--teal);}
+.kpi-lbl{font-size:.77em;color:var(--muted);margin-top:6px;font-weight:700;line-height:1.3;}
+
+/* MAIN LAYOUT */
+.main-wrap{max-width:1400px;margin:0 auto;padding:20px 24px 50px;}
+
+/* CONTROLS CARD */
+.ctrl-card{background:var(--white);border-radius:var(--r);padding:20px 22px;box-shadow:var(--sh);border:1.5px solid var(--border);margin-bottom:18px;}
+.ctrl-card-title{font-size:.75em;font-weight:800;letter-spacing:1.4px;text-transform:uppercase;color:var(--muted);margin-bottom:14px;display:flex;align-items:center;gap:8px;}
+.ctrl-row{display:flex;flex-wrap:wrap;gap:14px;align-items:flex-end;}
+.ctrl-group{display:flex;flex-direction:column;gap:5px;min-width:160px;}
+.ctrl-group label{font-size:.76em;font-weight:800;color:var(--muted);letter-spacing:.4px;text-transform:uppercase;}
+.ctrl-group select, .ctrl-group input{padding:9px 12px;border:1.5px solid var(--border);border-radius:var(--rs);font-family:'Nunito',sans-serif;font-size:.87em;font-weight:600;color:var(--text);outline:none;background:#fff;transition:border .18s;}
+.ctrl-group select:focus, .ctrl-group input:focus{border-color:var(--blue);}
+.ctrl-group select[multiple]{height:90px;}
+.btn-update{padding:11px 24px;background:linear-gradient(135deg,var(--blue),var(--blue-d));color:#fff;border:none;border-radius:var(--rs);font-family:'Nunito',sans-serif;font-size:.9em;font-weight:800;cursor:pointer;transition:all .18s;box-shadow:0 3px 12px rgba(30,136,229,.25);white-space:nowrap;align-self:flex-end;}
+.btn-update:hover{background:linear-gradient(135deg,var(--blue-d),#0d47a1);transform:translateY(-1px);}
+.btn-reset{padding:11px 18px;background:#f5f5f5;color:var(--muted);border:1.5px solid var(--border);border-radius:var(--rs);font-family:'Nunito',sans-serif;font-size:.86em;font-weight:800;cursor:pointer;align-self:flex-end;}
+.btn-reset:hover{background:#e0e7ef;}
+
+/* SANKEY SECTION */
+.sankey-section{background:var(--white);border-radius:var(--r);padding:22px;box-shadow:var(--sh);border:1.5px solid var(--border);margin-bottom:18px;}
+.sec-title{font-size:.82em;font-weight:800;color:var(--muted);letter-spacing:.6px;text-transform:uppercase;margin-bottom:16px;padding-bottom:10px;border-bottom:1.5px solid var(--border);display:flex;align-items:center;gap:8px;justify-content:space-between;}
+.sec-title-left{display:flex;align-items:center;gap:8px;}
+#sankey-svg-wrap{overflow-x:auto;min-height:500px;}
+.sankey-tooltip{position:fixed;background:rgba(15,30,70,.94);color:#fff;padding:10px 16px;border-radius:10px;font-size:.82em;font-weight:700;pointer-events:none;z-index:9999;max-width:300px;box-shadow:0 4px 20px rgba(0,0,0,.25);line-height:1.5;display:none;}
+
+/* LEGEND */
+.legend-row{display:flex;gap:20px;flex-wrap:wrap;margin-bottom:14px;}
+.leg-item{display:flex;align-items:center;gap:7px;font-size:.8em;font-weight:700;}
+.leg-dot{width:14px;height:14px;border-radius:4px;flex-shrink:0;}
+
+/* RANKING TABLES BELOW SANKEY */
+.two-col{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:16px;}
+.rank-card{background:var(--white);border-radius:var(--r);padding:18px 20px;box-shadow:var(--sh);border:1.5px solid var(--border);}
+.rank-card h3{font-size:.8em;font-weight:800;color:var(--muted);letter-spacing:.6px;text-transform:uppercase;margin-bottom:14px;padding-bottom:9px;border-bottom:1.5px solid var(--border);}
+.rank-item{display:flex;align-items:center;gap:10px;padding:8px 0;border-bottom:1px solid #f0f0f0;}
+.rank-item:last-child{border-bottom:none;}
+.rank-num{font-family:'Barlow Condensed',sans-serif;font-size:1.2em;font-weight:800;color:var(--muted);min-width:26px;text-align:center;}
+.rank-bar-wrap{flex:1;}
+.rank-name{font-size:.83em;font-weight:700;color:var(--text);line-height:1.3;margin-bottom:4px;}
+.rank-bar{height:6px;border-radius:4px;transition:width .4s;}
+.rank-val{font-family:'Barlow Condensed',sans-serif;font-size:1em;font-weight:800;min-width:36px;text-align:right;}
+
+/* BRIDGE TABLE */
+.bridge-card{background:var(--white);border-radius:var(--r);padding:18px 20px;box-shadow:var(--sh);border:1.5px solid var(--border);margin-bottom:16px;}
+.bridge-card h3{font-size:.8em;font-weight:800;color:var(--muted);letter-spacing:.6px;text-transform:uppercase;margin-bottom:14px;padding-bottom:9px;border-bottom:1.5px solid var(--border);}
+.bridge-table{width:100%;border-collapse:collapse;font-size:.82em;}
+.bridge-table thead th{background:linear-gradient(90deg,#1565c0,#1e88e5);color:#fff;padding:9px 13px;text-align:left;font-weight:800;font-size:.83em;position:sticky;top:0;}
+.bridge-table tbody td{padding:8px 13px;border-bottom:1px solid var(--border);vertical-align:middle;}
+.bridge-table tbody tr:hover{background:var(--blue-l);}
+.bridge-table tbody tr:nth-child(even){background:#fafbff;}
+.bridge-table tbody tr:nth-child(even):hover{background:var(--blue-l);}
+.mini-bar-wrap{display:flex;align-items:center;gap:8px;}
+.mini-bar{height:8px;border-radius:4px;min-width:4px;}
+.score-badge{display:inline-block;padding:3px 10px;border-radius:20px;font-size:.75em;font-weight:800;}
+.score-hi{background:#e8f5e9;color:#2e7d32;}
+.score-md{background:#fff3e0;color:#ef6c00;}
+.score-lo{background:#f5f5f5;color:#757575;}
+
+/* TEMA MATRIX */
+.matrix-card{background:var(--white);border-radius:var(--r);padding:18px 20px;box-shadow:var(--sh);border:1.5px solid var(--border);margin-bottom:16px;}
+.matrix-card h3{font-size:.8em;font-weight:800;color:var(--muted);letter-spacing:.6px;text-transform:uppercase;margin-bottom:14px;padding-bottom:9px;border-bottom:1.5px solid var(--border);}
+.tema-tag{display:inline-flex;align-items:center;gap:6px;padding:6px 14px;border-radius:20px;font-size:.8em;font-weight:800;cursor:pointer;border:2px solid transparent;transition:all .18s;}
+.tema-tag.active{border-color:currentColor;box-shadow:0 2px 8px rgba(0,0,0,.12);}
+.tema-tags-row{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:14px;}
+.tema-EDUCACAO{background:#e3f2fd;color:#1565c0;}
+.tema-SAUDE{background:#fce4ec;color:#c62828;}
+.tema-MEIO_AMBIENTE{background:#e8f5e9;color:#2e7d32;}
+.tema-TECNOLOGIA{background:#fff3e0;color:#e65100;}
+.tema-CULTURA{background:#f3e5f5;color:#6a1b9a;}
+.tema-COMUNICACAO{background:#e0f7fa;color:#00695c;}
+.tema-TRABALHO{background:#fbe9e7;color:#bf360c;}
+.tema-DIREITOS{background:#ede7f6;color:#4527a0;}
+.canvas-wrap{max-height:360px;}
+
+/* INFO TOOLTIP CARD */
+.info-card{background:linear-gradient(135deg,var(--blue-l),var(--green-l));border:1.5px solid var(--border);border-radius:var(--r);padding:16px 20px;margin-bottom:18px;font-size:.85em;line-height:1.65;color:var(--text);font-weight:600;}
+.info-card strong{color:var(--blue-d);}
+
+/* DOWNLOAD BUTTONS */
+.dl-btn{display:inline-flex;align-items:center;gap:5px;padding:7px 14px;background:var(--green);color:#fff;border:none;border-radius:var(--rs);font-family:'Nunito',sans-serif;font-size:.78em;font-weight:800;cursor:pointer;transition:background .15s;white-space:nowrap;}
+.dl-btn:hover{background:#1b5e20;}
+
+@media(max-width:900px){.two-col{grid-template-columns:1fr;}}
+@media(max-width:600px){.kpi-row{grid-template-columns:repeat(2,1fr);}  }
+</style>
+</head>
+<body>
+
+<!-- HEADER -->
+<div class="page-hdr">
+  <h1>🔗 Integração Pesquisa &amp; Extensão — PPG como Ponte</h1>
+  <p>Ferramenta de tomada de decisão: fluxo entre áreas de pesquisa, programas de pós-graduação e temas de extensão</p>
+  <div class="hdr-badges">
+    <span class="hbdg" id="kpi-hdr-docentes">...</span>
+    <span class="hbdg" id="kpi-hdr-ppg">28 PPGs</span>
+    <span class="hbdg">UNEMAT — SIGAA 2024+</span>
+  </div>
+</div>
+
+<!-- KPI ROW -->
+<div class="kpi-row">
+  <div class="kpi-card c-blue"><div class="kpi-val" id="kv-docentes">—</div><div class="kpi-lbl">Docentes com Pesq + Ext + PPG</div></div>
+  <div class="kpi-card c-green"><div class="kpi-val" id="kv-links-ap">—</div><div class="kpi-lbl">Conexões Área → PPG</div></div>
+  <div class="kpi-card c-orange"><div class="kpi-val" id="kv-links-pe">—</div><div class="kpi-lbl">Conexões PPG → Extensão</div></div>
+  <div class="kpi-card c-purple"><div class="kpi-val" id="kv-areas">—</div><div class="kpi-lbl">Áreas de Pesquisa Ativas</div></div>
+  <div class="kpi-card c-teal"><div class="kpi-val" id="kv-temas">8</div><div class="kpi-lbl">Temas de Extensão</div></div>
+</div>
+
+<!-- MAIN -->
+<div class="main-wrap">
+
+  <!-- INFO BOX -->
+  <div class="info-card">
+    <strong>Como ler este painel:</strong> O Sankey mostra o fluxo de integração acadêmica da UNEMAT. À <strong>esquerda</strong>, as principais áreas de pesquisa; ao <strong>centro</strong>, os programas de pós-graduação (PPG) que funcionam como pontes institucionais; à <strong>direita</strong>, os temas de extensão. A <strong>espessura</strong> de cada fluxo representa a força da conexão — quantas atividades (projetos de pesquisa × ações de extensão) se cruzam via aquele PPG. Use os filtros para explorar combinações específicas e identificar onde criar novos programas de extensão integrados.
+  </div>
+
+  <!-- CONTROLS -->
+  <div class="ctrl-card">
+    <div class="ctrl-card-title">⚙ Filtros do Sankey</div>
+    <div class="ctrl-row">
+      <div class="ctrl-group">
+        <label>Nº de Áreas de Pesquisa</label>
+        <select id="ctrl-n-areas">
+          <option value="10">Top 10</option>
+          <option value="15" selected>Top 15</option>
+          <option value="20">Top 20</option>
+          <option value="999">Todas</option>
+        </select>
+      </div>
+      <div class="ctrl-group">
+        <label>Nº de PPGs</label>
+        <select id="ctrl-n-ppg">
+          <option value="10">Top 10</option>
+          <option value="15" selected>Top 15</option>
+          <option value="20">Top 20</option>
+          <option value="999">Todos</option>
+        </select>
+      </div>
+      <div class="ctrl-group">
+        <label>Tema de Extensão</label>
+        <select id="ctrl-tema">
+          <option value="">Todos os temas</option>
+        </select>
+      </div>
+      <div class="ctrl-group">
+        <label>Campus / PPG específico</label>
+        <select id="ctrl-campus">
+          <option value="">Todos os campus</option>
+          <option value="CAC">Cáceres (CAC)</option>
+          <option value="BBG">Barra do Bugres (BBG)</option>
+          <option value="SNP">Sinop (SNP)</option>
+          <option value="TGA">Tangará da Serra (TGA)</option>
+          <option value="AFL">Alta Floresta (AFL)</option>
+        </select>
+      </div>
+      <div class="ctrl-group">
+        <label>Força mínima do link</label>
+        <input type="number" id="ctrl-min-val" value="2" min="1" max="20" style="max-width:100px">
+      </div>
+      <button class="btn-update" onclick="renderAll()">🔄 Atualizar Sankey</button>
+      <button class="btn-reset" onclick="resetControls()">↺ Reset</button>
+    </div>
+  </div>
+
+  <!-- LEGEND -->
+  <div class="legend-row" style="padding:0 0 6px">
+    <div class="leg-item"><div class="leg-dot" style="background:#1e88e5"></div>Áreas de Pesquisa</div>
+    <div class="leg-item"><div class="leg-dot" style="background:#ef6c00"></div>Programas PPG (Ponte)</div>
+    <div class="leg-item"><div class="leg-dot" style="background:#2e7d32"></div>Temas de Extensão</div>
+    <div class="leg-item" style="font-size:.78em;color:var(--muted)">Espessura do fluxo = força da conexão (nº de atividades)</div>
+  </div>
+
+  <!-- SANKEY -->
+  <div class="sankey-section">
+    <div class="sec-title">
+      <div class="sec-title-left">📊 Sankey: Pesquisa → PPG → Extensão</div>
+      <button class="dl-btn" onclick="downloadSankey()">📷 Exportar PNG</button>
+    </div>
+    <div id="sankey-svg-wrap"></div>
+  </div>
+
+  <!-- TEMA FILTER TAGS -->
+  <div class="matrix-card">
+    <h3>🎯 Filtrar Sankey por Tema de Extensão</h3>
+    <div class="tema-tags-row" id="tema-tags"></div>
+    <small style="color:var(--muted);font-size:.78em;font-weight:700">Clique em um tema para focar o Sankey nele. Clique novamente para desfiltrar.</small>
+  </div>
+
+  <!-- RANKINGS -->
+  <div class="two-col">
+    <div class="rank-card">
+      <h3>🔍 Top Áreas de Pesquisa (força total de conexão)</h3>
+      <div id="rank-areas"></div>
+    </div>
+    <div class="rank-card">
+      <h3>🌎 Top Temas de Extensão (força total de conexão)</h3>
+      <div id="rank-temas"></div>
+    </div>
+  </div>
+
+  <!-- BRIDGE TABLE: PPG como pontes -->
+  <div class="bridge-card">
+    <h3>🏛 Ranking de PPGs como Pontes Institucionais — Ferramenta de Decisão</h3>
+    <div style="overflow-x:auto;max-height:420px;border-radius:var(--rs);border:1.5px solid var(--border)">
+      <table class="bridge-table">
+        <thead>
+          <tr>
+            <th>#</th>
+            <th>Programa PPG</th>
+            <th>Campus</th>
+            <th>Nível</th>
+            <th>Fluxo Pesquisa →</th>
+            <th>→ Extensão</th>
+            <th>Força de Ponte</th>
+            <th>Score</th>
+          </tr>
+        </thead>
+        <tbody id="bridge-tbody"></tbody>
+      </table>
+    </div>
+    <div style="margin-top:12px;font-size:.78em;color:var(--muted);font-weight:700">
+      ⚡ <strong>Força de Ponte</strong> = soma dos fluxos de entrada (pesquisa) + saída (extensão) do PPG. PPGs com alto score são candidatos prioritários para novos programas de extensão integrados.
+    </div>
+  </div>
+
+  <!-- CHART: área × tema heatmap -->
+  <div class="matrix-card">
+    <h3>📊 Distribuição de Fluxos por Tema de Extensão</h3>
+    <div class="canvas-wrap"><canvas id="chart-temas-dist"></canvas></div>
+  </div>
+
+</div>
+
+<!-- TOOLTIP -->
+<div class="sankey-tooltip" id="sk-tooltip"></div>
+
+<script src="https://cdn.jsdelivr.net/npm/d3@7"></script>
+<script src="https://cdn.jsdelivr.net/npm/d3-sankey@0.12.3/dist/d3-sankey.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+<script>
+// ============================================================
+// DATA LOADING
+// ============================================================
+let PE = null;
+let CHART_TEMA = null;
+let activeTema = null;
+
+fetch('pe_data.json').then(r => r.json()).then(data => {
+  PE = data;
+  initPage();
+}).catch(e => {
+  document.getElementById('sankey-svg-wrap').innerHTML =
+    '<div style="padding:40px;text-align:center;color:#c62828;font-weight:700">⚠ Erro ao carregar pe_data.json. Verifique se o arquivo está na mesma pasta.</div>';
+});
+
+function initPage() {
+  // KPIs
+  document.getElementById('kv-docentes').textContent = PE.n_docentes;
+  document.getElementById('kv-links-ap').textContent = Object.keys(PE.links_ap).length;
+  document.getElementById('kv-links-pe').textContent = Object.keys(PE.links_pe).length;
+  document.getElementById('kv-areas').textContent = Object.keys(PE.area_total).length;
+  document.getElementById('kpi-hdr-docentes').textContent = PE.n_docentes + ' docentes com Pesq+Ext+PPG';
+
+  // Populate tema filter
+  const temaSelect = document.getElementById('ctrl-tema');
+  PE.temas.forEach(t => {
+    const o = document.createElement('option'); o.value = t; o.textContent = t;
+    temaSelect.appendChild(o);
+  });
+
+  // Tema tags
+  buildTemaTags();
+
+  renderAll();
+}
+
+// ============================================================
+// CONTROLS
+// ============================================================
+function resetControls() {
+  document.getElementById('ctrl-n-areas').value = '15';
+  document.getElementById('ctrl-n-ppg').value = '15';
+  document.getElementById('ctrl-tema').value = '';
+  document.getElementById('ctrl-campus').value = '';
+  document.getElementById('ctrl-min-val').value = '2';
+  activeTema = null;
+  document.querySelectorAll('.tema-tag').forEach(t => t.classList.remove('active'));
+  renderAll();
+}
+
+function renderAll() {
+  renderSankey();
+  renderRankings();
+  renderBridgeTable();
+  renderTemaChart();
+}
+
+// ============================================================
+// BUILD FILTERED GRAPH
+// ============================================================
+function buildGraph() {
+  const nAreas  = parseInt(document.getElementById('ctrl-n-areas').value);
+  const nPPG    = parseInt(document.getElementById('ctrl-n-ppg').value);
+  const fTema   = activeTema || document.getElementById('ctrl-tema').value;
+  const fCampus = document.getElementById('ctrl-campus').value;
+  const minVal  = parseInt(document.getElementById('ctrl-min-val').value) || 1;
+
+  // Filter PPGs by campus
+  let allowedPPGs = new Set(Object.keys(PE.ppg_info));
+  if (fCampus) {
+    allowedPPGs = new Set(Object.keys(PE.ppg_info).filter(sg => sg.startsWith(fCampus)));
+  }
+
+  // Top N areas
+  const topAreas = Object.entries(PE.area_total)
+    .sort((a,b) => b[1]-a[1]).slice(0, nAreas).map(e => e[0]);
+
+  // Top N PPGs (from allowed)
+  const ppgScores = {};
+  Object.entries(PE.links_ap).forEach(([k,v]) => {
+    const [a,ppg] = k.split('|||');
+    if (allowedPPGs.has(ppg)) ppgScores[ppg] = (ppgScores[ppg]||0) + v;
+  });
+  const topPPGs = Object.entries(ppgScores)
+    .sort((a,b) => b[1]-a[1]).slice(0, nPPG).map(e => e[0]);
+
+  // Build nodes & links
+  const nodes = []; const nodeMap = {};
+  const links = [];
+
+  function getNode(id, label, col) {
+    if (nodeMap[id] === undefined) { nodeMap[id] = nodes.length; nodes.push({id, label, col}); }
+    return nodeMap[id];
+  }
+
+  // links_ap: area → ppg
+  Object.entries(PE.links_ap).forEach(([k, v]) => {
+    if (v < minVal) return;
+    const [area, ppg] = k.split('|||');
+    if (!topAreas.includes(area)) return;
+    if (!topPPGs.includes(ppg)) return;
+    if (fTema) {
+      // only include PPG if it connects to the filtered tema
+      const hasLink = Object.keys(PE.links_pe).some(lk => lk.startsWith(ppg + '|||' + fTema));
+      if (!hasLink) return;
+    }
+    const si = getNode('A:'+area, area, 'pesq');
+    const ti = getNode('P:'+ppg, ppg, 'ppg');
+    links.push({ source: si, target: ti, value: v });
+  });
+
+  // links_pe: ppg → tema
+  Object.entries(PE.links_pe).forEach(([k, v]) => {
+    if (v < minVal) return;
+    const [ppg, tema] = k.split('|||');
+    if (!topPPGs.includes(ppg)) return;
+    if (nodeMap['P:'+ppg] === undefined) return; // skip if ppg not in graph
+    if (fTema && tema !== fTema) return;
+    const si = getNode('P:'+ppg, ppg, 'ppg');
+    const ti = getNode('T:'+tema, tema, 'ext');
+    links.push({ source: si, target: ti, value: v });
+  });
+
+  return { nodes, links };
+}
+
+// ============================================================
+// SANKEY
+// ============================================================
+const COLORS = {
+  pesq: '#1e88e5',
+  ppg:  '#ef6c00',
+  ext:  '#2e7d32',
+};
+const EXT_COLORS = {
+  'EDUCAÇÃO':               '#1565c0',
+  'SAÚDE':                  '#c62828',
+  'MEIO AMBIENTE':          '#2e7d32',
+  'TECNOLOGIA E PRODUÇÃO':  '#e65100',
+  'CULTURA':                '#6a1b9a',
+  'COMUNICAÇÃO':            '#00695c',
+  'TRABALHO':               '#bf360c',
+  'DIREITOS HUMANOS E JUSTIÇA': '#4527a0',
+};
+
+function renderSankey() {
+  const wrap = document.getElementById('sankey-svg-wrap');
+  wrap.innerHTML = '';
+
+  const { nodes, links } = buildGraph();
+  if (!nodes.length) {
+    wrap.innerHTML = '<div style="padding:40px;text-align:center;color:var(--muted);font-weight:700">Nenhum dado com os filtros atuais. Tente reduzir a força mínima ou ampliar os filtros.</div>';
+    return;
+  }
+
+  const W = Math.max(900, wrap.offsetWidth || 1100);
+  const H = Math.max(500, nodes.length * 18);
+
+  const svg = d3.select('#sankey-svg-wrap').append('svg')
+    .attr('id', 'sankey-svg')
+    .attr('viewBox', `0 0 ${W} ${H}`)
+    .attr('width', '100%')
+    .style('display', 'block');
+
+  const { sankey, sankeyLinkHorizontal } = d3Sankey;
+  const sk = sankey()
+    .nodeWidth(20)
+    .nodePadding(10)
+    .extent([[1, 1], [W-1, H-1]]);
+
+  const graph = sk({
+    nodes: nodes.map(n => ({...n})),
+    links: links.map(l => ({...l}))
+  });
+
+  const tip = document.getElementById('sk-tooltip');
+
+  // Links
+  svg.append('g').attr('fill', 'none')
+    .selectAll('path')
+    .data(graph.links)
+    .join('path')
+    .attr('d', sankeyLinkHorizontal())
+    .attr('stroke', d => {
+      const tgt = d.target;
+      if (tgt.col === 'ext') return EXT_COLORS[tgt.label] || COLORS.ext;
+      if (tgt.col === 'ppg') return COLORS.ppg;
+      return COLORS.pesq;
+    })
+    .attr('stroke-width', d => Math.max(1, d.width))
+    .attr('stroke-opacity', 0.32)
+    .style('cursor', 'pointer')
+    .on('mouseover', (event, d) => {
+      d3.select(event.target).attr('stroke-opacity', 0.65);
+      const src = d.source.label.replace(/^[APT]:/, '');
+      const tgt = d.target.label.replace(/^[APT]:/, '');
+      tip.style.display = 'block';
+      tip.innerHTML = `<div style="font-size:.78em;opacity:.7;margin-bottom:4px">Conexão</div>
+        <div><strong>${src}</strong></div>
+        <div style="opacity:.7;font-size:.85em">↓</div>
+        <div><strong>${tgt}</strong></div>
+        <div style="margin-top:6px;font-size:.85em">Força: <strong style="color:#ffd54f">${d.value}</strong></div>`;
+    })
+    .on('mousemove', (event) => {
+      tip.style.left = (event.clientX + 14) + 'px';
+      tip.style.top  = (event.clientY - 28) + 'px';
+    })
+    .on('mouseout', (event) => {
+      d3.select(event.target).attr('stroke-opacity', 0.32);
+      tip.style.display = 'none';
+    });
+
+  // Nodes
+  svg.append('g')
+    .selectAll('rect')
+    .data(graph.nodes)
+    .join('rect')
+    .attr('x', d => d.x0)
+    .attr('y', d => d.y0)
+    .attr('height', d => Math.max(1, d.y1 - d.y0))
+    .attr('width', d => d.x1 - d.x0)
+    .attr('fill', d => {
+      if (d.col === 'ext') return EXT_COLORS[d.label] || COLORS.ext;
+      return COLORS[d.col] || '#888';
+    })
+    .attr('rx', 4)
+    .style('cursor', 'pointer')
+    .on('mouseover', (event, d) => {
+      tip.style.display = 'block';
+      const info = d.col === 'ppg' && PE.ppg_info[d.label]
+        ? `<div style="font-size:.82em;opacity:.8;margin-top:4px">${PE.ppg_info[d.label].nm}</div>
+           <div style="font-size:.78em;opacity:.65">${PE.ppg_info[d.label].cp} · ${PE.ppg_info[d.label].nv}</div>
+           <div style="font-size:.78em;margin-top:4px">Docentes: ${PE.ppg_info[d.label].nd} · Pesq: ${PE.ppg_info[d.label].np} · Ext: ${PE.ppg_info[d.label].ne}</div>`
+        : '';
+      tip.innerHTML = `<div style="font-size:.77em;opacity:.7;margin-bottom:3px">${d.col==='pesq'?'Área de Pesquisa':d.col==='ppg'?'Programa PPG':'Tema de Extensão'}</div>
+        <strong>${d.label}</strong>${info}
+        <div style="margin-top:6px;font-size:.85em">Fluxo total: <strong style="color:#ffd54f">${d.value}</strong></div>`;
+    })
+    .on('mousemove', (event) => {
+      tip.style.left = (event.clientX + 14) + 'px';
+      tip.style.top  = (event.clientY - 28) + 'px';
+    })
+    .on('mouseout', () => { tip.style.display = 'none'; });
+
+  // Labels
+  svg.append('g')
+    .selectAll('text')
+    .data(graph.nodes)
+    .join('text')
+    .attr('x', d => d.x0 < W/2 ? d.x1 + 7 : d.x0 - 7)
+    .attr('y', d => (d.y1 + d.y0) / 2)
+    .attr('dy', '0.35em')
+    .attr('text-anchor', d => d.x0 < W/2 ? 'start' : 'end')
+    .attr('font-size', '11px')
+    .attr('font-weight', '700')
+    .attr('fill', '#1a2340')
+    .text(d => d.label.length > 30 ? d.label.substring(0, 28) + '..' : d.label);
+}
+
+// ============================================================
+// RANKINGS
+// ============================================================
+function renderRankings() {
+  // Areas
+  const topAreas = Object.entries(PE.area_total).sort((a,b) => b[1]-a[1]).slice(0, 12);
+  const maxA = topAreas[0]?.[1] || 1;
+  document.getElementById('rank-areas').innerHTML = topAreas.map(([name, val], i) => `
+    <div class="rank-item">
+      <div class="rank-num">${i+1}</div>
+      <div class="rank-bar-wrap">
+        <div class="rank-name">${name}</div>
+        <div class="rank-bar" style="width:${val/maxA*100}%;background:var(--blue);"></div>
+      </div>
+      <div class="rank-val" style="color:var(--blue)">${val}</div>
+    </div>`).join('');
+
+  // Temas
+  const topTemas = Object.entries(PE.tema_total).sort((a,b) => b[1]-a[1]);
+  const maxT = topTemas[0]?.[1] || 1;
+  document.getElementById('rank-temas').innerHTML = topTemas.map(([name, val], i) => `
+    <div class="rank-item">
+      <div class="rank-num">${i+1}</div>
+      <div class="rank-bar-wrap">
+        <div class="rank-name">${name}</div>
+        <div class="rank-bar" style="width:${val/maxT*100}%;background:${EXT_COLORS[name]||'var(--green)'};"></div>
+      </div>
+      <div class="rank-val" style="color:${EXT_COLORS[name]||'var(--green)'}">${val}</div>
+    </div>`).join('');
+}
+
+// ============================================================
+// BRIDGE TABLE
+// ============================================================
+function renderBridgeTable() {
+  // Compute per-PPG bridge scores
+  const ppgIn  = {};
+  const ppgOut = {};
+  Object.entries(PE.links_ap).forEach(([k,v]) => {
+    const ppg = k.split('|||')[1];
+    ppgIn[ppg] = (ppgIn[ppg]||0) + v;
+  });
+  Object.entries(PE.links_pe).forEach(([k,v]) => {
+    const ppg = k.split('|||')[0];
+    ppgOut[ppg] = (ppgOut[ppg]||0) + v;
+  });
+
+  const allPPGs = Object.keys(PE.ppg_info);
+  const rows = allPPGs.map(sg => ({
+    sg,
+    nm: PE.ppg_info[sg].nm,
+    cp: PE.ppg_info[sg].cp,
+    nv: PE.ppg_info[sg].nv,
+    nd: PE.ppg_info[sg].nd,
+    inp: ppgIn[sg] || 0,
+    out: ppgOut[sg] || 0,
+    score: (ppgIn[sg]||0) + (ppgOut[sg]||0),
+  })).sort((a,b) => b.score - a.score);
+
+  const maxScore = rows[0]?.score || 1;
+
+  document.getElementById('bridge-tbody').innerHTML = rows.map((r, i) => {
+    const pct = r.score / maxScore;
+    const cls = pct > 0.6 ? 'score-hi' : pct > 0.3 ? 'score-md' : 'score-lo';
+    return `<tr>
+      <td><strong>${i+1}</strong></td>
+      <td><strong>${r.sg}</strong><div style="font-size:.78em;color:var(--muted);margin-top:2px">${r.nm}</div></td>
+      <td>${r.cp}</td>
+      <td style="font-size:.78em">${r.nv}</td>
+      <td>
+        <div class="mini-bar-wrap">
+          <div class="mini-bar" style="width:${Math.max(4, r.inp/maxScore*100)}px;background:var(--blue)"></div>
+          <span style="font-weight:700;color:var(--blue)">${r.inp}</span>
+        </div>
+      </td>
+      <td>
+        <div class="mini-bar-wrap">
+          <div class="mini-bar" style="width:${Math.max(4, r.out/maxScore*100)}px;background:var(--green)"></div>
+          <span style="font-weight:700;color:var(--green)">${r.out}</span>
+        </div>
+      </td>
+      <td>
+        <div class="mini-bar-wrap">
+          <div class="mini-bar" style="width:${Math.max(4, pct*120)}px;background:var(--orange)"></div>
+          <span style="font-weight:800;color:var(--orange)">${r.score}</span>
+        </div>
+      </td>
+      <td><span class="score-badge ${cls}">${pct>0.6?'Alto':pct>0.3?'Médio':'Baixo'}</span></td>
+    </tr>`;
+  }).join('');
+}
+
+// ============================================================
+// TEMA CHART
+// ============================================================
+function renderTemaChart() {
+  // For each tema, show how many PPGs connect to it and total flow
+  const temaFlows = {};
+  Object.entries(PE.links_pe).forEach(([k,v]) => {
+    const tema = k.split('|||')[1];
+    temaFlows[tema] = (temaFlows[tema]||0) + v;
+  });
+
+  const sorted = Object.entries(temaFlows).sort((a,b) => b[1]-a[1]);
+  const labels = sorted.map(e => e[0]);
+  const vals   = sorted.map(e => e[1]);
+  const bgColors = labels.map(l => EXT_COLORS[l] || '#888');
+
+  if (CHART_TEMA) CHART_TEMA.destroy();
+  const ctx = document.getElementById('chart-temas-dist').getContext('2d');
+  CHART_TEMA = new Chart(ctx, {
+    type: 'bar',
+    data: {
+      labels,
+      datasets: [{
+        label: 'Força total de conexão via PPG',
+        data: vals,
+        backgroundColor: bgColors,
+        borderRadius: 8,
+        borderSkipped: false,
+      }]
+    },
+    options: {
+      responsive: true,
+      plugins: {
+        legend: { display: false },
+        tooltip: {
+          callbacks: {
+            label: ctx => ` Força: ${ctx.parsed.y} (soma dos fluxos PPG→tema)`
+          }
+        }
+      },
+      scales: {
+        y: { beginAtZero: true, grid: { color: '#f0f0f0' } },
+        x: { grid: { display: false } }
+      }
+    }
+  });
+}
+
+// ============================================================
+// TEMA TAGS (clickable filter)
+// ============================================================
+const TEMA_CSS = {
+  'EDUCAÇÃO':               'tema-EDUCACAO',
+  'SAÚDE':                  'tema-SAUDE',
+  'MEIO AMBIENTE':          'tema-MEIO_AMBIENTE',
+  'TECNOLOGIA E PRODUÇÃO':  'tema-TECNOLOGIA',
+  'CULTURA':                'tema-CULTURA',
+  'COMUNICAÇÃO':            'tema-COMUNICACAO',
+  'TRABALHO':               'tema-TRABALHO',
+  'DIREITOS HUMANOS E JUSTIÇA': 'tema-DIREITOS',
+};
+
+function buildTemaTags() {
+  const row = document.getElementById('tema-tags');
+  PE.temas.forEach(tema => {
+    const btn = document.createElement('button');
+    btn.className = 'tema-tag ' + (TEMA_CSS[tema] || '');
+    btn.dataset.tema = tema;
+    btn.innerHTML = `<span>${tema}</span>`;
+    btn.addEventListener('click', () => {
+      if (activeTema === tema) {
+        activeTema = null;
+        btn.classList.remove('active');
+      } else {
+        activeTema = tema;
+        document.querySelectorAll('.tema-tag').forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+        document.getElementById('ctrl-tema').value = tema;
+      }
+      renderSankey();
+    });
+    row.appendChild(btn);
+  });
+}
+
+// ============================================================
+// EXPORT
+// ============================================================
+function downloadSankey() {
+  const svg = document.getElementById('sankey-svg');
+  if (!svg) return;
+  const data = new XMLSerializer().serializeToString(svg);
+  const blob = new Blob([data], { type: 'image/svg+xml' });
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = 'sankey_pe_unemat.svg';
+  a.click();
+}
+</script>
+</body>
+</html>

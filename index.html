@@ -909,37 +909,6 @@ tbody tr:nth-child(even):hover { background: var(--blue-light); }
         <li><a href="#" class="nav-link nav-admin-link" data-page="admin-revisao" style="border-top:1.5px solid #e0e7ef;margin-top:4px;padding-top:10px;color:#6a1b9a;"><span class="nav-icon">&#128274;</span><span class="nav-label" style="color:#6a1b9a;font-weight:800">Admin</span></a></li>
     </ul>
 
-    <!-- FILTROS GLOBAIS -->
-    <div class="active-filters-bar" id="active-filters-bar"></div>
-    <div class="sidebar-global-filters">
-        <div class="sgf-title">&#128269; Filtros Globais</div>
-        <div class="sgf-field">
-            <label>Programa PPG</label>
-            <select id="gf-programa">
-                <option value="">Todos</option>
-            </select>
-        </div>
-        <div class="sgf-field">
-            <label>Tipo</label>
-            <select id="gf-tipo">
-                <option value="">Todos</option>
-                <option value="pesquisa">Pesquisa</option>
-                <option value="extensao">Extensão</option>
-                <option value="ppg">PPG</option>
-            </select>
-        </div>
-        <div class="sgf-field">
-            <label>Ano</label>
-            <select id="gf-ano">
-                <option value="">Todos</option>
-            </select>
-        </div>
-        <div class="sgf-field">
-            <label>Busca por palavra-chave</label>
-            <input type="text" id="gf-keyword" placeholder="Palavra-chave...">
-        </div>
-        <button class="sgf-clear-btn" id="gf-clear">Limpar Filtros</button>
-    </div>
 </nav>
 
 <!-- ============ MAIN CONTENT ============ -->
@@ -1192,9 +1161,7 @@ tbody tr:nth-child(even):hover { background: var(--blue-light); }
                     <input type="text" id="docente-search-input" placeholder="Digite o nome e pressione Enter ou clique em Buscar..." class="search-input" style="width:100%" autocomplete="off">
                     <div id="docente-suggestions" class="suggestions-list"></div>
                 </div>
-                <button id="docente-search-btn" style="padding:9px 18px;background:var(--blue);color:#fff;border:none;border-radius:var(--radius-sm);font-family:'Nunito',sans-serif;font-size:.88em;font-weight:800;cursor:pointer;white-space:nowrap;flex-shrink:0;" onmouseover="this.style.background='#1565c0'" onmouseout="this.style.background='var(--blue)'">
-                    &#128269; Buscar
-                </button>
+                <button id="docente-search-btn" style="padding:9px 18px;background:var(--blue);color:#fff;border:none;border-radius:var(--radius-sm);font-family:'Nunito',sans-serif;font-size:.88em;font-weight:800;cursor:pointer;white-space:nowrap;flex-shrink:0;">&#128269; Buscar</button>
             </div>
         </div>
         <div id="docente-analysis-content" style="display:none">
@@ -1299,7 +1266,7 @@ tbody tr:nth-child(even):hover { background: var(--blue-light); }
         </div>
     </section>
 
-    <!-- ADMIN: REVISÃO DE PROGRAMAS -->
+    <!-- ADMIN -->
     <section id="admin-revisao" class="page">
         <div id="admin-login-box" style="max-width:380px;margin:60px auto 0;text-align:center;background:#fff;border-radius:16px;padding:40px 36px;box-shadow:0 8px 40px rgba(106,27,154,0.12);border:2px solid #e1bee7;">
             <div style="font-size:2.2em;margin-bottom:10px">&#128274;</div>
@@ -1313,7 +1280,7 @@ tbody tr:nth-child(even):hover { background: var(--blue-light); }
             <div id="admin-login-err" style="display:none;margin-top:12px;padding:10px 14px;background:#ffebee;border-radius:8px;color:#c62828;font-size:.82em;font-weight:700;">Código inválido. Tente novamente.</div>
         </div>
         <div id="admin-content-box" style="display:none;height:calc(100vh - 32px);margin:-28px -28px -40px -28px;flex-direction:column;">
-            <div style="display:flex;align-items:center;background:#fff;border-bottom:2px solid #e0e7ef;padding:0 18px;height:46px;flex-shrink:0;box-shadow:0 2px 8px rgba(106,27,154,0.07);">
+            <div style="display:flex;align-items:center;background:#fff;border-bottom:2px solid #e0e7ef;padding:0 18px;height:46px;flex-shrink:0;">
                 <span style="font-family:'Barlow Condensed',sans-serif;font-size:1em;font-weight:800;color:#4a148c;margin-right:16px;">&#128274; ADMIN</span>
                 <button id="atab-revisao" onclick="switchAdminTab('revisao')" style="padding:10px 18px;border:none;background:none;font-family:'Nunito',sans-serif;font-size:.85em;font-weight:800;color:#4a148c;cursor:pointer;border-bottom:3px solid #6a1b9a;margin-bottom:-2px;">&#128196; Revisão de Programas</button>
                 <button id="atab-teia" onclick="switchAdminTab('teia')" style="padding:10px 18px;border:none;background:none;font-family:'Nunito',sans-serif;font-size:.85em;font-weight:800;color:#6b7a99;cursor:pointer;border-bottom:3px solid transparent;margin-bottom:-2px;">&#127760; Teia de Congregações</button>
@@ -1502,48 +1469,21 @@ document.addEventListener('DOMContentLoaded', async () => {
 });
 
 /* ============================================================
-   GLOBAL FILTER SETUP
+   GLOBAL FILTER SETUP — filtros globais removidos da sidebar
    ============================================================ */
-function setupGlobalFilters() {
-    // Populate programa select
-    const progSel = document.getElementById('gf-programa');
-    DATA.ppgAnalysis.forEach(p => {
-        const o = document.createElement('option');
-        o.value = p.sg;
-        const nmTitle = p.nm.charAt(0) + p.nm.slice(1).toLowerCase().replace(/(e|de|da|do|das|dos|em|a|o|as|os)/g, w => w).replace(/pro[- ]/gi, m => m.toUpperCase());
-        o.textContent = `${p.sg} — Prog. Pós-Grad. em ${nmTitle} (${p.cp})`;
-        progSel.appendChild(o);
-    });
-
-    // Populate ano select
-    const anoSel = document.getElementById('gf-ano');
-    const allYears = [...new Set([
-        ...Object.keys(DATA.pesqYear || {}),
-        ...Object.keys(DATA.extYear  || {})
-    ])].filter(y => y).sort();
-    allYears.forEach(y => {
-        const o = document.createElement('option');
-        o.value = y; o.textContent = y;
-        anoSel.appendChild(o);
-    });
-
-    // Event listeners
-    progSel.addEventListener('change', () => { GF.programa = progSel.value; applyGlobalFilters(); });
-    document.getElementById('gf-tipo').addEventListener('change', (e) => { GF.tipo = e.target.value; applyGlobalFilters(); });
-    anoSel.addEventListener('change',  () => { GF.ano = anoSel.value; applyGlobalFilters(); });
-
-    let kwTimer;
-    document.getElementById('gf-keyword').addEventListener('input', (e) => {
-        clearTimeout(kwTimer);
-        kwTimer = setTimeout(() => { GF.keyword = e.target.value; applyGlobalFilters(); }, 300);
-    });
-
-    document.getElementById('gf-clear').addEventListener('click', () => {
-        GF.programa = ''; GF.tipo = ''; GF.ano = ''; GF.keyword = '';
-        syncFilterUI();
-        applyGlobalFilters();
-    });
+function setupGlobalFilters() { /* desativado */ }
+function syncFilterUI() {}
+function renderActiveFilterBadges() {}
+function applyGlobalFilters() {
+    const activePage = document.querySelector('.page.active');
+    if (!activePage) return;
+    switch(activePage.id) {
+        case 'visao-geral': renderVisaoGeralFiltered(); break;
+        case 'pesquisa':    renderPesqFiltered();       break;
+        case 'extensao':    renderExtFiltered();        break;
+    }
 }
+
 
 /* ============================================================
    NAVIGATION
@@ -1573,6 +1513,7 @@ function initPage(page) {
         case 'pesquisa':          initPesquisa();         break;
         case 'extensao':          initExtensao();         break;
         case 'ppg':               initPPG();              break;
+        case 'docentes':          initDocentes();         break;
         case 'sankey':            initSankey();           break;
         case 'analise-ppg':       initAnalisePPG();       break;
         case 'analise-docentes':  initAnaliseDocentes();  break;

@@ -893,6 +893,7 @@ tbody tr:nth-child(even):hover { background: var(--blue-light); }
         <li><a href="#" class="nav-link" data-page="docentes"><span class="nav-icon">&#128105;</span><span class="nav-label">Docentes</span></a></li>
         <li><a href="#" class="nav-link" data-page="sankey"><span class="nav-icon">&#128336;</span><span class="nav-label">Sankey</span></a></li>
         <li><a href="#" class="nav-link" data-page="analise-ppg"><span class="nav-icon">&#128196;</span><span class="nav-label">Análise por PPG</span></a></li>
+        <li><a href="#" class="nav-link" data-page="analise-docentes"><span class="nav-icon">&#128100;</span><span class="nav-label">Análise por Docente</span></a></li>
     </ul>
     <div class="nav-section-label">Pós-Graduação</div>
     <ul class="nav-menu">
@@ -1110,26 +1111,8 @@ tbody tr:nth-child(even):hover { background: var(--blue-light); }
         </div>
         <div id="doc-filter-banner" class="filter-results-banner"></div>
         <div class="stats-grid" id="doc-stats-cards"></div>
-
-        <!-- BUSCA RÁPIDA POR DOCENTE (autocomplete → abre painel lateral) -->
-        <div class="chart-box full-width" style="margin-bottom:18px">
-            <h3>&#128269; Busca Rápida por Docente</h3>
-            <div style="position:relative;max-width:560px">
-                <input type="text" id="doc-quick-search"
-                    placeholder="Digite o nome do docente para ver o perfil completo..."
-                    class="search-input"
-                    style="width:100%;padding-right:42px"
-                    autocomplete="off">
-                <span style="position:absolute;right:12px;top:50%;transform:translateY(-50%);font-size:1.1em;pointer-events:none">&#128100;</span>
-                <div id="doc-quick-suggestions" class="suggestions-list"></div>
-            </div>
-            <div style="margin-top:8px;font-size:0.78em;color:#6b7a99;font-weight:600">
-                Clique no nome para abrir o perfil individual com projetos, gráficos e vinculações PPG
-            </div>
-        </div>
-
         <div class="chart-box full-width">
-            <h3>Lista de Docentes</h3>
+            <h3>Busca de Docentes</h3>
             <div class="table-controls">
                 <input type="text" id="doc-search" placeholder="&#128269; Nome, SIAPE, departamento..." class="search-input">
                 <select id="doc-filter" class="filter-select">
@@ -1228,6 +1211,64 @@ tbody tr:nth-child(even):hover { background: var(--blue-light); }
         </div>
     </section>
 
+    <!-- ANALISE DOCENTES -->
+    <section id="analise-docentes" class="page">
+        <div class="page-header">
+            <div class="page-header-icon">&#128100;</div>
+            <div>
+                <h1>Análise por Docente</h1>
+                <div class="ph-sub">Perfil individual de produção acadêmica — gráficos, projetos e vinculações</div>
+            </div>
+        </div>
+        <div class="control-group" style="margin-bottom:20px;max-width:640px;position:relative">
+            <label>Buscar Docente</label>
+            <div style="display:flex;gap:8px;align-items:flex-start">
+                <div style="flex:1;position:relative">
+                    <input type="text" id="docente-search-input" placeholder="Digite o nome do docente..." class="search-input" style="width:100%" autocomplete="off">
+                    <div id="docente-suggestions" class="suggestions-list"></div>
+                </div>
+                <button id="docente-search-btn" style="padding:9px 18px;background:var(--blue);color:#fff;border:none;border-radius:var(--radius-sm);font-family:'Nunito',sans-serif;font-size:.88em;font-weight:800;cursor:pointer;white-space:nowrap;flex-shrink:0">
+                    &#128269; Buscar
+                </button>
+            </div>
+            <div style="margin-top:6px;font-size:0.76em;color:#6b7a99;font-weight:600">Digite o nome e pressione Enter ou clique em Buscar</div>
+        </div>
+        <div id="docente-analysis-content" style="display:none">
+            <div class="stats-grid" id="docente-stats"></div>
+            <div class="charts-row">
+                <div class="chart-box">
+                    <h3>Áreas de Pesquisa</h3>
+                    <canvas id="chart-docente-areas"></canvas>
+                </div>
+                <div class="chart-box">
+                    <h3>Temas de Extensão</h3>
+                    <canvas id="chart-docente-temas"></canvas>
+                </div>
+            </div>
+            <div class="chart-box full-width">
+                <h3>Projetos de Pesquisa</h3>
+                <div class="table-wrapper">
+                    <table id="docente-pesq-table">
+                        <thead><tr><th>Codigo</th><th>Titulo</th><th>Area</th><th>Ano</th></tr></thead>
+                        <tbody></tbody>
+                    </table>
+                </div>
+            </div>
+            <div class="chart-box full-width">
+                <h3>Ações de Extensão</h3>
+                <div class="table-wrapper">
+                    <table id="docente-ext-table">
+                        <thead><tr><th>Titulo</th><th>Tipo</th><th>Ano</th><th>Tema</th></tr></thead>
+                        <tbody></tbody>
+                    </table>
+                </div>
+            </div>
+            <div class="chart-box full-width">
+                <h3>Vinculação a Programas PPG</h3>
+                <div id="docente-ppg-info"></div>
+            </div>
+        </div>
+    </section>
 
     <!-- SOBRE -->
     <section id="sobre" class="page">
@@ -1586,6 +1627,7 @@ function initPage(page) {
         case 'docentes':          initDocentes();         break;
         case 'sankey':            initSankey();           break;
         case 'analise-ppg':       initAnalisePPG();       break;
+        case 'analise-docentes':  initAnaliseDocentes();  break;
     }
 }
 
@@ -2059,29 +2101,6 @@ function initDocentes() {
     document.getElementById('doc-search').addEventListener('input',       (e) => { docLocalSearch = e.target.value; docPage = 1; renderDocentesFiltered(); });
     document.getElementById('doc-filter').addEventListener('change',      (e) => { docLocalFilter = e.target.value; docPage = 1; renderDocentesFiltered(); });
 
-    // Quick-search autocomplete → opens profile panel directly
-    const qInput = document.getElementById('doc-quick-search');
-    const qSug   = document.getElementById('doc-quick-suggestions');
-    const allProfsQ = Object.values(DATA.profProfiles).sort((a,b) => a.n.localeCompare(b.n));
-    qInput.addEventListener('input', () => {
-        const q = qInput.value.toLowerCase().trim();
-        if (q.length < 2) { qSug.classList.remove('show'); return; }
-        const matches = allProfsQ.filter(p => p.n.toLowerCase().includes(q)).slice(0, 15);
-        if (!matches.length) { qSug.classList.remove('show'); return; }
-        qSug.innerHTML = matches.map(p =>
-            `<div class="suggestion-item" data-siape="${p.s}"><strong>${toTitleCase(p.n)}</strong><div class="sub">${(p.d||'').replace(/^FACULDADE DE /i,'Fac. ')} · SIAPE: ${p.s}</div></div>`
-        ).join('');
-        qSug.classList.add('show');
-        qSug.querySelectorAll('.suggestion-item').forEach(item => {
-            item.addEventListener('click', () => {
-                qSug.classList.remove('show');
-                qInput.value = toTitleCase(DATA.profProfiles[item.dataset.siape].n);
-                showDocentePanel(item.dataset.siape);
-            });
-        });
-    });
-    qInput.addEventListener('blur', () => { setTimeout(() => qSug.classList.remove('show'), 200); });
-
     const docDlBtn = makeDlBtn('Baixar CSV', '&#128190;', () => {
         const base = getDocentesFiltered();
         downloadCSV(
@@ -2310,26 +2329,65 @@ function renderPPGAnalysis(sigla) {
 function initAnaliseDocentes() {
     const input  = document.getElementById('docente-search-input');
     const sugDiv = document.getElementById('docente-suggestions');
+    const btn    = document.getElementById('docente-search-btn');
     const allProfs = Object.values(DATA.profProfiles).sort((a, b) => a.n.localeCompare(b.n));
+
+    let lastMatches = [];
+
+    function doSearch() {
+        const q = input.value.toLowerCase().trim();
+        if (!q) return;
+        // Exact or best match
+        const exact = allProfs.find(p => p.n.toLowerCase() === q);
+        if (exact) {
+            sugDiv.classList.remove('show');
+            input.value = exact.n;
+            renderDocenteAnalysis(exact.s);
+            return;
+        }
+        if (lastMatches.length === 1) {
+            sugDiv.classList.remove('show');
+            input.value = lastMatches[0].n;
+            renderDocenteAnalysis(lastMatches[0].s);
+            return;
+        }
+        if (lastMatches.length > 1) {
+            // pick highest score match (starts-with > contains)
+            const sw = lastMatches.find(p => p.n.toLowerCase().startsWith(q));
+            const pick = sw || lastMatches[0];
+            sugDiv.classList.remove('show');
+            input.value = pick.n;
+            renderDocenteAnalysis(pick.s);
+        }
+    }
 
     input.addEventListener('input', () => {
         const q = input.value.toLowerCase().trim();
-        if (q.length < 2) { sugDiv.classList.remove('show'); return; }
-        const matches = allProfs.filter(p => p.n.toLowerCase().includes(q)).slice(0, 15);
-        if (!matches.length) { sugDiv.classList.remove('show'); return; }
-        sugDiv.innerHTML = matches.map(p =>
-            `<div class="suggestion-item" data-siape="${p.s}"><strong>${p.n}</strong><div class="sub">${p.d||''} | SIAPE: ${p.s}</div></div>`
+        if (q.length < 2) { sugDiv.classList.remove('show'); lastMatches = []; return; }
+        lastMatches = allProfs.filter(p => p.n.toLowerCase().includes(q)).slice(0, 15);
+        if (!lastMatches.length) { sugDiv.classList.remove('show'); return; }
+        sugDiv.innerHTML = lastMatches.map(p =>
+            `<div class="suggestion-item" data-siape="${p.s}"><strong>${toTitleCase(p.n)}</strong><div class="sub">${(p.d||'')} | SIAPE: ${p.s}</div></div>`
         ).join('');
         sugDiv.classList.add('show');
         sugDiv.querySelectorAll('.suggestion-item').forEach(item => {
-            item.addEventListener('click', () => {
+            item.addEventListener('mousedown', (e) => {
+                e.preventDefault();
                 sugDiv.classList.remove('show');
                 input.value = DATA.profProfiles[item.dataset.siape].n;
+                lastMatches = [DATA.profProfiles[item.dataset.siape]];
                 renderDocenteAnalysis(item.dataset.siape);
             });
         });
     });
-    input.addEventListener('blur', () => { setTimeout(() => sugDiv.classList.remove('show'), 200); });
+
+    input.addEventListener('keydown', (e) => {
+        if (e.key === 'Enter') { e.preventDefault(); doSearch(); }
+    });
+
+    btn.addEventListener('click', doSearch);
+
+    input.addEventListener('blur', () => { setTimeout(() => sugDiv.classList.remove('show'), 150); });
 }
 
 function renderDocenteAnalysis(siape) {
@@ -2785,9 +2843,7 @@ function switchAdminTab(tab) {
 document.addEventListener('DOMContentLoaded', function() {
     document.querySelector('[data-page="admin-revisao"]').addEventListener('click', function() {
         setTimeout(function() {
-            if (sessionStorage.getItem('hub_admin_auth') === '1') {
-                showAdminContent();
-            }
+            if (sessionStorage.getItem('hub_admin_auth') === '1') { showAdminContent(); }
         }, 50);
     });
 });

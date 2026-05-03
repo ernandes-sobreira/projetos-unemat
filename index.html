@@ -890,10 +890,9 @@ tbody tr:nth-child(even):hover { background: var(--blue-light); }
         <li><a href="#" class="nav-link active" data-page="visao-geral"><span class="nav-icon">&#128202;</span><span class="nav-label">Visão Geral</span></a></li>
         <li><a href="#" class="nav-link" data-page="pesquisa"><span class="nav-icon">&#128270;</span><span class="nav-label">Pesquisa</span></a></li>
         <li><a href="#" class="nav-link" data-page="extensao"><span class="nav-icon">&#127758;</span><span class="nav-label">Extensão</span></a></li>
-        <li><a href="#" class="nav-link" data-page="docentes"><span class="nav-icon">&#128105;</span><span class="nav-label">Docentes</span></a></li>
+        <li><a href="#" class="nav-link" data-page="analise-docentes"><span class="nav-icon">&#128105;</span><span class="nav-label">Docentes</span></a></li>
         <li><a href="#" class="nav-link" data-page="sankey"><span class="nav-icon">&#128336;</span><span class="nav-label">Sankey</span></a></li>
         <li><a href="#" class="nav-link" data-page="analise-ppg"><span class="nav-icon">&#128196;</span><span class="nav-label">Análise por PPG</span></a></li>
-        <li><a href="#" class="nav-link" data-page="analise-docentes"><span class="nav-icon">&#128100;</span><span class="nav-label">Análise por Docente</span></a></li>
     </ul>
     <div class="nav-section-label">Pós-Graduação</div>
     <ul class="nav-menu">
@@ -1100,40 +1099,6 @@ tbody tr:nth-child(even):hover { background: var(--blue-light); }
         </div>
     </section>
 
-    <!-- DOCENTES -->
-    <section id="docentes" class="page">
-        <div class="page-header">
-            <div class="page-header-icon">&#128105;</div>
-            <div>
-                <h1>Docentes</h1>
-                <div class="ph-sub">Corpo docente ativo com produção registrada</div>
-            </div>
-        </div>
-        <div id="doc-filter-banner" class="filter-results-banner"></div>
-        <div class="stats-grid" id="doc-stats-cards"></div>
-        <div class="chart-box full-width">
-            <h3>Busca de Docentes</h3>
-            <div class="table-controls">
-                <input type="text" id="doc-search" placeholder="&#128269; Nome, SIAPE, departamento..." class="search-input">
-                <select id="doc-filter" class="filter-select">
-                    <option value="">Todos</option>
-                    <option value="pesq">Com Pesquisa</option>
-                    <option value="ext">Com Extensão</option>
-                    <option value="ppg">Em PPG</option>
-                    <option value="tripla">Tripla Atuação</option>
-                </select>
-                <span id="doc-count-tag" class="result-count-tag"></span>
-            </div>
-            <div class="table-wrapper">
-                <table id="doc-table">
-                    <thead><tr><th>Nome</th><th>SIAPE</th><th>Departamento</th><th>Pesquisa</th><th>Extensão</th><th>PPG</th></tr></thead>
-                    <tbody></tbody>
-                </table>
-            </div>
-            <div id="doc-pagination" class="pagination"></div>
-        </div>
-    </section>
-
     <!-- SANKEY -->
     <section id="sankey" class="page">
         <div class="page-header">
@@ -1214,9 +1179,9 @@ tbody tr:nth-child(even):hover { background: var(--blue-light); }
     <!-- ANALISE DOCENTES -->
     <section id="analise-docentes" class="page">
         <div class="page-header">
-            <div class="page-header-icon">&#128100;</div>
+            <div class="page-header-icon">&#128105;</div>
             <div>
-                <h1>Análise por Docente</h1>
+                <h1>Docentes</h1>
                 <div class="ph-sub">Perfil individual com gráficos, projetos e vinculações PPG</div>
             </div>
         </div>
@@ -1343,19 +1308,13 @@ tbody tr:nth-child(even):hover { background: var(--blue-light); }
             <label style="display:block;text-align:left;font-size:.78em;font-weight:800;color:#6b7a99;margin-bottom:6px;letter-spacing:.5px">CÓDIGO DE ACESSO</label>
             <input id="admin-code-input" type="password" maxlength="20" autocomplete="off"
                 style="width:100%;padding:13px 16px;border:2px solid #e0e7ef;border-radius:10px;font-family:'Nunito',sans-serif;font-size:1em;font-weight:700;letter-spacing:4px;text-align:center;outline:none;margin-bottom:12px;"
-                placeholder="••••••••"
-                onkeydown="if(event.key==='Enter')adminLogin()">
-            <button onclick="adminLogin()"
-                style="width:100%;padding:13px;background:linear-gradient(135deg,#6a1b9a,#4a148c);color:#fff;border:none;border-radius:10px;font-family:'Nunito',sans-serif;font-size:1em;font-weight:800;cursor:pointer;letter-spacing:.5px;">
-                ENTRAR
-            </button>
-            <div id="admin-login-err" style="display:none;margin-top:12px;padding:10px 14px;background:#ffebee;border-radius:8px;color:#c62828;font-size:.82em;font-weight:700;">
-                Código inválido. Tente novamente.
-            </div>
+                placeholder="••••••••" onkeydown="if(event.key==='Enter')adminLogin()">
+            <button onclick="adminLogin()" style="width:100%;padding:13px;background:linear-gradient(135deg,#6a1b9a,#4a148c);color:#fff;border:none;border-radius:10px;font-family:'Nunito',sans-serif;font-size:1em;font-weight:800;cursor:pointer;letter-spacing:.5px;">ENTRAR</button>
+            <div id="admin-login-err" style="display:none;margin-top:12px;padding:10px 14px;background:#ffebee;border-radius:8px;color:#c62828;font-size:.82em;font-weight:700;">Código inválido. Tente novamente.</div>
         </div>
         <div id="admin-content-box" style="display:none;height:calc(100vh - 32px);margin:-28px -28px -40px -28px;flex-direction:column;">
-            <div style="display:flex;align-items:center;gap:0;background:#fff;border-bottom:2px solid #e0e7ef;padding:0 18px;height:46px;flex-shrink:0;box-shadow:0 2px 8px rgba(106,27,154,0.07);">
-                <span style="font-family:'Barlow Condensed',sans-serif;font-size:1em;font-weight:800;color:#4a148c;margin-right:16px;letter-spacing:.3px;">&#128274; ADMIN</span>
+            <div style="display:flex;align-items:center;background:#fff;border-bottom:2px solid #e0e7ef;padding:0 18px;height:46px;flex-shrink:0;box-shadow:0 2px 8px rgba(106,27,154,0.07);">
+                <span style="font-family:'Barlow Condensed',sans-serif;font-size:1em;font-weight:800;color:#4a148c;margin-right:16px;">&#128274; ADMIN</span>
                 <button id="atab-revisao" onclick="switchAdminTab('revisao')" style="padding:10px 18px;border:none;background:none;font-family:'Nunito',sans-serif;font-size:.85em;font-weight:800;color:#4a148c;cursor:pointer;border-bottom:3px solid #6a1b9a;margin-bottom:-2px;">&#128196; Revisão de Programas</button>
                 <button id="atab-teia" onclick="switchAdminTab('teia')" style="padding:10px 18px;border:none;background:none;font-family:'Nunito',sans-serif;font-size:.85em;font-weight:800;color:#6b7a99;cursor:pointer;border-bottom:3px solid transparent;margin-bottom:-2px;">&#127760; Teia de Congregações</button>
                 <button onclick="adminLogout()" style="margin-left:auto;padding:6px 14px;background:#ffebee;color:#c62828;border:1.5px solid #ef9a9a;border-radius:8px;font-family:'Nunito',sans-serif;font-size:.78em;font-weight:800;cursor:pointer;">Sair</button>
@@ -1419,11 +1378,11 @@ function filterData(items, type) {
     if (!hasFilters) return items;
 
     return items.filter(item => {
-        // Tipo filter — does NOT apply to docentes (they have no "type")
-        if (GF.tipo && type !== 'docentes' && GF.tipo !== type) return false;
+        // Tipo filter
+        if (GF.tipo && GF.tipo !== type) return false;
 
-        // Ano filter — does NOT apply to docentes (no year field on profiles)
-        if (GF.ano && type !== 'docentes') {
+        // Ano filter
+        if (GF.ano) {
             const itemYear = String(item.y || item.yr || '');
             if (itemYear !== GF.ano) return false;
         }
@@ -1431,6 +1390,7 @@ function filterData(items, type) {
         // Programa filter
         if (GF.programa) {
             if (type === 'pesquisa') {
+                // Match by coordenador SIAPE -> find their PPG
                 const prof = DATA.profProfiles[item.s];
                 if (!prof || !prof.ppg || !prof.ppg.includes(GF.programa)) return false;
             } else if (type === 'extensao') {
@@ -1613,7 +1573,6 @@ function initPage(page) {
         case 'pesquisa':          initPesquisa();         break;
         case 'extensao':          initExtensao();         break;
         case 'ppg':               initPPG();              break;
-        case 'docentes':          initDocentes();         break;
         case 'sankey':            initSankey();           break;
         case 'analise-ppg':       initAnalisePPG();       break;
         case 'analise-docentes':  initAnaliseDocentes();  break;
@@ -2120,7 +2079,7 @@ function getDocentesFiltered() {
 
 function renderDocentesFiltered() {
     let base = getDocentesFiltered();
-    const total = Object.keys(DATA.profProfiles).length;
+    const total = Object.keys(profiles).length;
     setCountTag('doc-count-tag', base.length, total);
     showFilterBanner('doc-filter-banner', total, base.length);
 
@@ -2768,56 +2727,36 @@ function closeDocentePanel() {
 // ADMIN LOGIN — Área Administrativa
 // ============================================================
 const ADMIN_CODE = 'UNEMAT2026';
-
 function adminLogin() {
     const val = document.getElementById('admin-code-input').value.trim().toUpperCase();
     const err = document.getElementById('admin-login-err');
-    if (val === ADMIN_CODE) {
-        sessionStorage.setItem('hub_admin_auth', '1');
-        showAdminContent();
-    } else {
-        err.style.display = 'block';
-        document.getElementById('admin-code-input').value = '';
-        document.getElementById('admin-code-input').focus();
-        setTimeout(() => err.style.display = 'none', 3000);
-    }
+    if (val === ADMIN_CODE) { sessionStorage.setItem('hub_admin_auth','1'); showAdminContent(); }
+    else { err.style.display='block'; document.getElementById('admin-code-input').value=''; document.getElementById('admin-code-input').focus(); setTimeout(()=>err.style.display='none',3000); }
 }
-
 function showAdminContent() {
-    document.getElementById('admin-login-box').style.display = 'none';
-    const box = document.getElementById('admin-content-box');
-    box.style.display = 'flex';
-    const iframe = document.getElementById('admin-iframe');
-    if (!iframe.src || iframe.src === window.location.href || iframe.src === '') {
-        iframe.src = 'revisao.html';
-    }
+    document.getElementById('admin-login-box').style.display='none';
+    document.getElementById('admin-content-box').style.display='flex';
+    const f=document.getElementById('admin-iframe');
+    if(!f.src||f.src===window.location.href||f.src==='') f.src='revisao.html';
 }
-
 function adminLogout() {
     sessionStorage.removeItem('hub_admin_auth');
-    document.getElementById('admin-content-box').style.display = 'none';
-    document.getElementById('admin-login-box').style.display = 'block';
-    document.getElementById('admin-code-input').value = '';
+    document.getElementById('admin-content-box').style.display='none';
+    document.getElementById('admin-login-box').style.display='block';
+    document.getElementById('admin-code-input').value='';
 }
-
 function switchAdminTab(tab) {
-    document.getElementById('atab-pane-revisao').style.display = tab === 'revisao' ? 'block' : 'none';
-    document.getElementById('atab-pane-teia').style.display    = tab === 'teia'    ? 'block' : 'none';
-    const on  = 'padding:10px 18px;border:none;background:none;font-family:\'Nunito\',sans-serif;font-size:.85em;font-weight:800;color:#4a148c;cursor:pointer;border-bottom:3px solid #6a1b9a;margin-bottom:-2px;';
-    const off = 'padding:10px 18px;border:none;background:none;font-family:\'Nunito\',sans-serif;font-size:.85em;font-weight:800;color:#6b7a99;cursor:pointer;border-bottom:3px solid transparent;margin-bottom:-2px;';
-    document.getElementById('atab-revisao').style.cssText = tab === 'revisao' ? on : off;
-    document.getElementById('atab-teia').style.cssText    = tab === 'teia'    ? on : off;
-    if (tab === 'teia') {
-        const tf = document.getElementById('admin-teia-iframe');
-        if (!tf.src || tf.src === window.location.href || tf.src === '') tf.src = 'teia_congregacoes.html';
-    }
+    document.getElementById('atab-pane-revisao').style.display=tab==='revisao'?'block':'none';
+    document.getElementById('atab-pane-teia').style.display=tab==='teia'?'block':'none';
+    const on ="padding:10px 18px;border:none;background:none;font-family:'Nunito',sans-serif;font-size:.85em;font-weight:800;color:#4a148c;cursor:pointer;border-bottom:3px solid #6a1b9a;margin-bottom:-2px;";
+    const off="padding:10px 18px;border:none;background:none;font-family:'Nunito',sans-serif;font-size:.85em;font-weight:800;color:#6b7a99;cursor:pointer;border-bottom:3px solid transparent;margin-bottom:-2px;";
+    document.getElementById('atab-revisao').style.cssText=tab==='revisao'?on:off;
+    document.getElementById('atab-teia').style.cssText=tab==='teia'?on:off;
+    if(tab==='teia'){const tf=document.getElementById('admin-teia-iframe');if(!tf.src||tf.src===window.location.href||tf.src==='')tf.src='teia_congregacoes.html';}
 }
-
-document.addEventListener('DOMContentLoaded', function() {
-    document.querySelector('[data-page="admin-revisao"]').addEventListener('click', function() {
-        setTimeout(function() {
-            if (sessionStorage.getItem('hub_admin_auth') === '1') showAdminContent();
-        }, 50);
+document.addEventListener('DOMContentLoaded',function(){
+    document.querySelector('[data-page="admin-revisao"]').addEventListener('click',function(){
+        setTimeout(function(){if(sessionStorage.getItem('hub_admin_auth')==='1')showAdminContent();},50);
     });
 });
 </script>

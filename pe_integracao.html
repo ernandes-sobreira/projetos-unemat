@@ -6,471 +6,698 @@
 <title>Integração P&E — HUB da Pós UNEMAT</title>
 <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&family=Barlow+Condensed:wght@600;700;800&display=swap" rel="stylesheet">
 <style>
-:root{--blue:#1e88e5;--blue-d:#1565c0;--blue-l:#e3f2fd;--green:#2e7d32;--green-l:#e8f5e9;--orange:#ef6c00;--orange-l:#fff3e0;--purple:#6a1b9a;--teal:#00838f;--bg:#f4f7fb;--white:#fff;--border:#e0e7ef;--text:#1a2340;--muted:#6b7a99;--r:14px;--rs:8px;--sh:0 2px 14px rgba(30,136,229,.10);}
+:root{
+  --blue:#1e88e5;--blue-d:#1565c0;--blue-l:#e3f2fd;
+  --green:#2e7d32;--green-l:#e8f5e9;
+  --orange:#ef6c00;--orange-l:#fff3e0;
+  --purple:#6a1b9a;--teal:#00838f;
+  --bg:#f4f7fb;--white:#fff;--border:#e0e7ef;
+  --text:#1a2340;--muted:#6b7a99;
+  --r:14px;--rs:8px;--sh:0 2px 14px rgba(30,136,229,.10);
+}
 *,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
 body{font-family:'Nunito',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;}
-.page-hdr{background:linear-gradient(135deg,#0d47a1 0%,#1e88e5 50%,#2e7d32 100%);padding:20px 26px 16px;color:#fff;}
+
+/* HEADER */
+.page-hdr{background:linear-gradient(135deg,#0d47a1,#1e88e5 55%,#2e7d32);padding:20px 26px 16px;color:#fff;}
 .page-hdr h1{font-family:'Barlow Condensed',sans-serif;font-size:1.9em;font-weight:800;}
 .page-hdr p{font-size:.83em;opacity:.85;margin-top:3px;}
-.kpi-row{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:12px;padding:18px 24px 0;max-width:1400px;margin:0 auto;}
-.kpi-card{background:var(--white);border-radius:var(--r);padding:16px 14px 12px;box-shadow:var(--sh);border:1.5px solid var(--border);text-align:center;position:relative;overflow:hidden;}
+
+/* KPI */
+.kpi-row{display:grid;grid-template-columns:repeat(auto-fill,minmax(148px,1fr));gap:11px;padding:16px 22px 0;max-width:1400px;margin:0 auto;}
+.kpi-card{background:var(--white);border-radius:var(--r);padding:14px 12px 11px;box-shadow:var(--sh);border:1.5px solid var(--border);text-align:center;position:relative;overflow:hidden;}
 .kpi-card::before{content:'';position:absolute;top:0;left:0;right:0;height:4px;}
-.kc-blue::before{background:var(--blue);}.kc-green::before{background:var(--green);}.kc-orange::before{background:var(--orange);}.kc-purple::before{background:var(--purple);}.kc-teal::before{background:var(--teal);}
-.kpi-val{font-family:'Barlow Condensed',sans-serif;font-size:2.2em;font-weight:800;line-height:1;margin-top:4px;}
-.kc-blue .kpi-val{color:var(--blue);}.kc-green .kpi-val{color:var(--green);}.kc-orange .kpi-val{color:var(--orange);}.kc-purple .kpi-val{color:var(--purple);}.kc-teal .kpi-val{color:var(--teal);}
-.kpi-lbl{font-size:.74em;color:var(--muted);margin-top:5px;font-weight:700;line-height:1.3;}
-.main{max-width:1400px;margin:0 auto;padding:18px 24px 50px;}
-.info-box{background:linear-gradient(135deg,var(--blue-l),var(--green-l));border:1.5px solid var(--border);border-radius:var(--r);padding:14px 18px;margin-bottom:16px;font-size:.84em;line-height:1.6;color:var(--text);font-weight:600;}
-.info-box strong{color:var(--blue-d);}
+.kc-b::before{background:var(--blue);}.kc-g::before{background:var(--green);}.kc-o::before{background:var(--orange);}.kc-p::before{background:var(--purple);}.kc-t::before{background:var(--teal);}
+.kpi-val{font-family:'Barlow Condensed',sans-serif;font-size:2em;font-weight:800;line-height:1;margin-top:3px;}
+.kc-b .kpi-val{color:var(--blue);}.kc-g .kpi-val{color:var(--green);}.kc-o .kpi-val{color:var(--orange);}.kc-p .kpi-val{color:var(--purple);}.kc-t .kpi-val{color:var(--teal);}
+.kpi-lbl{font-size:.72em;color:var(--muted);margin-top:4px;font-weight:700;line-height:1.3;}
+
+/* MAIN */
+.main{max-width:1400px;margin:0 auto;padding:16px 22px 50px;}
+
+/* TAB NAV */
+.tab-nav{display:flex;gap:0;margin-bottom:18px;background:var(--white);border-radius:var(--r);border:1.5px solid var(--border);overflow:hidden;box-shadow:var(--sh);}
+.tab-btn{flex:1;padding:13px 10px;border:none;background:none;font-family:'Nunito',sans-serif;font-size:.85em;font-weight:800;color:var(--muted);cursor:pointer;transition:all .18s;border-right:1.5px solid var(--border);display:flex;align-items:center;justify-content:center;gap:7px;}
+.tab-btn:last-child{border-right:none;}
+.tab-btn:hover{background:var(--blue-l);color:var(--blue-d);}
+.tab-btn.active{background:linear-gradient(135deg,var(--blue-l),var(--green-l));color:var(--blue-d);border-bottom:3px solid var(--blue);}
+.tab-pane{display:none;animation:fi .25s ease;}
+.tab-pane.active{display:block;}
+@keyframes fi{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:translateY(0)}}
+
+/* CARD */
 .card{background:var(--white);border-radius:var(--r);padding:18px 20px;box-shadow:var(--sh);border:1.5px solid var(--border);margin-bottom:16px;}
-.card-title{font-size:.75em;font-weight:800;letter-spacing:1.2px;text-transform:uppercase;color:var(--muted);margin-bottom:14px;border-bottom:1.5px solid var(--border);padding-bottom:9px;display:flex;align-items:center;justify-content:space-between;}
-.ctrl-row{display:flex;flex-wrap:wrap;gap:12px;align-items:flex-end;}
-.ctrl-grp{display:flex;flex-direction:column;gap:4px;min-width:140px;}
-.ctrl-grp label{font-size:.72em;font-weight:800;color:var(--muted);letter-spacing:.4px;text-transform:uppercase;}
-.ctrl-grp select,.ctrl-grp input{padding:8px 11px;border:1.5px solid var(--border);border-radius:var(--rs);font-family:'Nunito',sans-serif;font-size:.85em;font-weight:600;color:var(--text);outline:none;background:#fff;}
-.ctrl-grp select:focus,.ctrl-grp input:focus{border-color:var(--blue);}
-.ctrl-grp .lbl-hint{font-size:.68em;color:#9e9e9e;margin-top:2px;font-weight:600;}
-.btn-go{padding:10px 22px;background:linear-gradient(135deg,var(--blue),var(--blue-d));color:#fff;border:none;border-radius:var(--rs);font-family:'Nunito',sans-serif;font-size:.88em;font-weight:800;cursor:pointer;align-self:flex-end;transition:all .18s;}
-.btn-go:hover{background:linear-gradient(135deg,var(--blue-d),#0d47a1);transform:translateY(-1px);}
-.btn-rst{padding:10px 16px;background:#f5f5f5;color:var(--muted);border:1.5px solid var(--border);border-radius:var(--rs);font-family:'Nunito',sans-serif;font-size:.85em;font-weight:800;cursor:pointer;align-self:flex-end;}
-.legend-row{display:flex;gap:18px;flex-wrap:wrap;margin-bottom:12px;align-items:center;}
-.leg{display:flex;align-items:center;gap:6px;font-size:.79em;font-weight:700;}
-.leg-dot{width:13px;height:13px;border-radius:3px;flex-shrink:0;}
-.sankey-wrap{overflow-x:auto;min-height:420px;}
-#sankey-msg{padding:40px;text-align:center;color:var(--muted);font-weight:700;font-size:.9em;display:none;}
-.sk-tip{position:fixed;background:rgba(13,25,60,.93);color:#fff;padding:10px 15px;border-radius:10px;font-size:.8em;font-weight:700;pointer-events:none;z-index:9999;max-width:280px;box-shadow:0 4px 20px rgba(0,0,0,.28);line-height:1.55;display:none;}
-.two-col{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:14px;}
-.rank-item{display:flex;align-items:center;gap:9px;padding:7px 0;border-bottom:1px solid #f0f0f0;}
-.rank-item:last-child{border-bottom:none;}
-.rank-num{font-family:'Barlow Condensed',sans-serif;font-size:1.15em;font-weight:800;color:var(--muted);min-width:22px;text-align:center;}
-.rank-bar-wrap{flex:1;}
-.rank-name{font-size:.81em;font-weight:700;line-height:1.3;margin-bottom:3px;}
-.rank-bar{height:5px;border-radius:4px;}
-.rank-val{font-family:'Barlow Condensed',sans-serif;font-size:.95em;font-weight:800;min-width:32px;text-align:right;}
-.bridge-wrap{overflow-x:auto;max-height:400px;border-radius:var(--rs);border:1.5px solid var(--border);}
-.bt{width:100%;border-collapse:collapse;font-size:.8em;}
-.bt thead th{background:linear-gradient(90deg,#1565c0,#1e88e5);color:#fff;padding:9px 12px;text-align:left;font-weight:800;font-size:.8em;position:sticky;top:0;z-index:2;}
+.card-title{font-size:.75em;font-weight:800;letter-spacing:1.1px;text-transform:uppercase;color:var(--muted);margin-bottom:14px;padding-bottom:9px;border-bottom:1.5px solid var(--border);display:flex;align-items:center;justify-content:space-between;gap:8px;}
+.info-box{background:linear-gradient(135deg,var(--blue-l),var(--green-l));border:1.5px solid var(--border);border-radius:var(--r);padding:12px 16px;margin-bottom:14px;font-size:.83em;line-height:1.6;font-weight:600;}
+.info-box strong{color:var(--blue-d);}
+
+/* HEATMAP */
+.hm-wrap{overflow-x:auto;overflow-y:auto;}
+.hm-table{border-collapse:separate;border-spacing:3px;font-size:.78em;}
+.hm-table th{padding:6px 10px;font-weight:800;font-size:.8em;text-align:center;white-space:nowrap;position:sticky;}
+.hm-table th.area-head{text-align:right;position:sticky;left:0;background:var(--white);z-index:3;min-width:200px;padding-right:12px;color:var(--text);}
+.hm-table th.tema-head{top:0;z-index:2;background:var(--white);writing-mode:horizontal-tb;padding:8px 6px 4px;min-width:90px;}
+.hm-table td.area-label{position:sticky;left:0;background:var(--white);font-weight:700;text-align:right;padding-right:10px;color:var(--text);font-size:.82em;white-space:nowrap;z-index:1;}
+.hm-cell{border-radius:6px;cursor:pointer;transition:transform .15s,box-shadow .15s;text-align:center;padding:10px 4px;min-width:80px;font-weight:800;font-size:.85em;border:2px solid transparent;}
+.hm-cell:hover{transform:scale(1.08);box-shadow:0 3px 14px rgba(0,0,0,.18);border-color:rgba(0,0,0,.15);z-index:10;position:relative;}
+.hm-cell.zero{background:#f5f5f5;color:#bbb;cursor:default;}
+.hm-cell.zero:hover{transform:none;box-shadow:none;}
+
+/* BUBBLE MATRIX */
+.bm-wrap{overflow-x:auto;}
+.bm-svg-wrap svg{display:block;}
+
+/* NETWORK */
+.net-wrap{width:100%;border-radius:var(--rs);border:1.5px solid var(--border);overflow:hidden;background:#f8fafd;position:relative;}
+.net-canvas{width:100%;display:block;}
+.net-legend{display:flex;gap:16px;flex-wrap:wrap;margin-bottom:10px;}
+.net-leg{display:flex;align-items:center;gap:6px;font-size:.79em;font-weight:700;}
+.net-dot{width:12px;height:12px;border-radius:50%;flex-shrink:0;}
+.net-ctrl{display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin-bottom:12px;}
+.net-ctrl select,.net-ctrl input{padding:7px 10px;border:1.5px solid var(--border);border-radius:var(--rs);font-family:'Nunito',sans-serif;font-size:.82em;font-weight:600;color:var(--text);outline:none;background:#fff;}
+.net-ctrl select:focus,.net-ctrl input:focus{border-color:var(--blue);}
+.lbl-hint{font-size:.7em;color:#9e9e9e;font-weight:600;}
+
+/* BRIDGE TABLE */
+.bt{width:100%;border-collapse:collapse;font-size:.79em;}
+.bt thead th{background:linear-gradient(90deg,#1565c0,#1e88e5);color:#fff;padding:9px 12px;text-align:left;font-weight:800;font-size:.79em;position:sticky;top:0;z-index:2;}
 .bt tbody td{padding:7px 12px;border-bottom:1px solid var(--border);vertical-align:middle;}
 .bt tbody tr:hover{background:var(--blue-l);}
 .bt tbody tr:nth-child(even){background:#fafbff;}
 .bt tbody tr:nth-child(even):hover{background:var(--blue-l);}
-.mb{display:inline-flex;align-items:center;gap:6px;}
-.mb-bar{height:7px;border-radius:3px;min-width:3px;}
+.mb{display:inline-flex;align-items:center;gap:5px;}
+.mb-bar{height:7px;border-radius:3px;min-width:3px;flex-shrink:0;}
 .sc{display:inline-block;padding:3px 9px;border-radius:20px;font-size:.72em;font-weight:800;}
 .sc-hi{background:#e8f5e9;color:#2e7d32;}.sc-md{background:#fff3e0;color:#ef6c00;}.sc-lo{background:#f5f5f5;color:#757575;}
-.tema-row{display:flex;flex-wrap:wrap;gap:7px;margin-bottom:12px;}
-.tema-btn{padding:6px 13px;border-radius:20px;font-size:.79em;font-weight:800;cursor:pointer;border:2px solid transparent;transition:all .15s;font-family:'Nunito',sans-serif;}
-.tema-btn:hover{opacity:.85;}
-.tema-btn.active{border-color:rgba(0,0,0,.25);box-shadow:0 2px 8px rgba(0,0,0,.15);}
-.canvas-wrap canvas{max-height:320px;}
-.dl-btn{display:inline-flex;align-items:center;gap:5px;padding:6px 12px;background:var(--green);color:#fff;border:none;border-radius:var(--rs);font-family:'Nunito',sans-serif;font-size:.76em;font-weight:800;cursor:pointer;}
+
+/* TOOLTIP */
+.tip{position:fixed;background:rgba(13,25,60,.94);color:#fff;padding:10px 14px;border-radius:10px;font-size:.8em;font-weight:700;pointer-events:none;z-index:9999;max-width:280px;box-shadow:0 4px 20px rgba(0,0,0,.28);line-height:1.55;display:none;}
+
+/* MODAL */
+.modal-bg{position:fixed;inset:0;background:rgba(20,40,80,.45);z-index:800;display:none;align-items:center;justify-content:center;}
+.modal-bg.open{display:flex;}
+.modal{background:#fff;border-radius:var(--r);padding:26px;max-width:540px;width:95%;max-height:80vh;overflow-y:auto;box-shadow:0 12px 50px rgba(0,0,0,.25);}
+.modal h2{font-family:'Barlow Condensed',sans-serif;font-size:1.3em;font-weight:800;color:var(--blue-d);margin-bottom:12px;}
+.modal-close{float:right;background:none;border:none;font-size:1.4em;cursor:pointer;color:var(--muted);}
+.ppg-pill{display:inline-block;padding:4px 10px;border-radius:20px;background:var(--orange-l);color:var(--orange);border:1.5px solid #ffcc80;font-size:.76em;font-weight:800;margin:3px;}
+
+/* RANK */
+.two-col{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:14px;}
+.rank-item{display:flex;align-items:center;gap:8px;padding:6px 0;border-bottom:1px solid #f0f0f0;}
+.rank-item:last-child{border-bottom:none;}
+.rank-num{font-family:'Barlow Condensed',sans-serif;font-size:1.1em;font-weight:800;color:var(--muted);min-width:20px;text-align:center;}
+.rank-bar-w{flex:1;}
+.rank-name{font-size:.8em;font-weight:700;line-height:1.3;margin-bottom:3px;}
+.rank-bar{height:5px;border-radius:4px;}
+.rank-val{font-family:'Barlow Condensed',sans-serif;font-size:.92em;font-weight:800;min-width:30px;text-align:right;}
+
+/* BUTTONS */
+.btn{padding:9px 18px;border:none;border-radius:var(--rs);font-family:'Nunito',sans-serif;font-size:.85em;font-weight:800;cursor:pointer;transition:all .18s;}
+.btn-blue{background:linear-gradient(135deg,var(--blue),var(--blue-d));color:#fff;}
+.btn-blue:hover{background:linear-gradient(135deg,var(--blue-d),#0d47a1);}
+.btn-gray{background:#f5f5f5;color:var(--muted);border:1.5px solid var(--border);}
+.btn-gray:hover{background:#e0e7ef;}
+.dl-btn{display:inline-flex;align-items:center;gap:5px;padding:6px 12px;background:var(--green);color:#fff;border:none;border-radius:var(--rs);font-family:'Nunito',sans-serif;font-size:.75em;font-weight:800;cursor:pointer;}
 .dl-btn:hover{background:#1b5e20;}
-@media(max-width:900px){.two-col{grid-template-columns:1fr;}}
+
+@media(max-width:900px){.two-col{grid-template-columns:1fr;}.tab-btn span.t-label{display:none;}}
 </style>
 </head>
 <body>
+
 <div class="page-hdr">
   <h1>🔗 Integração Pesquisa &amp; Extensão — PPG como Ponte</h1>
-  <p>Ferramenta de tomada de decisão: fluxo entre áreas de pesquisa, programas PPG e temas de extensão da UNEMAT</p>
+  <p>Ferramenta de tomada de decisão institucional — UNEMAT · SIGAA 2024+</p>
 </div>
+
 <div class="kpi-row">
-  <div class="kpi-card kc-blue"><div class="kpi-val" id="kv1">172</div><div class="kpi-lbl">Docentes Pesq+Ext+PPG</div></div>
-  <div class="kpi-card kc-green"><div class="kpi-val" id="kv2">433</div><div class="kpi-lbl">Conexões Área → PPG</div></div>
-  <div class="kpi-card kc-orange"><div class="kpi-val" id="kv3">110</div><div class="kpi-lbl">Conexões PPG → Extensão</div></div>
-  <div class="kpi-card kc-purple"><div class="kpi-val" id="kv4">166</div><div class="kpi-lbl">Áreas de Pesquisa Ativas</div></div>
-  <div class="kpi-card kc-teal"><div class="kpi-val">8</div><div class="kpi-lbl">Temas de Extensão</div></div>
+  <div class="kpi-card kc-b"><div class="kpi-val">172</div><div class="kpi-lbl">Docentes Pesq+Ext+PPG</div></div>
+  <div class="kpi-card kc-g"><div class="kpi-val">433</div><div class="kpi-lbl">Conexões Área→PPG</div></div>
+  <div class="kpi-card kc-o"><div class="kpi-val">110</div><div class="kpi-lbl">Conexões PPG→Extensão</div></div>
+  <div class="kpi-card kc-p"><div class="kpi-val">166</div><div class="kpi-lbl">Áreas de Pesquisa</div></div>
+  <div class="kpi-card kc-t"><div class="kpi-val">8</div><div class="kpi-lbl">Temas de Extensão</div></div>
 </div>
+
 <div class="main">
 
-<div class="info-box">
-  <strong>Como ler este Sankey:</strong> À <strong>esquerda</strong> estão as áreas de pesquisa; ao <strong>centro</strong> os PPGs (pontes institucionais); à <strong>direita</strong> os temas de extensão. A <strong>espessura</strong> de cada faixa = força da conexão (soma das atividades que se cruzam). PPGs com fluxo espesso dos dois lados são candidatos prioritários para novos programas de extensão integrados. Passe o mouse sobre qualquer nó ou faixa para ver os detalhes.
+<!-- TAB NAV -->
+<div class="tab-nav">
+  <button class="tab-btn active" onclick="showTab('heatmap',this)">🔥 <span class="t-label">Heatmap</span></button>
+  <button class="tab-btn" onclick="showTab('bubbles',this)">🫧 <span class="t-label">Matriz de Bolhas</span></button>
+  <button class="tab-btn" onclick="showTab('network',this)">🕸 <span class="t-label">Rede de Nós</span></button>
+  <button class="tab-btn" onclick="showTab('ranking',this)">🏛 <span class="t-label">Ranking PPGs</span></button>
 </div>
 
-<div class="card">
-  <div class="card-title"><span>⚙ Filtros do Sankey</span></div>
-  <div class="ctrl-row">
-    <div class="ctrl-grp">
-      <label>Nº de Áreas de Pesquisa</label>
-      <select id="c-areas">
-        <option value="10">Top 10</option>
-        <option value="15" selected>Top 15</option>
-        <option value="20">Top 20</option>
-        <option value="9999">Todas (lento)</option>
-      </select>
-      <div class="lbl-hint">Seleciona as N áreas com mais projetos de pesquisa</div>
+<!-- TAB 1: HEATMAP -->
+<div id="tab-heatmap" class="tab-pane active">
+  <div class="info-box"><strong>Heatmap:</strong> Cada célula mostra quantos docentes fazem a ponte entre aquela área de pesquisa (linha) e aquele tema de extensão (coluna) via PPG. Cores mais intensas = conexão mais forte. <strong>Clique em qualquer célula</strong> para ver quais PPGs fazem essa ponte.</div>
+  <div class="card">
+    <div class="card-title"><span>🔥 Heatmap — Área de Pesquisa × Tema de Extensão</span>
+      <div style="display:flex;gap:8px;align-items:center">
+        <span style="font-size:.75em;font-weight:700;color:var(--muted)">Intensidade:</span>
+        <div id="hm-legend" style="display:flex;gap:4px;align-items:center"></div>
+      </div>
     </div>
-    <div class="ctrl-grp">
-      <label>Nº de PPGs</label>
-      <select id="c-ppg">
-        <option value="10">Top 10</option>
-        <option value="15" selected>Top 15</option>
-        <option value="20">Top 20</option>
-        <option value="9999">Todos</option>
-      </select>
-      <div class="lbl-hint">PPGs com maior volume de conexões P+E</div>
-    </div>
-    <div class="ctrl-grp">
-      <label>Tema de Extensão</label>
-      <select id="c-tema">
-        <option value="">Todos os temas</option>
-      </select>
-      <div class="lbl-hint">Foca o Sankey em um tema específico</div>
-    </div>
-    <div class="ctrl-grp">
-      <label>Campus</label>
-      <select id="c-campus">
-        <option value="">Todos os campus</option>
-        <option value="CAC">Cáceres (CAC)</option>
-        <option value="BBG">Barra do Bugres (BBG)</option>
-        <option value="SNP">Sinop (SNP)</option>
-        <option value="TGA">Tangará da Serra (TGA)</option>
-        <option value="AFL">Alta Floresta (AFL)</option>
-      </select>
-      <div class="lbl-hint">Filtra PPGs por campus</div>
-    </div>
-    <div class="ctrl-grp" style="min-width:100px;max-width:120px">
-      <label>Força mínima</label>
-      <input type="number" id="c-min" value="1" min="1" max="50">
-      <div class="lbl-hint">Oculta conexões fracas. 1 = mostra tudo</div>
-    </div>
-    <button class="btn-go" onclick="renderSankey()">🔄 Atualizar</button>
-    <button class="btn-rst" onclick="resetAll()">↺ Reset</button>
+    <div class="hm-wrap" id="hm-wrap"></div>
+  </div>
+  <div class="two-col">
+    <div class="card"><div class="card-title"><span>🔍 Top Áreas de Pesquisa</span></div><div id="rank-areas"></div></div>
+    <div class="card"><div class="card-title"><span>🌎 Top Temas de Extensão</span></div><div id="rank-temas"></div></div>
   </div>
 </div>
 
-<div class="card" style="margin-bottom:8px">
-  <div class="card-title"><span>🎯 Filtro rápido por tema — clique para focar</span></div>
-  <div class="tema-row" id="tema-row"></div>
-</div>
-
-<div class="legend-row">
-  <div class="leg"><div class="leg-dot" style="background:#1e88e5"></div>Áreas de Pesquisa</div>
-  <div class="leg"><div class="leg-dot" style="background:#ef6c00"></div>Programas PPG (Ponte)</div>
-  <div class="leg"><div class="leg-dot" style="background:#2e7d32"></div>Temas de Extensão</div>
-  <div class="leg" style="color:var(--muted);font-size:.77em">Espessura = força da conexão (nº de atividades cruzadas)</div>
-</div>
-
-<div class="card">
-  <div class="card-title">
-    <span>📊 Sankey: Pesquisa → PPG → Extensão</span>
-    <button class="dl-btn" onclick="exportSVG()">⬇ Exportar SVG</button>
-  </div>
-  <div class="sankey-wrap" id="sankey-wrap">
-    <div id="sankey-msg">Nenhum dado com os filtros atuais. Tente reduzir a força mínima ou ampliar os filtros.</div>
+<!-- TAB 2: BUBBLE MATRIX -->
+<div id="tab-bubbles" class="tab-pane">
+  <div class="info-box"><strong>Matriz de Bolhas:</strong> Cada bolha representa a força da conexão entre uma área de pesquisa e um tema de extensão. O tamanho da bolha é proporcional ao número de docentes que fazem essa ponte. <strong>Clique em qualquer bolha</strong> para ver os detalhes.</div>
+  <div class="card">
+    <div class="card-title"><span>🫧 Matriz de Bolhas — Top 15 Áreas × Temas</span></div>
+    <div class="bm-wrap" id="bm-wrap"></div>
   </div>
 </div>
 
-<div class="two-col">
-  <div class="card"><div class="card-title"><span>🔍 Top Áreas de Pesquisa</span></div><div id="rank-areas"></div></div>
-  <div class="card"><div class="card-title"><span>🌎 Top Temas de Extensão</span></div><div id="rank-temas"></div></div>
-</div>
-
-<div class="card">
-  <div class="card-title"><span>🏛 Ranking de PPGs como Pontes Institucionais — Ferramenta de Decisão</span></div>
-  <div style="font-size:.78em;color:var(--muted);font-weight:700;margin-bottom:10px">
-    ⚡ <strong>Força de Ponte</strong> = fluxo de pesquisa que entra no PPG + fluxo de extensão que sai. Quanto maior, mais o PPG integra pesquisa e extensão. PPGs com score Alto são candidatos prioritários para novos programas de extensão integrados.
+<!-- TAB 3: NETWORK -->
+<div id="tab-network" class="tab-pane">
+  <div class="info-box"><strong>Rede de Nós:</strong> <span style="color:#1e88e5;font-weight:800">●</span> Áreas de pesquisa — <span style="color:#ef6c00;font-weight:800">●</span> PPGs (pontes) — <span style="color:#2e7d32;font-weight:800">●</span> Temas de extensão. O tamanho do nó indica a força total de conexão. <strong>Arraste</strong> os nós, <strong>clique</strong> para detalhes, <strong>scroll</strong> para zoom.</div>
+  <div class="card">
+    <div class="card-title"><span>🕸 Rede de Integração P&amp;E</span>
+      <div style="display:flex;gap:8px">
+        <button class="btn btn-gray" onclick="resetNetwork()" style="font-size:.75em;padding:5px 12px">↺ Reset</button>
+        <button class="dl-btn" onclick="exportNetwork()">⬇ SVG</button>
+      </div>
+    </div>
+    <div class="net-legend">
+      <div class="net-leg"><div class="net-dot" style="background:#1e88e5"></div>Áreas de Pesquisa</div>
+      <div class="net-leg"><div class="net-dot" style="background:#ef6c00"></div>Programas PPG</div>
+      <div class="net-leg"><div class="net-dot" style="background:#2e7d32"></div>Temas de Extensão</div>
+      <div class="net-leg" style="color:var(--muted);font-size:.76em">Espessura da aresta = força da conexão</div>
+    </div>
+    <div class="net-ctrl">
+      <div style="display:flex;flex-direction:column;gap:3px">
+        <label style="font-size:.72em;font-weight:800;color:var(--muted);text-transform:uppercase">Força mínima</label>
+        <input type="range" id="net-min-range" min="1" max="30" value="5" style="width:140px" oninput="document.getElementById('net-min-val').textContent=this.value;initNetwork()">
+        <span class="lbl-hint">Atual: <strong id="net-min-val">5</strong> — reduzir mostra mais conexões</span>
+      </div>
+      <div style="display:flex;flex-direction:column;gap:3px">
+        <label style="font-size:.72em;font-weight:800;color:var(--muted);text-transform:uppercase">Mostrar rótulos</label>
+        <select id="net-labels" onchange="initNetwork()" style="max-width:150px">
+          <option value="all">Todos</option>
+          <option value="ppg" selected>Só PPGs</option>
+          <option value="none">Nenhum</option>
+        </select>
+      </div>
+    </div>
+    <div class="net-wrap">
+      <canvas id="net-canvas" class="net-canvas" height="560"></canvas>
+    </div>
   </div>
-  <div class="bridge-wrap">
-    <table class="bt">
-      <thead><tr><th>#</th><th>Programa PPG</th><th>Campus</th><th>Nível</th><th>← Pesquisa</th><th>Extensão →</th><th>Força de Ponte</th><th>Score</th></tr></thead>
-      <tbody id="bridge-tbody"></tbody>
-    </table>
+</div>
+
+<!-- TAB 4: RANKING -->
+<div id="tab-ranking" class="tab-pane">
+  <div class="info-box"><strong>Força de Ponte</strong> = fluxo de pesquisa que entra no PPG + fluxo de extensão que sai. PPGs com score <strong>Alto</strong> integram mais pesquisa e extensão e são candidatos prioritários para novos programas integrados. Clique em qualquer linha para ver os detalhes do programa.</div>
+  <div class="card">
+    <div class="card-title"><span>🏛 Ranking de PPGs como Pontes Institucionais</span></div>
+    <div style="overflow-x:auto;max-height:520px;border-radius:var(--rs);border:1.5px solid var(--border)">
+      <table class="bt"><thead><tr>
+        <th>#</th><th>Programa PPG</th><th>Campus</th><th>Nível</th>
+        <th>← Pesquisa</th><th>Extensão →</th><th>Força de Ponte</th><th>Score</th>
+      </tr></thead><tbody id="bridge-tbody"></tbody></table>
+    </div>
   </div>
 </div>
 
-<div class="card">
-  <div class="card-title"><span>📊 Força de Conexão por Tema de Extensão</span></div>
-  <div class="canvas-wrap"><canvas id="chart-tema"></canvas></div>
+</div><!-- /main -->
+
+<!-- MODAL -->
+<div class="modal-bg" id="modal-bg" onclick="if(event.target===this)closeModal()">
+  <div class="modal">
+    <button class="modal-close" onclick="closeModal()">✕</button>
+    <h2 id="modal-title"></h2>
+    <div id="modal-body"></div>
+  </div>
 </div>
 
-</div>
-<div class="sk-tip" id="sk-tip"></div>
+<div class="tip" id="tip"></div>
 
 <script src="https://cdn.jsdelivr.net/npm/d3@7"></script>
-<script src="https://cdn.jsdelivr.net/npm/d3-sankey@0.12.3/dist/d3-sankey.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
 <script>
-const PE = {"links_ap":{"Ensino|||BBG-PPGECII":13,"Enfermagem de Sa\u00fade P\u00fablica|||BBG-PPGECII":6,"Sa\u00fade P\u00fablica|||BBG-PPGECII":5,"Ensino|||BBG-PPGECM":23,"Enfermagem de Sa\u00fade P\u00fablica|||BBG-PPGECM":1,"Sa\u00fade P\u00fablica|||BBG-PPGECM":1,"Extens\u00e3o Rural|||TGA-PPGASP":2,"Ci\u00eancias Cont\u00e1beis|||TGA-PPGASP":2,"Fertilidade do Solo e Aduba\u00e7\u00e3o|||TGA-PPGASP":5,"Administra\u00e7\u00e3o de Setores Espec\u00edficos|||TGA-PPGASP":2,"Planejamento Educacional|||SNP-PPGLETRAS":1,"Teoria Liter\u00e1ria|||SNP-PPGLETRAS":11,"Literatura Comparada|||SNP-PPGLETRAS":3,"Literatura Brasileira|||SNP-PPGLETRAS":7,"Cr\u00edtica da Arte|||SNP-PPGLETRAS":4,"Matologia|||AFL-PPGBIOAGRO":20,"Literatura Comparada|||TGA-PPGEL":2,"Teoria e An\u00e1lise Lingu\u00edstica|||CAC-PPGL":29,"Microbiologia Industrial e de Fermenta\u00e7\u00e3o|||TGA-PPGASP":1,"Microbiologia Agr\u00edcola|||TGA-PPGASP":2,"Entomologia Agr\u00edcola|||TGA-PPGASP":2,"Ecofisiologia Vegetal|||TGA-PPGASP":1,"Microbiologia Industrial e de Fermenta\u00e7\u00e3o|||TGA-PROFBIO":1,"Microbiologia Agr\u00edcola|||TGA-PROFBIO":1,"Entomologia Agr\u00edcola|||TGA-PROFBIO":2,"Ecofisiologia Vegetal|||TGA-PROFBIO":1,"Fitotecnia|||AFL-PPGBIOAGRO":1,"Manejo e Conserva\u00e7\u00e3o de Pastagens|||AFL-PPGBIOAGRO":1,"Sementes Florestais|||AFL-PPGBIOAGRO":4,"Pavimentos|||CAC-PPGGEO":2,"Hidrogeologia|||CAC-PPGGEO":2,"Geografia Pol\u00edtica|||CAC-PPGGEO":6,"Ecologia de Ecossistemas|||CAC-PPGGEO":1,"Pavimentos|||PROFAGUA":2,"Hidrogeologia|||PROFAGUA":1,"Geografia Pol\u00edtica|||PROFAGUA":1,"Ecologia de Ecossistemas|||PROFAGUA":9,"Teoria Liter\u00e1ria|||SNP-PROFLETRAS":3,"Literatura Brasileira|||SNP-PROFLETRAS":3,"Extens\u00e3o Rural|||NVX-PPGEC":2,"Manejo e Tratos Culturais|||NVX-PPGEC":2,"Agrometeorologia|||NVX-PPGEC":1,"Ecologia Aplicada|||NVX-PPGEC":1,"Educa\u00e7\u00e3o Permanente|||SNP-PROFNIT":1,"Multidisciplinar|||SNP-PROFNIT":4,"Ci\u00eancias Cont\u00e1beis|||SNP-PROFNIT":10,"Pol\u00edtica Educacional|||SNP-PROFNIT":1,"Teoria e An\u00e1lise Lingu\u00edstica|||SNP-PROFLETRAS":2,"Administra\u00e7\u00e3o de Setores Espec\u00edficos|||SNP-PROFNIT":1,"Sa\u00fade P\u00fablica|||SNP-PROFNIT":1,"Pol\u00edtica e Planejamento Governamentais|||SNP-PROFNIT":1,"Teoria e An\u00e1lise Lingu\u00edstica|||PROFAGUA":1,"Taxonomia de Cript\u00f3gamos|||PROFAGUA":1,"Entomologia e Malacologia de Parasitos e Vetores|||TGA-PROFBIO":2,"Jornalismo Especializado (Comunit\u00e1rio, Rural, Empresarial, Cient\u00edfico)|||BBG-PPGECII":2,"Tecnologia Educacional|||BBG-PPGECII":2,"Jornalismo e Editora\u00e7\u00e3o|||BBG-PPGECII":1,"Hist\u00f3ria do Brasil Col\u00f4nia|||CAC-PPGEDU":2,"Sociologia Jur\u00eddica|||CAC-PPGEDU":2,"L\u00edngua Portuguesa|||CAC-PPGEDU":2,"Letras|||CAC-PPGEDU":1,"Direito|||CAC-PPGEDU":1,"Entomologia e Malacologia de Parasitos e Vetores|||CAC-PPGCA":14,"Sa\u00fade P\u00fablica|||CAC-PPGCA":4,"Helmintologia Animal|||CAC-PPGCA":2,"Enfermagem de Sa\u00fade P\u00fablica|||CAC-PPGCA":6,"Ecologia Aplicada|||CAC-PPGCA":7,"M\u00e9todos e T\u00e9cnicas de Ensino|||SNP-PROFEI":11,"Educa\u00e7\u00e3o Permanente|||SNP-PROFEI":1,"Hist\u00f3ria da Educa\u00e7\u00e3o|||SNP-PROFEI":1,"Pol\u00edtica Educacional|||SNP-PROFEI":1,"Literaturas Estrangeiras Modernas|||SNP-PPGLETRAS":2,"Teoria Liter\u00e1ria|||TGA-PPGEL":10,"Literatura Brasileira|||TGA-PPGEL":4,"Literaturas Estrangeiras Modernas|||TGA-PPGEL":3,"Classes Sociais e Grupos de Interesse|||CAC-PPGCA":1,"Hidrogeografia|||CAC-PPGCA":3,"Curr\u00edculos Espec\u00edficos para N\u00edveis e Tipos de Educa\u00e7\u00e3o|||CAC-PPGCA":1,"Classes Sociais e Grupos de Interesse|||CAC-PPGGEO":1,"Hidrogeografia|||CAC-PPGGEO":15,"Curr\u00edculos Espec\u00edficos para N\u00edveis e Tipos de Educa\u00e7\u00e3o|||CAC-PPGGEO":1,"Lingu\u00edstica Aplicada|||CAC-PPGL":4,"Arquitetura de Sistemas de Computa\u00e7\u00e3o|||AIA-PROFEDUCATEC":2,"Saneamento B\u00e1sico/Esgotos/Reator Anaer\u00f3bico|||AIA-PROFEDUCATEC":1,"Software B\u00e1sico|||AIA-PROFEDUCATEC":1,"Banco de Dados|||AIA-PROFEDUCATEC":2,"Ecologia de Ecossistemas|||CAC-PPGCA":6,"Educa\u00e7\u00e3o Permanente|||BBG-PPGECII":2,"An\u00e1lise Regional|||CAC-PPGGEO":9,"Geografia da Popula\u00e7\u00e3o|||CAC-PPGGEO":3,"Fotogeografia (F\u00edsico-Ecol\u00f3gica)|||CAC-PPGGEO":13,"Direito Constitucional|||SNP-PROFNIT":2,"Ensino|||SNP-PROFNIT":1,"Paleobot\u00e2nica|||CAC-PPGCA":1,"Entomologia Agr\u00edcola|||CAC-PPGCA":1,"Sistemas de Informa\u00e7\u00e3o|||AIA-PROFEDUCATEC":1,"Processamento Gr\u00e1fico (Graphics)|||AIA-PROFEDUCATEC":1,"Sensoriamento Remoto|||BIONORTE":1,"Sensoriamento Remoto|||SNP-PROFNIT":1,"Hist\u00f3ria da Arte|||BBG-PPGECII":3,"Administra\u00e7\u00e3o Municipal e Urbana|||BBG-PPGECII":2,"Hist\u00f3ria do Brasil Rep\u00fablica|||BBG-PPGECII":1,"Hist\u00f3ria da Arte|||CAC-PROFHISTORIA":1,"Administra\u00e7\u00e3o Municipal e Urbana|||CAC-PROFHISTORIA":1,"Ensino|||CAC-PROFHISTORIA":1,"Hist\u00f3ria do Brasil Rep\u00fablica|||CAC-PROFHISTORIA":2,"Ecologia Aplicada|||BIONORTE":1,"Ecologia Te\u00f3rica|||BIONORTE":1,"Ecologia Te\u00f3rica|||CAC-PPGCA":1,"Direito Constitucional|||AIA-PROFEDUCATEC":1,"Floricultura|||CAC-PGMP":15,"Floricultura|||REDEPROCENTRO":12,"Planejamento Educacional|||SNP-PROFEI":4,"Tecnologia e Inova\u00e7\u00e3o|||SNP-PROFEI":3,"Educa\u00e7\u00e3o de Adultos|||SNP-PROFEI":4,"M\u00e9todos e T\u00e9cnicas de Ensino|||SNP-PROFMAT":2,"Planejamento Educacional|||SNP-PROFMAT":5,"Tecnologia e Inova\u00e7\u00e3o|||SNP-PROFMAT":1,"Educa\u00e7\u00e3o de Adultos|||SNP-PROFMAT":1,"Tecnologia Educacional|||BBG-PPGECM":3,"Hist\u00f3ria da Arte|||BBG-PPGECM":1,"Administra\u00e7\u00e3o Municipal e Urbana|||BBG-PPGECM":1,"Ensino|||SNP-PROFLETRAS":2,"Tecnologia Educacional|||SNP-PROFLETRAS":1,"Hist\u00f3ria da Arte|||SNP-PROFLETRAS":1,"Administra\u00e7\u00e3o Municipal e Urbana|||SNP-PROFLETRAS":1,"M\u00e9todos e T\u00e9cnicas de Ensino|||BBG-PPGECM":10,"Educa\u00e7\u00e3o Permanente|||BBG-PPGECM":1,"M\u00e9todos e Modelos Matem\u00e1ticos, Econom\u00e9tricos e Estat\u00edsticos|||SNP-PROFNIT":4,"Contabilidade e Finan\u00e7as P\u00fablicas|||SNP-PROFNIT":4,"Aspectos Sociais do Planejamento Urbano e Regional|||SNP-PROFNIT":2,"Sa\u00fade P\u00fablica|||TGA-PROFBIO":4,"Ensino|||AIA-PROFEDUCATEC":2,"M\u00e9todos e T\u00e9cnicas de Ensino|||AIA-PROFEDUCATEC":2,"Ensino|||PPGREAMEC":2,"M\u00e9todos e T\u00e9cnicas de Ensino|||PPGREAMEC":2,"Conserva\u00e7\u00e3o das Esp\u00e9cies Animais|||TGA-PPGASP":3,"Ecologia Aplicada|||TGA-PPGASP":2,"Melhoramento Vegetal|||REDEPROCENTRO":14,"Fitopatologia|||REDEPROCENTRO":3,"Agronomia|||REDEPROCENTRO":3,"Melhoramento Vegetal|||TGA-PPGASP":2,"Fitopatologia|||TGA-PPGASP":1,"Agronomia|||TGA-PPGASP":1,"Ensino|||BBG-PROFMAT":13,"Fertilidade do Solo e Aduba\u00e7\u00e3o|||NVX-PPGEC":4,"Ecologia de Ecossistemas|||NVX-PPGEC":3,"Materiais e Componentes de Constru\u00e7\u00e3o|||NVX-PPGEC":1,"Ecofisiologia Vegetal|||AFL-PPGBIOAGRO":2,"Biologia Geral|||AFL-PPGBIOAGRO":1,"Orienta\u00e7\u00e3o Educacional|||AFL-PPGBIOAGRO":1,"Bot\u00e2nica|||AFL-PPGBIOAGRO":1,"Ecologia|||NVX-PPGEC":1,"Curr\u00edculos Espec\u00edficos para N\u00edveis e Tipos de Educa\u00e7\u00e3o|||SNP-PROFSOCIO":1,"Educa\u00e7\u00e3o Pr\u00e9-Escolar|||SNP-PROFSOCIO":2,"Teoria Geral de Planejamento e Desenvolvimento Curricular|||SNP-PROFSOCIO":2,"Pol\u00edticas P\u00fablicas|||SNP-PROFSOCIO":4,"Administra\u00e7\u00e3o de Unidades Educativas|||TGA-PPGASP":1,"Melhoramento Vegetal|||CAC-PGMP":26,"Agronomia|||CAC-PGMP":2,"Educa\u00e7\u00e3o Especial|||SNP-PROFEI":3,"Interpreta\u00e7\u00e3o Teatral|||SNP-PROFEI":1,"An\u00e1lise de Algoritmos e Complexidade de Computa\u00e7\u00e3o|||SNP-PROFEI":1,"Processos da Comunica\u00e7\u00e3o|||SNP-PROFEI":1,"Engenharia de Software|||CAC-PPGL":1,"Processamento Gr\u00e1fico (Graphics)|||PROFAGUA":2,"Hidrologia|||PROFAGUA":5,"Saneamento B\u00e1sico/Esgotos/Reator Anaer\u00f3bico|||PROFAGUA":1,"Cartografia B\u00e1sica|||PROFAGUA":2,"Transmiss\u00e3o da Energia El\u00e9trica, Distribui\u00e7\u00e3o da Energia El\u00e9trica|||PROFAGUA":1,"Processamento Gr\u00e1fico (Graphics)|||SNP-PROFMAT":2,"Hidrologia|||SNP-PROFMAT":1,"Saneamento B\u00e1sico/Esgotos/Reator Anaer\u00f3bico|||SNP-PROFMAT":1,"Cartografia B\u00e1sica|||SNP-PROFMAT":1,"Transmiss\u00e3o da Energia El\u00e9trica, Distribui\u00e7\u00e3o da Energia El\u00e9trica|||SNP-PROFMAT":1,"Ci\u00eancias Ambientais|||CAC-PPGCA":3,"Hidrologia|||CAC-PPGCA":1,"Economia dos Recursos Naturais|||CAC-PPGCA":1,"Ci\u00eancias Ambientais|||PROFAGUA":5,"Ecologia Aplicada|||PROFAGUA":3,"Economia dos Recursos Naturais|||PROFAGUA":2,"Geoecologia|||CAC-PPGGEO":3,"Servi\u00e7os Urbanos e Regionais|||CAC-PPGGEO":1,"M\u00e9todos e T\u00e9cnicas de Ensino|||TGA-PROFBIO":2,"Direitos Especiais|||TGA-PROFBIO":1,"Economia do Consumidor|||CBA-PROFNIT":1,"M\u00e9todos e Modelos Matem\u00e1ticos, Econom\u00e9tricos e Estat\u00edsticos|||CBA-PROFNIT":1,"Hist\u00f3ria Regional do Brasil|||CAC-PROFHISTORIA":3,"Tecnologia Educacional|||CAC-PROFHISTORIA":1,"Hist\u00f3ria do Brasil Col\u00f4nia|||CAC-PROFHISTORIA":1,"Multidisciplinar|||BBG-PPGECM":6,"Planejamento e Projetos da Edifica\u00e7\u00e3o|||BBG-PPGECM":1,"Biologia Molecular|||BBG-PPGECM":1,"Multidisciplinar|||CBA-PROFNIT":6,"M\u00e9todos e T\u00e9cnicas de Ensino|||CBA-PROFNIT":2,"Planejamento e Projetos da Edifica\u00e7\u00e3o|||CBA-PROFNIT":1,"Biologia Molecular|||CBA-PROFNIT":2,"Ensino|||CBA-PROFNIT":1,"Literatura Brasileira|||CAC-PPGL":1,"Lingu\u00edstica|||CAC-PPGL":2,"Servi\u00e7os Urbanos e Regionais|||PROFAGUA":1,"Arquitetura de Sistemas de Computa\u00e7\u00e3o|||PROFAGUA":1,"Educa\u00e7\u00e3o Especial|||SNP-PPGLETRAS":2,"Literatura Comparada|||SNP-PROFLETRAS":2,"Cr\u00edtica da Arte|||SNP-PROFLETRAS":1,"Economia dos Programas de Bem-Estar Social|||SNP-PROFNIT":1,"Fertilidade do Solo e Aduba\u00e7\u00e3o|||AFL-PPGBIOAGRO":10,"Manejo e Tratos Culturais|||AFL-PPGBIOAGRO":1,"Gen\u00e9tica Vegetal|||CAC-PGMP":1,"Fitotecnia|||CAC-PGMP":1,"Gen\u00e9tica Vegetal|||REDEPROCENTRO":2,"Fitotecnia|||REDEPROCENTRO":1,"Teoria Antropol\u00f3gica|||SNP-PROFEI":4,"Educa\u00e7\u00e3o|||SNP-PROFEI":2,"Teoria Geral de Planejamento e Desenvolvimento Curricular|||SNP-PROFEI":1,"Anatomia Vegetal|||AFL-PPGBIOAGRO":2,"Ci\u00eancias Ambientais|||AFL-PPGBIOAGRO":2,"Educa\u00e7\u00e3o|||AFL-PPGBIOAGRO":1,"M\u00e9todos e T\u00e9cnicas de Ensino|||CAC-PPGEDU":8,"Hist\u00f3ria da Educa\u00e7\u00e3o|||CAC-PPGEDU":2,"Geografia da Popula\u00e7\u00e3o|||CAC-PPGEDU":1,"Outras Sociologias Espec\u00edficas|||CAC-PPGEDU":2,"Pol\u00edtica Educacional|||CAC-PPGEDU":1,"M\u00e9todos e T\u00e9cnicas de Ensino|||CAC-PROFHISTORIA":8,"Hist\u00f3ria da Educa\u00e7\u00e3o|||CAC-PROFHISTORIA":2,"Geografia da Popula\u00e7\u00e3o|||CAC-PROFHISTORIA":1,"Outras Sociologias Espec\u00edficas|||CAC-PROFHISTORIA":1,"Pol\u00edtica Educacional|||CAC-PROFHISTORIA":1,"Cr\u00edtica da Arte|||TGA-PPGEL":2,"Biologia Molecular|||SNP-PROFMAT":1,"Automa\u00e7\u00e3o Eletr\u00f4nica de Processos El\u00e9tricos e Industriais|||SNP-PROFMAT":2,"Controle de Processos Eletr\u00f4nicos, Retroalimenta\u00e7\u00e3o|||SNP-PROFMAT":1,"Gen\u00e9tica Vegetal|||CBA-PROFNIT":1,"Morfologia dos Grupos Recentes|||CBA-PROFNIT":1,"Gen\u00e9tica Animal|||CBA-PROFNIT":1,"Gen\u00e9tica Vegetal|||NVX-PPGEC":1,"Biologia Molecular|||NVX-PPGEC":2,"Multidisciplinar|||NVX-PPGEC":1,"Morfologia dos Grupos Recentes|||NVX-PPGEC":1,"Gen\u00e9tica Animal|||NVX-PPGEC":1,"Biologia Molecular|||REDEPROCENTRO":1,"Multidisciplinar|||REDEPROCENTRO":1,"Morfologia dos Grupos Recentes|||REDEPROCENTRO":1,"Gen\u00e9tica Animal|||REDEPROCENTRO":1,"Sociolingu\u00edstica e Dialetologia|||CAC-PPGL":2,"L\u00ednguas Ind\u00edgenas|||CAC-PPGL":1,"Letras|||CAC-PPGL":1,"Geografia Pol\u00edtica|||SNP-PROFSOCIO":1,"Outras Sociologias Espec\u00edficas|||SNP-PROFSOCIO":2,"Ci\u00eancias Cont\u00e1beis|||CAC-PROFLETRAS":1,"Hist\u00f3ria Moderna e Contempor\u00e2nea|||SNP-PROFEI":1,"Teoria do Estado|||CAC-PPGL":2,"Extens\u00e3o Rural|||CAC-PPGGEO":1,"Sa\u00fade P\u00fablica|||TGA-PPGASP":11,"Enfermagem de Sa\u00fade P\u00fablica|||TGA-PPGASP":5,"Epidemiologia|||TGA-PPGASP":1,"Pol\u00edtica e Planejamento Governamentais|||TGA-PPGASP":2,"Lingu\u00edstica Aplicada|||SNP-PPGLETRAS":4,"Lingu\u00edstica Aplicada|||SNP-PROFLETRAS":4,"Prote\u00e7\u00e3o Florestal|||AFL-PPGBIOAGRO":5,"Recupera\u00e7\u00e3o de Areas Degradadas|||AFL-PPGBIOAGRO":1,"Equa\u00e7\u00f5es Diferenciais Parciais|||BBG-PROFMAT":2,"Produ\u00e7\u00e3o de Mudas|||CAC-PGMP":4,"Matologia|||CAC-PGMP":1,"Engenharia de Constru\u00e7\u00f5es Rurais|||CAC-PGMP":1,"Fitopatologia|||CAC-PGMP":6,"Produ\u00e7\u00e3o de Mudas|||REDEPROCENTRO":4,"Matologia|||REDEPROCENTRO":3,"Engenharia de Constru\u00e7\u00f5es Rurais|||REDEPROCENTRO":1,"Educa\u00e7\u00e3o Permanente|||CAC-PPGEDU":4,"Sociologia do Conhecimento|||CAC-PPGEDU":2,"Economia dos Programas de Bem-Estar Social|||CAC-PPGEDU":1,"Sociolingu\u00edstica e Dialetologia|||SNP-PPGLETRAS":1,"Sociolingu\u00edstica e Dialetologia|||SNP-PROFLETRAS":1,"Literatura Brasileira|||BBG-PPGECII":1,"Literatura Comparada|||BBG-PPGECII":1,"Endocrinologia|||TGA-PROFBIO":1,"Helmintologia Animal|||TGA-PROFBIO":1,"Alergologia e Imunologia Cl\u00ednica|||TGA-PROFBIO":1,"Ci\u00eancia da Computa\u00e7\u00e3o|||CAC-PPGEDU":1,"Administra\u00e7\u00e3o de Unidades Educativas|||CAC-PPGEDU":1,"Produ\u00e7\u00e3o e Beneficiamento de Sementes|||CAC-PGMP":2,"Produ\u00e7\u00e3o e Beneficiamento de Sementes|||REDEPROCENTRO":2,"Geoecologia|||BBG-PPGECII":1,"Etnologia Ind\u00edgena|||BBG-PPGECII":4,"Geografia Humana|||BBG-PPGECII":3,"Ensino|||CAC-PPGGEO":1,"Etnologia Ind\u00edgena|||CAC-PPGGEO":1,"Geografia Humana|||CAC-PPGGEO":1,"Educa\u00e7\u00e3o Permanente|||PPGREAMEC":1,"Sociologia do Conhecimento|||PPGREAMEC":1,"Avalia\u00e7\u00e3o da Aprendizagem|||BBG-PPGECM":2,"Avalia\u00e7\u00e3o da Aprendizagem|||BBG-PROFMAT":1,"An\u00e1lise Num\u00e9rica|||SNP-PROFMAT":6,"Matem\u00e1tica|||SNP-PROFMAT":3,"Ensino|||SNP-PROFMAT":3,"Curr\u00edculos Espec\u00edficos para N\u00edveis e Tipos de Educa\u00e7\u00e3o|||SNP-PROFEI":3,"Sa\u00fade P\u00fablica|||SNP-PROFEI":1,"Morfologia Externa|||TGA-PROFBIO":1,"Morfologia Vegetal|||TGA-PROFBIO":1,"Arquitetura de Sistemas de Computa\u00e7\u00e3o|||SNP-PROFEI":2,"Software B\u00e1sico|||SNP-PROFEI":1,"Hardware|||SNP-PROFEI":1,"Manejo e Tratos Culturais|||CAC-PGMP":3,"Biologia Molecular|||CAC-PGMP":1,"Microbiologia e Bioqu\u00edmica do Solo|||AFL-PPGBIOAGRO":1,"Agrometeorologia|||AFL-PPGBIOAGRO":1,"Fertilidade do Solo e Aduba\u00e7\u00e3o|||REDEPROCENTRO":5,"Prote\u00e7\u00e3o Florestal|||REDEPROCENTRO":4,"Microbiologia e Bioqu\u00edmica do Solo|||REDEPROCENTRO":1,"Agrometeorologia|||REDEPROCENTRO":1,"Prote\u00e7\u00e3o Florestal|||TGA-PPGASP":2,"Matologia|||TGA-PPGASP":3,"Microbiologia e Bioqu\u00edmica do Solo|||TGA-PPGASP":1,"Agrometeorologia|||TGA-PPGASP":3,"Mec\u00e2nica das Estruturas|||BBG-PPGECM":2,"Irriga\u00e7\u00e3o e Drenagem|||CAC-PPGCA":1,"Qu\u00edmica do Solo|||CAC-PPGCA":1,"Administra\u00e7\u00e3o de Sistemas Educacionais|||CAC-PPGEDU":1,"L\u00edngua Portuguesa|||AIA-PROFEDUCATEC":1,"Teoria e An\u00e1lise Lingu\u00edstica|||AIA-PROFEDUCATEC":1,"Curr\u00edculos Espec\u00edficos para N\u00edveis e Tipos de Educa\u00e7\u00e3o|||CAC-PPGEDU":3,"Geografia Urbana|||CAC-PROFHISTORIA":1,"Sensoriamento Remoto|||AFL-PPGBIOAGRO":2,"Ci\u00eancias Cont\u00e1beis|||BBG-PPGECM":3,"Ci\u00eancias Cont\u00e1beis|||BBG-PROFMAT":3,"Taxonomia dos Grupos Recentes|||REDEPROCENTRO":2,"Comunica\u00e7\u00e3o Visual|||REDEPROCENTRO":1,"Microbiologia Agr\u00edcola|||REDEPROCENTRO":1,"Entomologia Agr\u00edcola|||REDEPROCENTRO":1,"Ecologia Aplicada|||REDEPROCENTRO":1,"Taxonomia dos Grupos Recentes|||TGA-PPGASP":2,"Comunica\u00e7\u00e3o Visual|||TGA-PPGASP":1,"Propriedades Fisico-Mec\u00e2nicas da Madeira|||REDEPROCENTRO":1,"Manejo Florestal|||REDEPROCENTRO":1,"Recursos Florestais e Engenharia Florestal|||REDEPROCENTRO":1,"Multidisciplinar|||BBG-PPGECII":1,"Teoria Antropol\u00f3gica|||CAC-PPGEDU":1,"Banco de Dados|||CAC-PPGEDU":1,"Educa\u00e7\u00e3o de Adultos|||CAC-PPGEDU":3,"Outras Sociologias Espec\u00edficas|||SNP-PROFEI":1,"Banco de Dados|||SNP-PROFEI":1,"Manejo e Tratos Culturais|||REDEPROCENTRO":2,"Matem\u00e1tica|||SNP-PROFEI":1,"Ensino|||SNP-PROFEI":3,"An\u00e1lise Num\u00e9rica|||SNP-PROFEI":1,"Ci\u00eancias Ambientais|||TGA-PPGASP":2,"Administra\u00e7\u00e3o de Setores Espec\u00edficos|||BBG-PPGECII":1,"Pol\u00edtica e Planejamento Governamentais|||BBG-PPGECII":1,"Ci\u00eancias Ambientais|||BBG-PPGECII":1,"Ensino|||TGA-PPGASP":1,"Tecnologia de Produtos de Origem Vegetal|||TGA-PPGASP":7,"Tecnologia Educacional|||TGA-PPGASP":2,"Alimentos|||TGA-PPGASP":2,"Tecnologia Qu\u00edmica|||TGA-PPGASP":1,"Processos Inorg\u00e2nicos|||TGA-PPGASP":1,"L\u00edngua Portuguesa|||BBG-PPGECII":1,"Sa\u00fade P\u00fablica|||CAC-PPGGEO":1,"Educa\u00e7\u00e3o F\u00edsica|||CAC-PPGEDU":6,"Medicina Preventiva|||CAC-PPGEDU":1,"Ecologia Aplicada|||CAC-PPGGEO":1,"Aspectos Sociais do Planejamento Urbano e Regional|||CAC-PPGGEO":1,"Educa\u00e7\u00e3o em Periferias Urbanas|||BBG-PPGECII":2,"Educa\u00e7\u00e3o de Adultos|||BBG-PPGECII":2,"Etnologia Ind\u00edgena|||CAC-PPGEDU":3,"Ensino|||CAC-PPGEDU":2,"Educa\u00e7\u00e3o em Periferias Urbanas|||CAC-PPGEDU":2,"Sociologia Jur\u00eddica|||CAC-PPGL":1,"Fotogeografia (F\u00edsico-Ecol\u00f3gica)|||CAC-PPGCA":10,"An\u00e1lise Regional|||CAC-PPGCA":1,"Geografia da Popula\u00e7\u00e3o|||CAC-PPGCA":1,"Entomologia e Malacologia de Parasitos e Vetores|||CAC-PPGGEO":3,"M\u00e9todos e T\u00e9cnicas de Ensino|||SNP-PROFSOCIO":6,"Administra\u00e7\u00e3o de Setores Espec\u00edficos|||CAC-PPGCA":2,"Ci\u00eancias Cont\u00e1beis|||CAC-PPGCA":1,"Pastagem e Forragicultura|||CAC-PPGCA":1,"Administra\u00e7\u00e3o de Setores Espec\u00edficos|||CAC-PPGEDU":2,"Ci\u00eancias Cont\u00e1beis|||CAC-PPGEDU":1,"Pastagem e Forragicultura|||CAC-PPGEDU":1,"Floricultura|||TGA-PPGASP":4,"Manejo e Tratos Culturais|||TGA-PPGASP":2,"Literatura Brasileira|||CAC-PROFLETRAS":3,"L\u00edngua Portuguesa|||CAC-PROFLETRAS":2,"Letras|||CAC-PROFLETRAS":2,"Teoria Liter\u00e1ria|||CAC-PROFLETRAS":2,"L\u00edngua Portuguesa|||SNP-PPGLETRAS":2,"Letras|||SNP-PPGLETRAS":2,"Zootecnia|||AFL-PPGBIOAGRO":1,"Avalia\u00e7\u00e3o de Alimentos para Animais|||AFL-PPGBIOAGRO":1,"Mec\u00e2nica das Estruturas|||SNP-PROFMAT":2,"Instrumenta\u00e7\u00e3o Espec\u00edfica de Uso Geral em F\u00edsica|||SNP-PROFMAT":1,"Arquitetura de Sistemas de Computa\u00e7\u00e3o|||SNP-PROFMAT":1,"F\u00edsica|||SNP-PROFMAT":1,"Geomorfologia|||NVX-PPGEC":1,"Sociologia Rural|||CAC-PPGCA":1,"Fotogeografia (F\u00edsico-Ecol\u00f3gica)|||PROFAGUA":4,"Sociologia Rural|||PROFAGUA":1,"Tecnologia de Produtos de Origem Vegetal|||BBG-PPGECM":5,"Alimentos|||BBG-PPGECM":1,"Tecnologia Qu\u00edmica|||BBG-PPGECM":1,"Tecnologia de Produtos de Origem Vegetal|||SNP-PROFEI":5,"Tecnologia Educacional|||SNP-PROFEI":2,"Alimentos|||SNP-PROFEI":1,"Tecnologia Qu\u00edmica|||SNP-PROFEI":1,"Planejamento Integrado dos Recursos H\u00eddricos|||PROFAGUA":1,"Matologia|||PROFAGUA":1,"Armazenamento de Produtos Agr\u00edcolas|||PROFAGUA":1,"Irriga\u00e7\u00e3o e Drenagem|||PROFAGUA":1,"Planejamento Integrado dos Recursos H\u00eddricos|||TGA-PPGASP":1,"Hidrologia|||TGA-PPGASP":1,"Armazenamento de Produtos Agr\u00edcolas|||TGA-PPGASP":1,"Irriga\u00e7\u00e3o e Drenagem|||TGA-PPGASP":1,"Entomologia e Malacologia de Parasitos e Vetores|||BBG-PPGECII":5,"Enfermagem|||BBG-PPGECII":1,"Enfermagem|||CAC-PPGCA":1,"Multidisciplinar|||AFL-PPGBIOAGRO":1,"Dendrometria e Invent\u00e1rio Florestal|||AFL-PPGBIOAGRO":1,"Explora\u00e7\u00e3o Florestal|||AFL-PPGBIOAGRO":1,"Geografia Pol\u00edtica|||AFL-PPGBIOAGRO":1,"Outras Sociologias Espec\u00edficas|||AFL-PPGBIOAGRO":1,"Outras Sociologias Espec\u00edficas|||CAC-PPGGEO":1,"Sensoriamento Remoto|||CAC-PPGGEO":1,"Geografia Humana|||CAC-PPGEDU":1,"Interpreta\u00e7\u00e3o Teatral|||SNP-PROFNIT":1,"An\u00e1lise de Algoritmos e Complexidade de Computa\u00e7\u00e3o|||SNP-PROFNIT":1,"Interpreta\u00e7\u00e3o Teatral|||TGA-PPGASP":1,"Direito Constitucional|||TGA-PPGASP":1,"Multidisciplinar|||TGA-PPGASP":1,"An\u00e1lise de Algoritmos e Complexidade de Computa\u00e7\u00e3o|||TGA-PPGASP":1,"Aspectos Sociais do Planejamento Urbano e Regional|||PROFAGUA":1,"M\u00e9todos e T\u00e9cnicas de Ensino|||BBG-PROFMAT":1,"Economia dos Recursos Naturais|||SNP-PROFNIT":4,"Software B\u00e1sico|||SNP-PROFNIT":1},"links_pe":{"BBG-PPGECII|||EDUCA\u00c7\u00c3O":19,"BBG-PPGECM|||EDUCA\u00c7\u00c3O":112,"TGA-PPGASP|||TECNOLOGIA E PRODU\u00c7\u00c3O":32,"SNP-PPGLETRAS|||CULTURA":3,"SNP-PPGLETRAS|||EDUCA\u00c7\u00c3O":37,"AFL-PPGBIOAGRO|||EDUCA\u00c7\u00c3O":13,"TGA-PPGEL|||CULTURA":30,"TGA-PPGEL|||EDUCA\u00c7\u00c3O":20,"TGA-PPGEL|||COMUNICA\u00c7\u00c3O":2,"CAC-PPGL|||EDUCA\u00c7\u00c3O":35,"TGA-PPGASP|||EDUCA\u00c7\u00c3O":9,"TGA-PROFBIO|||EDUCA\u00c7\u00c3O":13,"AFL-PPGBIOAGRO|||TECNOLOGIA E PRODU\u00c7\u00c3O":10,"AFL-PPGBIOAGRO|||MEIO AMBIENTE":16,"CAC-PPGGEO|||MEIO AMBIENTE":12,"PROFAGUA|||MEIO AMBIENTE":6,"SNP-PROFLETRAS|||EDUCA\u00c7\u00c3O":22,"NVX-PPGEC|||TECNOLOGIA E PRODU\u00c7\u00c3O":9,"NVX-PPGEC|||MEIO AMBIENTE":9,"NVX-PPGEC|||EDUCA\u00c7\u00c3O":2,"NVX-PPGEC|||CULTURA":1,"SNP-PROFNIT|||SA\u00daDE":2,"SNP-PROFNIT|||TECNOLOGIA E PRODU\u00c7\u00c3O":7,"SNP-PROFNIT|||TRABALHO":3,"SNP-PROFNIT|||MEIO AMBIENTE":3,"PROFAGUA|||CULTURA":10,"TGA-PROFBIO|||SA\u00daDE":3,"BBG-PPGECII|||COMUNICA\u00c7\u00c3O":3,"CAC-PPGEDU|||DIREITOS HUMANOS E JUSTI\u00c7A":3,"CAC-PPGEDU|||EDUCA\u00c7\u00c3O":35,"CAC-PPGCA|||SA\u00daDE":4,"SNP-PROFEI|||EDUCA\u00c7\u00c3O":93,"CAC-PPGCA|||EDUCA\u00c7\u00c3O":17,"CAC-PPGGEO|||EDUCA\u00c7\u00c3O":35,"CAC-PPGL|||CULTURA":4,"AIA-PROFEDUCATEC|||TECNOLOGIA E PRODU\u00c7\u00c3O":6,"CAC-PPGCA|||MEIO AMBIENTE":8,"BBG-PPGECII|||CULTURA":15,"CAC-PPGGEO|||COMUNICA\u00c7\u00c3O":4,"CAC-PPGGEO|||CULTURA":9,"SNP-PROFNIT|||COMUNICA\u00c7\u00c3O":2,"SNP-PROFNIT|||EDUCA\u00c7\u00c3O":1,"CAC-PPGCA|||COMUNICA\u00c7\u00c3O":1,"AIA-PROFEDUCATEC|||EDUCA\u00c7\u00c3O":7,"BIONORTE|||MEIO AMBIENTE":2,"BBG-PPGECII|||DIREITOS HUMANOS E JUSTI\u00c7A":1,"CAC-PROFHISTORIA|||EDUCA\u00c7\u00c3O":4,"CAC-PROFHISTORIA|||CULTURA":6,"CAC-PROFHISTORIA|||DIREITOS HUMANOS E JUSTI\u00c7A":1,"AIA-PROFEDUCATEC|||DIREITOS HUMANOS E JUSTI\u00c7A":1,"CAC-PGMP|||TECNOLOGIA E PRODU\u00c7\u00c3O":12,"REDEPROCENTRO|||TECNOLOGIA E PRODU\u00c7\u00c3O":15,"SNP-PROFMAT|||EDUCA\u00c7\u00c3O":45,"BBG-PPGECM|||CULTURA":16,"SNP-PROFLETRAS|||CULTURA":10,"TGA-PROFBIO|||TECNOLOGIA E PRODU\u00c7\u00c3O":3,"TGA-PROFBIO|||COMUNICA\u00c7\u00c3O":2,"PPGREAMEC|||EDUCA\u00c7\u00c3O":6,"REDEPROCENTRO|||MEIO AMBIENTE":18,"REDEPROCENTRO|||EDUCA\u00c7\u00c3O":6,"TGA-PPGASP|||MEIO AMBIENTE":4,"BBG-PPGECM|||TECNOLOGIA E PRODU\u00c7\u00c3O":15,"BBG-PROFMAT|||EDUCA\u00c7\u00c3O":21,"BBG-PROFMAT|||TECNOLOGIA E PRODU\u00c7\u00c3O":5,"AFL-PPGBIOAGRO|||CULTURA":5,"SNP-PROFSOCIO|||EDUCA\u00c7\u00c3O":6,"SNP-PROFSOCIO|||CULTURA":2,"TGA-PPGEL|||DIREITOS HUMANOS E JUSTI\u00c7A":1,"TGA-PPGASP|||SA\u00daDE":60,"TGA-PPGASP|||CULTURA":3,"PROFAGUA|||EDUCA\u00c7\u00c3O":9,"PROFAGUA|||TECNOLOGIA E PRODU\u00c7\u00c3O":4,"SNP-PROFMAT|||TECNOLOGIA E PRODU\u00c7\u00c3O":6,"CAC-PPGCA|||CULTURA":3,"CBA-PROFNIT|||TECNOLOGIA E PRODU\u00c7\u00c3O":4,"CBA-PROFNIT|||EDUCA\u00c7\u00c3O":5,"CAC-PPGL|||COMUNICA\u00c7\u00c3O":2,"SNP-PROFLETRAS|||COMUNICA\u00c7\u00c3O":1,"AFL-PPGBIOAGRO|||TRABALHO":1,"CAC-PGMP|||MEIO AMBIENTE":13,"CAC-PGMP|||EDUCA\u00c7\u00c3O":3,"CAC-PPGEDU|||CULTURA":5,"CBA-PROFNIT|||MEIO AMBIENTE":2,"SNP-PROFSOCIO|||DIREITOS HUMANOS E JUSTI\u00c7A":2,"CAC-PROFLETRAS|||EDUCA\u00c7\u00c3O":11,"CAC-PROFLETRAS|||CULTURA":1,"CAC-PPGL|||DIREITOS HUMANOS E JUSTI\u00c7A":3,"CAC-PPGGEO|||TECNOLOGIA E PRODU\u00c7\u00c3O":8,"TGA-PPGASP|||TRABALHO":2,"BBG-PPGECII|||TECNOLOGIA E PRODU\u00c7\u00c3O":2,"CAC-PPGEDU|||TECNOLOGIA E PRODU\u00c7\u00c3O":2,"SNP-PROFMAT|||CULTURA":2,"TGA-PROFBIO|||MEIO AMBIENTE":1,"SNP-PROFEI|||TECNOLOGIA E PRODU\u00c7\u00c3O":9,"CAC-PGMP|||COMUNICA\u00c7\u00c3O":2,"CAC-PPGCA|||TECNOLOGIA E PRODU\u00c7\u00c3O":4,"AIA-PROFEDUCATEC|||CULTURA":1,"TGA-PPGASP|||COMUNICA\u00c7\u00c3O":20,"CAC-PPGEDU|||SA\u00daDE":40,"CAC-PPGGEO|||TRABALHO":4,"SNP-PROFEI|||SA\u00daDE":9,"CAC-PPGCA|||TRABALHO":2,"CAC-PPGEDU|||TRABALHO":2,"BBG-PPGECM|||MEIO AMBIENTE":29,"BBG-PPGECM|||SA\u00daDE":8,"SNP-PROFEI|||MEIO AMBIENTE":29,"SNP-PROFEI|||CULTURA":8,"BBG-PPGECII|||SA\u00daDE":1,"SNP-PROFNIT|||DIREITOS HUMANOS E JUSTI\u00c7A":4,"TGA-PPGASP|||DIREITOS HUMANOS E JUSTI\u00c7A":4},"area_total":{"Ensino":68,"Enfermagem de Sa\u00fade P\u00fablica":18,"Sa\u00fade P\u00fablica":28,"Extens\u00e3o Rural":5,"Ci\u00eancias Cont\u00e1beis":21,"Fertilidade do Solo e Aduba\u00e7\u00e3o":24,"Administra\u00e7\u00e3o de Setores Espec\u00edficos":8,"Planejamento Educacional":10,"Teoria Liter\u00e1ria":26,"Literatura Comparada":8,"Literatura Brasileira":19,"Cr\u00edtica da Arte":7,"Matologia":28,"Teoria e An\u00e1lise Lingu\u00edstica":33,"Microbiologia Industrial e de Fermenta\u00e7\u00e3o":2,"Microbiologia Agr\u00edcola":4,"Entomologia Agr\u00edcola":6,"Ecofisiologia Vegetal":4,"Fitotecnia":3,"Manejo e Conserva\u00e7\u00e3o de Pastagens":1,"Sementes Florestais":4,"Pavimentos":4,"Hidrogeologia":3,"Geografia Pol\u00edtica":9,"Ecologia de Ecossistemas":19,"Manejo e Tratos Culturais":10,"Agrometeorologia":6,"Ecologia Aplicada":16,"Educa\u00e7\u00e3o Permanente":10,"Multidisciplinar":21,"Pol\u00edtica Educacional":4,"Pol\u00edtica e Planejamento Governamentais":4,"Taxonomia de Cript\u00f3gamos":1,"Entomologia e Malacologia de Parasitos e Vetores":24,"Jornalismo Especializado (Comunit\u00e1rio, Rural, Empresarial, Cient\u00edfico)":2,"Tecnologia Educacional":11,"Jornalismo e Editora\u00e7\u00e3o":1,"Hist\u00f3ria do Brasil Col\u00f4nia":3,"Sociologia Jur\u00eddica":3,"L\u00edngua Portuguesa":8,"Letras":6,"Direito":1,"Helmintologia Animal":3,"M\u00e9todos e T\u00e9cnicas de Ensino":54,"Hist\u00f3ria da Educa\u00e7\u00e3o":5,"Literaturas Estrangeiras Modernas":5,"Classes Sociais e Grupos de Interesse":2,"Hidrogeografia":18,"Curr\u00edculos Espec\u00edficos para N\u00edveis e Tipos de Educa\u00e7\u00e3o":9,"Lingu\u00edstica Aplicada":12,"Arquitetura de Sistemas de Computa\u00e7\u00e3o":6,"Saneamento B\u00e1sico/Esgotos/Reator Anaer\u00f3bico":3,"Software B\u00e1sico":3,"Banco de Dados":4,"An\u00e1lise Regional":10,"Geografia da Popula\u00e7\u00e3o":6,"Fotogeografia (F\u00edsico-Ecol\u00f3gica)":27,"Direito Constitucional":4,"Paleobot\u00e2nica":1,"Sistemas de Informa\u00e7\u00e3o":1,"Processamento Gr\u00e1fico (Graphics)":5,"Sensoriamento Remoto":5,"Hist\u00f3ria da Arte":6,"Administra\u00e7\u00e3o Municipal e Urbana":5,"Hist\u00f3ria do Brasil Rep\u00fablica":3,"Ecologia Te\u00f3rica":2,"Floricultura":31,"Tecnologia e Inova\u00e7\u00e3o":4,"Educa\u00e7\u00e3o de Adultos":10,"M\u00e9todos e Modelos Matem\u00e1ticos, Econom\u00e9tricos e Estat\u00edsticos":5,"Contabilidade e Finan\u00e7as P\u00fablicas":4,"Aspectos Sociais do Planejamento Urbano e Regional":4,"Conserva\u00e7\u00e3o das Esp\u00e9cies Animais":3,"Melhoramento Vegetal":42,"Fitopatologia":10,"Agronomia":6,"Materiais e Componentes de Constru\u00e7\u00e3o":1,"Biologia Geral":1,"Orienta\u00e7\u00e3o Educacional":1,"Bot\u00e2nica":1,"Ecologia":1,"Educa\u00e7\u00e3o Pr\u00e9-Escolar":2,"Teoria Geral de Planejamento e Desenvolvimento Curricular":3,"Pol\u00edticas P\u00fablicas":4,"Administra\u00e7\u00e3o de Unidades Educativas":2,"Educa\u00e7\u00e3o Especial":5,"Interpreta\u00e7\u00e3o Teatral":3,"An\u00e1lise de Algoritmos e Complexidade de Computa\u00e7\u00e3o":3,"Processos da Comunica\u00e7\u00e3o":1,"Engenharia de Software":1,"Hidrologia":8,"Cartografia B\u00e1sica":3,"Transmiss\u00e3o da Energia El\u00e9trica, Distribui\u00e7\u00e3o da Energia El\u00e9trica":2,"Ci\u00eancias Ambientais":13,"Economia dos Recursos Naturais":7,"Geoecologia":4,"Servi\u00e7os Urbanos e Regionais":2,"Direitos Especiais":1,"Economia do Consumidor":1,"Hist\u00f3ria Regional do Brasil":3,"Planejamento e Projetos da Edifica\u00e7\u00e3o":2,"Biologia Molecular":8,"Lingu\u00edstica":2,"Economia dos Programas de Bem-Estar Social":2,"Gen\u00e9tica Vegetal":5,"Teoria Antropol\u00f3gica":5,"Educa\u00e7\u00e3o":3,"Anatomia Vegetal":2,"Outras Sociologias Espec\u00edficas":8,"Automa\u00e7\u00e3o Eletr\u00f4nica de Processos El\u00e9tricos e Industriais":2,"Controle de Processos Eletr\u00f4nicos, Retroalimenta\u00e7\u00e3o":1,"Morfologia dos Grupos Recentes":3,"Gen\u00e9tica Animal":3,"Sociolingu\u00edstica e Dialetologia":4,"L\u00ednguas Ind\u00edgenas":1,"Hist\u00f3ria Moderna e Contempor\u00e2nea":1,"Teoria do Estado":2,"Epidemiologia":1,"Prote\u00e7\u00e3o Florestal":11,"Recupera\u00e7\u00e3o de Areas Degradadas":1,"Equa\u00e7\u00f5es Diferenciais Parciais":2,"Produ\u00e7\u00e3o de Mudas":8,"Engenharia de Constru\u00e7\u00f5es Rurais":2,"Sociologia do Conhecimento":3,"Endocrinologia":1,"Alergologia e Imunologia Cl\u00ednica":1,"Ci\u00eancia da Computa\u00e7\u00e3o":1,"Produ\u00e7\u00e3o e Beneficiamento de Sementes":4,"Etnologia Ind\u00edgena":8,"Geografia Humana":5,"Avalia\u00e7\u00e3o da Aprendizagem":3,"An\u00e1lise Num\u00e9rica":7,"Matem\u00e1tica":4,"Morfologia Externa":1,"Morfologia Vegetal":1,"Hardware":1,"Microbiologia e Bioqu\u00edmica do Solo":3,"Mec\u00e2nica das Estruturas":4,"Irriga\u00e7\u00e3o e Drenagem":3,"Qu\u00edmica do Solo":1,"Administra\u00e7\u00e3o de Sistemas Educacionais":1,"Geografia Urbana":1,"Taxonomia dos Grupos Recentes":4,"Comunica\u00e7\u00e3o Visual":2,"Propriedades Fisico-Mec\u00e2nicas da Madeira":1,"Manejo Florestal":1,"Recursos Florestais e Engenharia Florestal":1,"Tecnologia de Produtos de Origem Vegetal":17,"Alimentos":4,"Tecnologia Qu\u00edmica":3,"Processos Inorg\u00e2nicos":1,"Educa\u00e7\u00e3o F\u00edsica":6,"Medicina Preventiva":1,"Educa\u00e7\u00e3o em Periferias Urbanas":4,"Pastagem e Forragicultura":2,"Zootecnia":1,"Avalia\u00e7\u00e3o de Alimentos para Animais":1,"Instrumenta\u00e7\u00e3o Espec\u00edfica de Uso Geral em F\u00edsica":1,"F\u00edsica":1,"Geomorfologia":1,"Sociologia Rural":2,"Planejamento Integrado dos Recursos H\u00eddricos":2,"Armazenamento de Produtos Agr\u00edcolas":2,"Enfermagem":2,"Dendrometria e Invent\u00e1rio Florestal":1,"Explora\u00e7\u00e3o Florestal":1},"tema_total":{"EDUCA\u00c7\u00c3O":586,"TECNOLOGIA E PRODU\u00c7\u00c3O":153,"CULTURA":134,"COMUNICA\u00c7\u00c3O":39,"MEIO AMBIENTE":152,"SA\u00daDE":127,"TRABALHO":14,"DIREITOS HUMANOS E JUSTI\u00c7A":20},"ppg_info":{"BBG-PPGECM":{"nm":"ENSINO DE CI\u00caNCIAS E MATEM\u00c1TICA","cp":"Barra do Bugres","nv":"MESTRADO, DOUTORADO","nd":18,"np":82,"ne":206},"TGA-PPGASP":{"nm":"AMBIENTE E SISTEMAS DE PRODU\u00c7\u00c3O AGR\u00cdCOLA","cp":"Tangar\u00e1 da Serra","nv":"MESTRADO","nd":19,"np":120,"ne":156},"SNP-PROFEI":{"nm":"EDUCA\u00c7\u00c3O INCLUSIVA","cp":"Sinop","nv":"MESTRADO","nd":23,"np":82,"ne":176},"CAC-PPGEDU":{"nm":"EDUCA\u00c7\u00c3O","cp":"C\u00e1ceres","nv":"DOUTORADO, MESTRADO","nd":22,"np":85,"ne":106},"CAC-PPGGEO":{"nm":"GEOGRAFIA","cp":"C\u00e1ceres","nv":"DOUTORADO, MESTRADO","nd":15,"np":95,"ne":95},"CAC-PPGCA":{"nm":"CI\u00caNCIAS AMBIENTAIS","cp":"C\u00e1ceres","nv":"MESTRADO, DOUTORADO","nd":23,"np":126,"ne":50},"AFL-PPGBIOAGRO":{"nm":"BIODIVERSIDADE E AGROECOSSISTEMAS AMAZ\u00d4NICOS","cp":"Alta Floresta","nv":"MESTRADO","nd":16,"np":95,"ne":69},"REDEPROCENTRO":{"nm":"BIOTECNOLOGIA E BIODIVERSIDADE - REDE PR\u00d3-CENTRO-OESTE","cp":"Cuiab\u00e1","nv":"DOUTORADO","nd":16,"np":92,"ne":62},"SNP-PROFMAT":{"nm":"MATEM\u00c1TICA","cp":"Sinop","nv":"MESTRADO","nd":16,"np":51,"ne":93},"CAC-PPGL":{"nm":"LINGU\u00cdSTICA","cp":"C\u00e1ceres","nv":"MESTRADO, DOUTORADO","nd":26,"np":80,"ne":56},"PROFAGUA":{"nm":"GEST\u00c3O E REGULA\u00c7\u00c3O DE RECURSOS H\u00cdDRICOS","cp":"Cuiab\u00e1","nv":"MESTRADO","nd":13,"np":86,"ne":39},"CAC-PGMP":{"nm":"GEN\u00c9TICA E MELHORAMENTO DE PLANTAS","cp":"Alta Floresta","nv":"MESTRADO","nd":14,"np":77,"ne":45},"BBG-PPGECII":{"nm":"ENSINO EM CONTEXTO IND\u00cdGENA INTERCULTURAL","cp":"Barra do Bugres","nv":"MESTRADO","nd":18,"np":69,"ne":52},"SNP-PPGLETRAS":{"nm":"LETRAS","cp":"Sinop","nv":"MESTRADO, DOUTORADO","nd":18,"np":45,"ne":51},"TGA-PPGEL":{"nm":"ESTUDOS LITER\u00c1RIOS","cp":"Tangar\u00e1 da Serra","nv":"DOUTORADO, MESTRADO","nd":14,"np":31,"ne":57},"SNP-PROFNIT":{"nm":"PROPRIEDADE INTELECTUAL E TRANSFER\u00caNCIA DE TECNOLOGIA PARA INOVA\u00c7\u00c3O","cp":"Sinop","nv":"MESTRADO","nd":9,"np":51,"ne":29},"NVX-PPGEC":{"nm":"ECOLOGIA E CONSERVA\u00c7\u00c3O","cp":"Nova Xavantina","nv":"DOUTORADO, MESTRADO","nd":12,"np":45,"ne":28},"SNP-PROFLETRAS":{"nm":"LETRAS","cp":"Sinop","nv":"MESTRADO","nd":13,"np":35,"ne":36},"TGA-PROFBIO":{"nm":"ENSINO DE BIOLOGIA","cp":"Tangar\u00e1 da Serra","nv":"MESTRADO","nd":13,"np":41,"ne":30},"BBG-PROFMAT":{"nm":"MATEM\u00c1TICA","cp":"Barra do Bugres","nv":"MESTRADO","nd":9,"np":21,"ne":41},"CAC-PROFHISTORIA":{"nm":"ENSINO DE HIST\u00d3RIA","cp":"C\u00e1ceres","nv":"MESTRADO, DOUTORADO","nd":10,"np":36,"ne":22},"SNP-PROFSOCIO":{"nm":"SOCIOLOGIA","cp":"Sinop","nv":"MESTRADO","nd":10,"np":35,"ne":15},"AIA-PROFEDUCATEC":{"nm":"PROCESSOS E TECNOLOGIAS EDUCACIONAIS","cp":"Alto Araguaia","nv":"MESTRADO","nd":10,"np":19,"ne":20},"CBA-PROFNIT":{"nm":"PROPRIEDADE INTELECTUAL E TRANSFER\u00caNCIA DE TECNOLOGIA PARA INOVA\u00c7\u00c3O- PROFNIT/CBA","cp":"Cuiab\u00e1","nv":"MESTRADO","nd":3,"np":19,"ne":16},"CAC-PROFLETRAS":{"nm":"LETRAS","cp":"C\u00e1ceres","nv":"MESTRADO","nd":12,"np":19,"ne":14},"BIONORTE":{"nm":"BIODIVERSIDADE E BIOTECNOLOGIA DA AMAZONIA LEGAL - REDE BIONORTE","cp":"Cuiab\u00e1","nv":"DOUTORADO","nd":5,"np":11,"ne":2},"PPGREAMEC":{"nm":"EDUCA\u00c7\u00c3O EM CI\u00caNCIAS E MATEM\u00c1TICA - REAMEC","cp":"Cuiab\u00e1","nv":"DOUTORADO","nd":2,"np":6,"ne":6},"":{"nm":"27 programas | 283 docentes \u00fanicos | 379 v\u00ednculos","cp":"N/I","nv":"","nd":0,"np":0,"ne":0}},"n_docentes":172,"temas":["COMUNICA\u00c7\u00c3O","CULTURA","DIREITOS HUMANOS E JUSTI\u00c7A","EDUCA\u00c7\u00c3O","MEIO AMBIENTE","SA\u00daDE","TECNOLOGIA E PRODU\u00c7\u00c3O","TRABALHO"]};
+const PE={"matrix":[[{"v":18,"ppgs":["AIA-PROFEDUCATEC","BBG-PPGECII","BBG-PPGECM","BBG-PROFMAT","CAC-PPGEDU","CAC-PPGGEO","CAC-PROFHISTORIA","CBA-PROFNIT","PPGREAMEC","SNP-PROFEI","SNP-PROFLETRAS","SNP-PROFMAT","SNP-PROFNIT","TGA-PPGASP"]},{"v":6,"ppgs":["BBG-PPGECII","BBG-PPGECM","BBG-PROFMAT","CBA-PROFNIT","SNP-PROFEI","SNP-PROFNIT"]},{"v":1,"ppgs":["BBG-PPGECM","SNP-PROFEI"]},{"v":5,"ppgs":["BBG-PPGECII","BBG-PPGECM","CAC-PROFHISTORIA","SNP-PROFEI","SNP-PROFLETRAS","SNP-PROFMAT"]},{"v":1,"ppgs":["BBG-PPGECM","SNP-PROFEI"]},{"v":2,"ppgs":["BBG-PPGECII","SNP-PROFNIT"]},{"v":1,"ppgs":["BBG-PPGECII","CAC-PROFHISTORIA"]},{"v":0,"ppgs":[]}],[{"v":3,"ppgs":["BBG-PPGECM","BBG-PROFMAT","CAC-PROFLETRAS","SNP-PROFNIT"]},{"v":6,"ppgs":["BBG-PPGECM","BBG-PROFMAT","CAC-PPGCA","CAC-PPGEDU","SNP-PROFNIT","TGA-PPGASP"]},{"v":2,"ppgs":["SNP-PROFNIT"]},{"v":1,"ppgs":["CAC-PROFLETRAS"]},{"v":1,"ppgs":["SNP-PROFNIT"]},{"v":2,"ppgs":["SNP-PROFNIT"]},{"v":1,"ppgs":["SNP-PROFNIT","TGA-PPGASP"]},{"v":3,"ppgs":["CAC-PPGCA","CAC-PPGEDU","SNP-PROFNIT"]}],[{"v":5,"ppgs":["CAC-PPGCA","CAC-PPGGEO","NVX-PPGEC","PROFAGUA"]},{"v":4,"ppgs":["CAC-PPGCA","NVX-PPGEC","REDEPROCENTRO","TGA-PPGASP"]},{"v":6,"ppgs":["BIONORTE","CAC-PPGCA","CAC-PPGGEO","NVX-PPGEC","PROFAGUA"]},{"v":2,"ppgs":["CAC-PPGCA","NVX-PPGEC","PROFAGUA"]},{"v":1,"ppgs":["CAC-PPGCA"]},{"v":0,"ppgs":[]},{"v":0,"ppgs":[]},{"v":1,"ppgs":["CAC-PPGGEO"]}],[{"v":4,"ppgs":["CAC-PGMP","REDEPROCENTRO","TGA-PPGASP"]},{"v":6,"ppgs":["CAC-PGMP","REDEPROCENTRO"]},{"v":4,"ppgs":["CAC-PGMP","REDEPROCENTRO","TGA-PPGASP"]},{"v":0,"ppgs":[]},{"v":0,"ppgs":[]},{"v":2,"ppgs":["CAC-PGMP"]},{"v":0,"ppgs":[]},{"v":0,"ppgs":[]}],[{"v":5,"ppgs":["BBG-PPGECII","BBG-PPGECM","SNP-PROFEI","TGA-PPGASP","TGA-PROFBIO"]},{"v":1,"ppgs":["TGA-PROFBIO"]},{"v":1,"ppgs":["SNP-PROFNIT"]},{"v":1,"ppgs":["CAC-PPGGEO"]},{"v":4,"ppgs":["BBG-PPGECII","CAC-PPGCA","TGA-PPGASP","TGA-PROFBIO"]},{"v":1,"ppgs":["TGA-PROFBIO"]},{"v":0,"ppgs":[]},{"v":2,"ppgs":["SNP-PROFNIT","TGA-PPGASP"]}],[{"v":3,"ppgs":["BBG-PPGECM","CBA-PROFNIT","SNP-PROFNIT"]},{"v":3,"ppgs":["BBG-PPGECM","CBA-PROFNIT","SNP-PROFNIT"]},{"v":3,"ppgs":["AFL-PPGBIOAGRO","CBA-PROFNIT","NVX-PPGEC","REDEPROCENTRO","SNP-PROFNIT"]},{"v":0,"ppgs":[]},{"v":1,"ppgs":["SNP-PROFNIT"]},{"v":2,"ppgs":["BBG-PPGECII","SNP-PROFNIT"]},{"v":1,"ppgs":["SNP-PROFNIT","TGA-PPGASP"]},{"v":2,"ppgs":["SNP-PROFNIT"]}],[{"v":11,"ppgs":["AIA-PROFEDUCATEC","BBG-PPGECM","BBG-PROFMAT","CBA-PROFNIT","PPGREAMEC","SNP-PROFEI","SNP-PROFMAT","SNP-PROFSOCIO","TGA-PROFBIO"]},{"v":1,"ppgs":["BBG-PPGECM","CBA-PROFNIT"]},{"v":0,"ppgs":[]},{"v":1,"ppgs":["CAC-PPGEDU","CAC-PROFHISTORIA"]},{"v":2,"ppgs":["SNP-PROFEI","TGA-PROFBIO"]},{"v":0,"ppgs":[]},{"v":0,"ppgs":[]},{"v":0,"ppgs":[]}],[{"v":5,"ppgs":["CAC-PPGCA","CAC-PPGGEO"]},{"v":1,"ppgs":["CAC-PPGCA","CAC-PPGGEO"]},{"v":4,"ppgs":["CAC-PPGCA","CAC-PPGGEO"]},{"v":3,"ppgs":["CAC-PPGCA","CAC-PPGGEO"]},{"v":0,"ppgs":[]},{"v":1,"ppgs":["CAC-PPGGEO"]},{"v":0,"ppgs":[]},{"v":1,"ppgs":["CAC-PPGGEO"]}],[{"v":4,"ppgs":["BBG-PPGECII","BBG-PPGECM","CAC-PROFHISTORIA","SNP-PROFEI","SNP-PROFLETRAS","TGA-PPGASP"]},{"v":2,"ppgs":["BBG-PPGECM","SNP-PROFEI","TGA-PPGASP"]},{"v":2,"ppgs":["BBG-PPGECM","SNP-PROFEI","TGA-PPGASP"]},{"v":3,"ppgs":["BBG-PPGECII","BBG-PPGECM","SNP-PROFEI","SNP-PROFLETRAS","TGA-PPGASP"]},{"v":1,"ppgs":["BBG-PPGECM","SNP-PROFEI"]},{"v":2,"ppgs":["BBG-PPGECII","TGA-PPGASP"]},{"v":0,"ppgs":[]},{"v":0,"ppgs":[]}],[{"v":9,"ppgs":["CAC-PROFLETRAS","SNP-PPGLETRAS","SNP-PROFLETRAS","TGA-PPGEL"]},{"v":0,"ppgs":[]},{"v":0,"ppgs":[]},{"v":3,"ppgs":["BBG-PPGECII","CAC-PPGL","SNP-PPGLETRAS","SNP-PROFLETRAS"]},{"v":0,"ppgs":[]},{"v":1,"ppgs":["CAC-PPGL","SNP-PROFLETRAS"]},{"v":0,"ppgs":[]},{"v":0,"ppgs":[]}],[{"v":5,"ppgs":["CAC-PPGCA","CAC-PPGGEO"]},{"v":1,"ppgs":["CAC-PPGCA","CAC-PPGGEO"]},{"v":3,"ppgs":["CAC-PPGCA","CAC-PPGGEO"]},{"v":3,"ppgs":["CAC-PPGCA","CAC-PPGGEO"]},{"v":0,"ppgs":[]},{"v":1,"ppgs":["CAC-PPGGEO"]},{"v":0,"ppgs":[]},{"v":0,"ppgs":[]}],[{"v":10,"ppgs":["CAC-PROFLETRAS","SNP-PPGLETRAS","SNP-PROFLETRAS","TGA-PPGEL"]},{"v":0,"ppgs":[]},{"v":0,"ppgs":[]},{"v":2,"ppgs":["SNP-PPGLETRAS","TGA-PPGEL"]},{"v":0,"ppgs":[]},{"v":0,"ppgs":[]},{"v":0,"ppgs":[]},{"v":0,"ppgs":[]}],[{"v":7,"ppgs":["CAC-PPGL","SNP-PROFLETRAS"]},{"v":0,"ppgs":[]},{"v":0,"ppgs":[]},{"v":3,"ppgs":["AIA-PROFEDUCATEC","CAC-PPGL","PROFAGUA"]},{"v":0,"ppgs":[]},{"v":1,"ppgs":["CAC-PPGL"]},{"v":1,"ppgs":["CAC-PPGL"]},{"v":0,"ppgs":[]}],[{"v":5,"ppgs":["AFL-PPGBIOAGRO","CAC-PPGGEO"]},{"v":0,"ppgs":[]},{"v":4,"ppgs":["CAC-PPGGEO","PROFAGUA"]},{"v":1,"ppgs":["SNP-PROFSOCIO"]},{"v":0,"ppgs":[]},{"v":0,"ppgs":[]},{"v":1,"ppgs":["SNP-PROFSOCIO"]},{"v":1,"ppgs":["CAC-PPGGEO"]}],[{"v":4,"ppgs":["CAC-PPGCA","NVX-PPGEC","PROFAGUA"]},{"v":0,"ppgs":[]},{"v":7,"ppgs":["CAC-PPGCA","CAC-PPGGEO","NVX-PPGEC","PROFAGUA"]},{"v":1,"ppgs":["CAC-PPGCA","PROFAGUA"]},{"v":0,"ppgs":[]},{"v":0,"ppgs":[]},{"v":0,"ppgs":[]},{"v":0,"ppgs":[]}],[{"v":4,"ppgs":["CAC-PPGCA","CAC-PPGGEO","PROFAGUA"]},{"v":1,"ppgs":["CAC-PPGCA","CAC-PPGGEO"]},{"v":3,"ppgs":["CAC-PPGCA","CAC-PPGGEO","PROFAGUA"]},{"v":3,"ppgs":["CAC-PPGCA","CAC-PPGGEO"]},{"v":0,"ppgs":[]},{"v":1,"ppgs":["CAC-PPGGEO"]},{"v":0,"ppgs":[]},{"v":0,"ppgs":[]}],[{"v":4,"ppgs":["AFL-PPGBIOAGRO","BBG-PPGECII","CAC-PPGCA","PROFAGUA","TGA-PPGASP"]},{"v":1,"ppgs":["TGA-PPGASP"]},{"v":4,"ppgs":["AFL-PPGBIOAGRO","CAC-PPGCA","PROFAGUA"]},{"v":2,"ppgs":["AFL-PPGBIOAGRO","CAC-PPGCA","PROFAGUA"]},{"v":0,"ppgs":[]},{"v":0,"ppgs":[]},{"v":0,"ppgs":[]},{"v":0,"ppgs":[]}],[{"v":2,"ppgs":["NVX-PPGEC","REDEPROCENTRO"]},{"v":4,"ppgs":["AFL-PPGBIOAGRO","REDEPROCENTRO","TGA-PPGASP"]},{"v":3,"ppgs":["AFL-PPGBIOAGRO","NVX-PPGEC","REDEPROCENTRO"]},{"v":0,"ppgs":[]},{"v":0,"ppgs":[]},{"v":0,"ppgs":[]},{"v":0,"ppgs":[]},{"v":1,"ppgs":["AFL-PPGBIOAGRO"]}],[{"v":5,"ppgs":["SNP-PPGLETRAS","SNP-PROFLETRAS","TGA-PPGEL"]},{"v":0,"ppgs":[]},{"v":0,"ppgs":[]},{"v":3,"ppgs":["BBG-PPGECII","SNP-PPGLETRAS","TGA-PPGEL"]},{"v":0,"ppgs":[]},{"v":1,"ppgs":["TGA-PPGEL"]},{"v":1,"ppgs":["TGA-PPGEL"]},{"v":0,"ppgs":[]}],[{"v":3,"ppgs":["AFL-PPGBIOAGRO","CAC-PGMP","REDEPROCENTRO"]},{"v":4,"ppgs":["AFL-PPGBIOAGRO","CAC-PGMP","PROFAGUA","REDEPROCENTRO","TGA-PPGASP"]},{"v":3,"ppgs":["AFL-PPGBIOAGRO","CAC-PGMP","REDEPROCENTRO"]},{"v":0,"ppgs":[]},{"v":0,"ppgs":[]},{"v":0,"ppgs":[]},{"v":0,"ppgs":[]},{"v":0,"ppgs":[]}]],"matrix_areas":["Ensino","Ci\u00eancias Cont\u00e1beis","Ecologia Aplicada","Melhoramento Vegetal","Sa\u00fade P\u00fablica","Multidisciplinar","M\u00e9todos e T\u00e9cnicas de Ensino","An\u00e1lise Regional","Tecnologia Educacional","Literatura Brasileira","Hidrogeografia","Teoria Liter\u00e1ria","Teoria e An\u00e1lise Lingu\u00edstica","Geografia Pol\u00edtica","Ecologia de Ecossistemas","Fotogeografia (F\u00edsico-Ecol\u00f3gica)","Ci\u00eancias Ambientais","Fertilidade do Solo e Aduba\u00e7\u00e3o","Literatura Comparada","Matologia"],"matrix_temas":["EDUCA\u00c7\u00c3O","TECNOLOGIA E PRODU\u00c7\u00c3O","MEIO AMBIENTE","CULTURA","SA\u00daDE","COMUNICA\u00c7\u00c3O","DIREITOS HUMANOS E JUSTI\u00c7A","TRABALHO"],"nodes":[{"id":"BBG-PPGECM","label":"BBG-PPGECM","type":"ppg","size":243,"nm":"ENSINO DE CI\u00caNCIAS E MATEM\u00c1TICA","cp":"Barra do Bugres","inp":63,"out":180},{"id":"TGA-PPGASP","label":"TGA-PPGASP","type":"ppg","size":222,"nm":"AMBIENTE E SISTEMAS DE PRODU\u00c7\u00c3O AGR\u00cdCOLA","cp":"Tangar\u00e1 da Serra","inp":88,"out":134},{"id":"SNP-PROFEI","label":"SNP-PROFEI","type":"ppg","size":211,"nm":"EDUCA\u00c7\u00c3O INCLUSIVA","cp":"Sinop","inp":63,"out":148},{"id":"CAC-PPGEDU","label":"CAC-PPGEDU","type":"ppg","size":146,"nm":"EDUCA\u00c7\u00c3O","cp":"C\u00e1ceres","inp":59,"out":87},{"id":"CAC-PPGGEO","label":"CAC-PPGGEO","type":"ppg","size":141,"nm":"GEOGRAFIA","cp":"C\u00e1ceres","inp":69,"out":72},{"id":"CAC-PPGCA","label":"CAC-PPGCA","type":"ppg","size":111,"nm":"CI\u00caNCIAS AMBIENTAIS","cp":"C\u00e1ceres","inp":72,"out":39},{"id":"AFL-PPGBIOAGRO","label":"AFL-PPGBIOAGRO","type":"ppg","size":109,"nm":"BIODIVERSIDADE E AGROECOSSISTEMAS AMAZ\u00d4NICOS","cp":"Alta Floresta","inp":64,"out":45},{"id":"REDEPROCENTRO","label":"REDEPROCENTRO","type":"ppg","size":110,"nm":"BIOTECNOLOGIA E BIODIVERSIDADE - REDE PR\u00d3-CENTRO-OESTE","cp":"Cuiab\u00e1","inp":71,"out":39},{"id":"SNP-PROFMAT","label":"SNP-PROFMAT","type":"ppg","size":89,"nm":"MATEM\u00c1TICA","cp":"Sinop","inp":36,"out":53},{"id":"CAC-PPGL","label":"CAC-PPGL","type":"ppg","size":88,"nm":"LINGU\u00cdSTICA","cp":"C\u00e1ceres","inp":44,"out":44},{"id":"PROFAGUA","label":"PROFAGUA","type":"ppg","size":77,"nm":"GEST\u00c3O E REGULA\u00c7\u00c3O DE RECURSOS H\u00cdDRICOS","cp":"Cuiab\u00e1","inp":48,"out":29},{"id":"CAC-PGMP","label":"CAC-PGMP","type":"ppg","size":93,"nm":"GEN\u00c9TICA E MELHORAMENTO DE PLANTAS","cp":"Alta Floresta","inp":63,"out":30},{"id":"BBG-PPGECII","label":"BBG-PPGECII","type":"ppg","size":103,"nm":"ENSINO EM CONTEXTO IND\u00cdGENA INTERCULTURAL","cp":"Barra do Bugres","inp":62,"out":41},{"id":"SNP-PPGLETRAS","label":"SNP-PPGLETRAS","type":"ppg","size":79,"nm":"LETRAS","cp":"Sinop","inp":39,"out":40},{"id":"TGA-PPGEL","label":"TGA-PPGEL","type":"ppg","size":74,"nm":"ESTUDOS LITER\u00c1RIOS","cp":"Tangar\u00e1 da Serra","inp":21,"out":53},{"id":"SNP-PROFNIT","label":"SNP-PROFNIT","type":"ppg","size":63,"nm":"PROPRIEDADE INTELECTUAL E TRANSFER\u00caNCIA DE TECNOLOGIA PARA INOVA\u00c7\u00c3O","cp":"Sinop","inp":41,"out":22},{"id":"NVX-PPGEC","label":"NVX-PPGEC","type":"ppg","size":43,"nm":"ECOLOGIA E CONSERVA\u00c7\u00c3O","cp":"Nova Xavantina","inp":22,"out":21},{"id":"SNP-PROFLETRAS","label":"SNP-PROFLETRAS","type":"ppg","size":54,"nm":"LETRAS","cp":"Sinop","inp":21,"out":33},{"id":"TGA-PROFBIO","label":"TGA-PROFBIO","type":"ppg","size":41,"nm":"ENSINO DE BIOLOGIA","cp":"Tangar\u00e1 da Serra","inp":19,"out":22},{"id":"BBG-PROFMAT","label":"BBG-PROFMAT","type":"ppg","size":46,"nm":"MATEM\u00c1TICA","cp":"Barra do Bugres","inp":20,"out":26},{"id":"CAC-PROFHISTORIA","label":"CAC-PROFHISTORIA","type":"ppg","size":35,"nm":"ENSINO DE HIST\u00d3RIA","cp":"C\u00e1ceres","inp":24,"out":11},{"id":"SNP-PROFSOCIO","label":"SNP-PROFSOCIO","type":"ppg","size":28,"nm":"SOCIOLOGIA","cp":"Sinop","inp":18,"out":10},{"id":"AIA-PROFEDUCATEC","label":"AIA-PROFEDUCATEC","type":"ppg","size":30,"nm":"PROCESSOS E TECNOLOGIAS EDUCACIONAIS","cp":"Alto Araguaia","inp":15,"out":15},{"id":"CBA-PROFNIT","label":"CBA-PROFNIT","type":"ppg","size":28,"nm":"PROPRIEDADE INTELECTUAL E TRANSFER\u00caNCIA DE TECNOLOGIA PARA INOVA\u00c7\u00c3O- PROFNIT/CBA","cp":"Cuiab\u00e1","inp":17,"out":11},{"id":"CAC-PROFLETRAS","label":"CAC-PROFLETRAS","type":"ppg","size":22,"nm":"LETRAS","cp":"C\u00e1ceres","inp":10,"out":12},{"id":"BIONORTE","label":"BIONORTE","type":"ppg","size":5,"nm":"BIODIVERSIDADE E BIOTECNOLOGIA DA AMAZONIA LEGAL - REDE BIONORTE","cp":"Cuiab\u00e1","inp":3,"out":2},{"id":"PPGREAMEC","label":"PPGREAMEC","type":"ppg","size":12,"nm":"EDUCA\u00c7\u00c3O EM CI\u00caNCIAS E MATEM\u00c1TICA - REAMEC","cp":"Cuiab\u00e1","inp":6,"out":6},{"id":"A:Ensino","label":"Ensino","type":"area","size":68},{"id":"A:Ci\u00eancias Cont\u00e1beis","label":"Ci\u00eancias Cont\u00e1beis","type":"area","size":21},{"id":"A:Ecologia Aplicada","label":"Ecologia Aplicada","type":"area","size":16},{"id":"A:Melhoramento Vegetal","label":"Melhoramento Vegetal","type":"area","size":42},{"id":"A:Sa\u00fade P\u00fablica","label":"Sa\u00fade P\u00fablica","type":"area","size":28},{"id":"A:Multidisciplinar","label":"Multidisciplinar","type":"area","size":21},{"id":"A:M\u00e9todos e T\u00e9cnicas de Ensino","label":"M\u00e9todos e T\u00e9cnicas de Ensino","type":"area","size":54},{"id":"A:An\u00e1lise Regional","label":"An\u00e1lise Regional","type":"area","size":10},{"id":"A:Tecnologia Educacional","label":"Tecnologia Educacional","type":"area","size":11},{"id":"A:Literatura Brasileira","label":"Literatura Brasileira","type":"area","size":19},{"id":"A:Hidrogeografia","label":"Hidrogeografia","type":"area","size":18},{"id":"A:Teoria Liter\u00e1ria","label":"Teoria Liter\u00e1ria","type":"area","size":26},{"id":"A:Teoria e An\u00e1lise Lingu\u00edstica","label":"Teoria e An\u00e1lise Lingu\u00edstica","type":"area","size":33},{"id":"A:Geografia Pol\u00edtica","label":"Geografia Pol\u00edtica","type":"area","size":9},{"id":"A:Ecologia de Ecossistemas","label":"Ecologia de Ecossistemas","type":"area","size":19},{"id":"T:EDUCA\u00c7\u00c3O","label":"EDUCA\u00c7\u00c3O","type":"tema","size":586},{"id":"T:TECNOLOGIA E PRODU\u00c7\u00c3O","label":"TECNOLOGIA E PRODU\u00c7\u00c3O","type":"tema","size":153},{"id":"T:MEIO AMBIENTE","label":"MEIO AMBIENTE","type":"tema","size":152},{"id":"T:CULTURA","label":"CULTURA","type":"tema","size":134},{"id":"T:SA\u00daDE","label":"SA\u00daDE","type":"tema","size":127},{"id":"T:COMUNICA\u00c7\u00c3O","label":"COMUNICA\u00c7\u00c3O","type":"tema","size":39},{"id":"T:DIREITOS HUMANOS E JUSTI\u00c7A","label":"DIREITOS HUMANOS E JUSTI\u00c7A","type":"tema","size":20},{"id":"T:TRABALHO","label":"TRABALHO","type":"tema","size":14}],"edges":[{"s":27,"t":12,"v":13},{"s":31,"t":12,"v":5},{"s":27,"t":0,"v":23},{"s":38,"t":13,"v":11},{"s":36,"t":13,"v":7},{"s":39,"t":9,"v":29},{"s":40,"t":4,"v":6},{"s":41,"t":10,"v":9},{"s":38,"t":17,"v":3},{"s":36,"t":17,"v":3},{"s":32,"t":15,"v":4},{"s":28,"t":15,"v":10},{"s":31,"t":5,"v":4},{"s":29,"t":5,"v":7},{"s":33,"t":2,"v":11},{"s":38,"t":14,"v":10},{"s":36,"t":14,"v":4},{"s":37,"t":5,"v":3},{"s":37,"t":4,"v":15},{"s":41,"t":5,"v":6},{"s":34,"t":4,"v":9},{"s":35,"t":0,"v":3},{"s":33,"t":0,"v":10},{"s":31,"t":18,"v":4},{"s":30,"t":7,"v":14},{"s":27,"t":19,"v":13},{"s":41,"t":16,"v":3},{"s":30,"t":11,"v":26},{"s":29,"t":10,"v":3},{"s":32,"t":0,"v":6},{"s":32,"t":23,"v":6},{"s":33,"t":3,"v":8},{"s":33,"t":20,"v":8},{"s":31,"t":1,"v":11},{"s":27,"t":8,"v":3},{"s":28,"t":0,"v":3},{"s":28,"t":19,"v":3},{"s":27,"t":2,"v":3},{"s":33,"t":21,"v":6},{"s":36,"t":24,"v":3},{"s":12,"t":42,"v":19},{"s":0,"t":42,"v":112},{"s":1,"t":43,"v":32},{"s":13,"t":45,"v":3},{"s":13,"t":42,"v":37},{"s":6,"t":42,"v":13},{"s":14,"t":45,"v":30},{"s":14,"t":42,"v":20},{"s":9,"t":42,"v":35},{"s":1,"t":42,"v":9},{"s":18,"t":42,"v":13},{"s":6,"t":43,"v":10},{"s":6,"t":44,"v":16},{"s":4,"t":44,"v":12},{"s":10,"t":44,"v":6},{"s":17,"t":42,"v":22},{"s":16,"t":43,"v":9},{"s":16,"t":44,"v":9},{"s":15,"t":43,"v":7},{"s":15,"t":49,"v":3},{"s":15,"t":44,"v":3},{"s":10,"t":45,"v":10},{"s":18,"t":46,"v":3},{"s":12,"t":47,"v":3},{"s":3,"t":48,"v":3},{"s":3,"t":42,"v":35},{"s":5,"t":46,"v":4},{"s":2,"t":42,"v":93},{"s":5,"t":42,"v":17},{"s":4,"t":42,"v":35},{"s":9,"t":45,"v":4},{"s":22,"t":43,"v":6},{"s":5,"t":44,"v":8},{"s":12,"t":45,"v":15},{"s":4,"t":47,"v":4},{"s":4,"t":45,"v":9},{"s":22,"t":42,"v":7},{"s":20,"t":42,"v":4},{"s":20,"t":45,"v":6},{"s":11,"t":43,"v":12},{"s":7,"t":43,"v":15},{"s":8,"t":42,"v":45},{"s":0,"t":45,"v":16},{"s":17,"t":45,"v":10},{"s":18,"t":43,"v":3},{"s":26,"t":42,"v":6},{"s":7,"t":44,"v":18},{"s":7,"t":42,"v":6},{"s":1,"t":44,"v":4},{"s":0,"t":43,"v":15},{"s":19,"t":42,"v":21},{"s":19,"t":43,"v":5},{"s":6,"t":45,"v":5},{"s":21,"t":42,"v":6},{"s":1,"t":46,"v":60},{"s":1,"t":45,"v":3},{"s":10,"t":42,"v":9},{"s":10,"t":43,"v":4},{"s":8,"t":43,"v":6},{"s":5,"t":45,"v":3},{"s":23,"t":43,"v":4},{"s":23,"t":42,"v":5},{"s":11,"t":44,"v":13},{"s":11,"t":42,"v":3},{"s":3,"t":45,"v":5},{"s":24,"t":42,"v":11},{"s":9,"t":48,"v":3},{"s":4,"t":43,"v":8},{"s":2,"t":43,"v":9},{"s":5,"t":43,"v":4},{"s":1,"t":47,"v":20},{"s":3,"t":46,"v":40},{"s":4,"t":49,"v":4},{"s":2,"t":46,"v":9},{"s":0,"t":44,"v":29},{"s":0,"t":46,"v":8},{"s":2,"t":44,"v":29},{"s":2,"t":45,"v":8},{"s":15,"t":48,"v":4},{"s":1,"t":48,"v":4}],"links_ap":{"Ensino|||BBG-PPGECII":13,"Enfermagem de Sa\u00fade P\u00fablica|||BBG-PPGECII":6,"Sa\u00fade P\u00fablica|||BBG-PPGECII":5,"Ensino|||BBG-PPGECM":23,"Enfermagem de Sa\u00fade P\u00fablica|||BBG-PPGECM":1,"Sa\u00fade P\u00fablica|||BBG-PPGECM":1,"Extens\u00e3o Rural|||TGA-PPGASP":2,"Ci\u00eancias Cont\u00e1beis|||TGA-PPGASP":2,"Fertilidade do Solo e Aduba\u00e7\u00e3o|||TGA-PPGASP":5,"Administra\u00e7\u00e3o de Setores Espec\u00edficos|||TGA-PPGASP":2,"Planejamento Educacional|||SNP-PPGLETRAS":1,"Teoria Liter\u00e1ria|||SNP-PPGLETRAS":11,"Literatura Comparada|||SNP-PPGLETRAS":3,"Literatura Brasileira|||SNP-PPGLETRAS":7,"Cr\u00edtica da Arte|||SNP-PPGLETRAS":4,"Matologia|||AFL-PPGBIOAGRO":20,"Literatura Comparada|||TGA-PPGEL":2,"Teoria e An\u00e1lise Lingu\u00edstica|||CAC-PPGL":29,"Microbiologia Industrial e de Fermenta\u00e7\u00e3o|||TGA-PPGASP":1,"Microbiologia Agr\u00edcola|||TGA-PPGASP":2,"Entomologia Agr\u00edcola|||TGA-PPGASP":2,"Ecofisiologia Vegetal|||TGA-PPGASP":1,"Microbiologia Industrial e de Fermenta\u00e7\u00e3o|||TGA-PROFBIO":1,"Microbiologia Agr\u00edcola|||TGA-PROFBIO":1,"Entomologia Agr\u00edcola|||TGA-PROFBIO":2,"Ecofisiologia Vegetal|||TGA-PROFBIO":1,"Fitotecnia|||AFL-PPGBIOAGRO":1,"Manejo e Conserva\u00e7\u00e3o de Pastagens|||AFL-PPGBIOAGRO":1,"Sementes Florestais|||AFL-PPGBIOAGRO":4,"Pavimentos|||CAC-PPGGEO":2,"Hidrogeologia|||CAC-PPGGEO":2,"Geografia Pol\u00edtica|||CAC-PPGGEO":6,"Ecologia de Ecossistemas|||CAC-PPGGEO":1,"Pavimentos|||PROFAGUA":2,"Hidrogeologia|||PROFAGUA":1,"Geografia Pol\u00edtica|||PROFAGUA":1,"Ecologia de Ecossistemas|||PROFAGUA":9,"Teoria Liter\u00e1ria|||SNP-PROFLETRAS":3,"Literatura Brasileira|||SNP-PROFLETRAS":3,"Extens\u00e3o Rural|||NVX-PPGEC":2,"Manejo e Tratos Culturais|||NVX-PPGEC":2,"Agrometeorologia|||NVX-PPGEC":1,"Ecologia Aplicada|||NVX-PPGEC":1,"Educa\u00e7\u00e3o Permanente|||SNP-PROFNIT":1,"Multidisciplinar|||SNP-PROFNIT":4,"Ci\u00eancias Cont\u00e1beis|||SNP-PROFNIT":10,"Pol\u00edtica Educacional|||SNP-PROFNIT":1,"Teoria e An\u00e1lise Lingu\u00edstica|||SNP-PROFLETRAS":2,"Administra\u00e7\u00e3o de Setores Espec\u00edficos|||SNP-PROFNIT":1,"Sa\u00fade P\u00fablica|||SNP-PROFNIT":1,"Pol\u00edtica e Planejamento Governamentais|||SNP-PROFNIT":1,"Teoria e An\u00e1lise Lingu\u00edstica|||PROFAGUA":1,"Taxonomia de Cript\u00f3gamos|||PROFAGUA":1,"Entomologia e Malacologia de Parasitos e Vetores|||TGA-PROFBIO":2,"Jornalismo Especializado (Comunit\u00e1rio, Rural, Empresarial, Cient\u00edfico)|||BBG-PPGECII":2,"Tecnologia Educacional|||BBG-PPGECII":2,"Jornalismo e Editora\u00e7\u00e3o|||BBG-PPGECII":1,"Hist\u00f3ria do Brasil Col\u00f4nia|||CAC-PPGEDU":2,"Sociologia Jur\u00eddica|||CAC-PPGEDU":2,"L\u00edngua Portuguesa|||CAC-PPGEDU":2,"Letras|||CAC-PPGEDU":1,"Direito|||CAC-PPGEDU":1,"Entomologia e Malacologia de Parasitos e Vetores|||CAC-PPGCA":14,"Sa\u00fade P\u00fablica|||CAC-PPGCA":4,"Helmintologia Animal|||CAC-PPGCA":2,"Enfermagem de Sa\u00fade P\u00fablica|||CAC-PPGCA":6,"Ecologia Aplicada|||CAC-PPGCA":7,"M\u00e9todos e T\u00e9cnicas de Ensino|||SNP-PROFEI":11,"Educa\u00e7\u00e3o Permanente|||SNP-PROFEI":1,"Hist\u00f3ria da Educa\u00e7\u00e3o|||SNP-PROFEI":1,"Pol\u00edtica Educacional|||SNP-PROFEI":1,"Literaturas Estrangeiras Modernas|||SNP-PPGLETRAS":2,"Teoria Liter\u00e1ria|||TGA-PPGEL":10,"Literatura Brasileira|||TGA-PPGEL":4,"Literaturas Estrangeiras Modernas|||TGA-PPGEL":3,"Classes Sociais e Grupos de Interesse|||CAC-PPGCA":1,"Hidrogeografia|||CAC-PPGCA":3,"Curr\u00edculos Espec\u00edficos para N\u00edveis e Tipos de Educa\u00e7\u00e3o|||CAC-PPGCA":1,"Classes Sociais e Grupos de Interesse|||CAC-PPGGEO":1,"Hidrogeografia|||CAC-PPGGEO":15,"Curr\u00edculos Espec\u00edficos para N\u00edveis e Tipos de Educa\u00e7\u00e3o|||CAC-PPGGEO":1,"Lingu\u00edstica Aplicada|||CAC-PPGL":4,"Arquitetura de Sistemas de Computa\u00e7\u00e3o|||AIA-PROFEDUCATEC":2,"Saneamento B\u00e1sico/Esgotos/Reator Anaer\u00f3bico|||AIA-PROFEDUCATEC":1,"Software B\u00e1sico|||AIA-PROFEDUCATEC":1,"Banco de Dados|||AIA-PROFEDUCATEC":2,"Ecologia de Ecossistemas|||CAC-PPGCA":6,"Educa\u00e7\u00e3o Permanente|||BBG-PPGECII":2,"An\u00e1lise Regional|||CAC-PPGGEO":9,"Geografia da Popula\u00e7\u00e3o|||CAC-PPGGEO":3,"Fotogeografia (F\u00edsico-Ecol\u00f3gica)|||CAC-PPGGEO":13,"Direito Constitucional|||SNP-PROFNIT":2,"Ensino|||SNP-PROFNIT":1,"Paleobot\u00e2nica|||CAC-PPGCA":1,"Entomologia Agr\u00edcola|||CAC-PPGCA":1,"Sistemas de Informa\u00e7\u00e3o|||AIA-PROFEDUCATEC":1,"Processamento Gr\u00e1fico (Graphics)|||AIA-PROFEDUCATEC":1,"Sensoriamento Remoto|||BIONORTE":1,"Sensoriamento Remoto|||SNP-PROFNIT":1,"Hist\u00f3ria da Arte|||BBG-PPGECII":3,"Administra\u00e7\u00e3o Municipal e Urbana|||BBG-PPGECII":2,"Hist\u00f3ria do Brasil Rep\u00fablica|||BBG-PPGECII":1,"Hist\u00f3ria da Arte|||CAC-PROFHISTORIA":1,"Administra\u00e7\u00e3o Municipal e Urbana|||CAC-PROFHISTORIA":1,"Ensino|||CAC-PROFHISTORIA":1,"Hist\u00f3ria do Brasil Rep\u00fablica|||CAC-PROFHISTORIA":2,"Ecologia Aplicada|||BIONORTE":1,"Ecologia Te\u00f3rica|||BIONORTE":1,"Ecologia Te\u00f3rica|||CAC-PPGCA":1,"Direito Constitucional|||AIA-PROFEDUCATEC":1,"Floricultura|||CAC-PGMP":15,"Floricultura|||REDEPROCENTRO":12,"Planejamento Educacional|||SNP-PROFEI":4,"Tecnologia e Inova\u00e7\u00e3o|||SNP-PROFEI":3,"Educa\u00e7\u00e3o de Adultos|||SNP-PROFEI":4,"M\u00e9todos e T\u00e9cnicas de Ensino|||SNP-PROFMAT":2,"Planejamento Educacional|||SNP-PROFMAT":5,"Tecnologia e Inova\u00e7\u00e3o|||SNP-PROFMAT":1,"Educa\u00e7\u00e3o de Adultos|||SNP-PROFMAT":1,"Tecnologia Educacional|||BBG-PPGECM":3,"Hist\u00f3ria da Arte|||BBG-PPGECM":1,"Administra\u00e7\u00e3o Municipal e Urbana|||BBG-PPGECM":1,"Ensino|||SNP-PROFLETRAS":2,"Tecnologia Educacional|||SNP-PROFLETRAS":1,"Hist\u00f3ria da Arte|||SNP-PROFLETRAS":1,"Administra\u00e7\u00e3o Municipal e Urbana|||SNP-PROFLETRAS":1,"M\u00e9todos e T\u00e9cnicas de Ensino|||BBG-PPGECM":10,"Educa\u00e7\u00e3o Permanente|||BBG-PPGECM":1,"M\u00e9todos e Modelos Matem\u00e1ticos, Econom\u00e9tricos e Estat\u00edsticos|||SNP-PROFNIT":4,"Contabilidade e Finan\u00e7as P\u00fablicas|||SNP-PROFNIT":4,"Aspectos Sociais do Planejamento Urbano e Regional|||SNP-PROFNIT":2,"Sa\u00fade P\u00fablica|||TGA-PROFBIO":4,"Ensino|||AIA-PROFEDUCATEC":2,"M\u00e9todos e T\u00e9cnicas de Ensino|||AIA-PROFEDUCATEC":2,"Ensino|||PPGREAMEC":2,"M\u00e9todos e T\u00e9cnicas de Ensino|||PPGREAMEC":2,"Conserva\u00e7\u00e3o das Esp\u00e9cies Animais|||TGA-PPGASP":3,"Ecologia Aplicada|||TGA-PPGASP":2,"Melhoramento Vegetal|||REDEPROCENTRO":14,"Fitopatologia|||REDEPROCENTRO":3,"Agronomia|||REDEPROCENTRO":3,"Melhoramento Vegetal|||TGA-PPGASP":2,"Fitopatologia|||TGA-PPGASP":1,"Agronomia|||TGA-PPGASP":1,"Ensino|||BBG-PROFMAT":13,"Fertilidade do Solo e Aduba\u00e7\u00e3o|||NVX-PPGEC":4,"Ecologia de Ecossistemas|||NVX-PPGEC":3,"Materiais e Componentes de Constru\u00e7\u00e3o|||NVX-PPGEC":1,"Ecofisiologia Vegetal|||AFL-PPGBIOAGRO":2,"Biologia Geral|||AFL-PPGBIOAGRO":1,"Orienta\u00e7\u00e3o Educacional|||AFL-PPGBIOAGRO":1,"Bot\u00e2nica|||AFL-PPGBIOAGRO":1,"Ecologia|||NVX-PPGEC":1,"Curr\u00edculos Espec\u00edficos para N\u00edveis e Tipos de Educa\u00e7\u00e3o|||SNP-PROFSOCIO":1,"Educa\u00e7\u00e3o Pr\u00e9-Escolar|||SNP-PROFSOCIO":2,"Teoria Geral de Planejamento e Desenvolvimento Curricular|||SNP-PROFSOCIO":2,"Pol\u00edticas P\u00fablicas|||SNP-PROFSOCIO":4,"Administra\u00e7\u00e3o de Unidades Educativas|||TGA-PPGASP":1,"Melhoramento Vegetal|||CAC-PGMP":26,"Agronomia|||CAC-PGMP":2,"Educa\u00e7\u00e3o Especial|||SNP-PROFEI":3,"Interpreta\u00e7\u00e3o Teatral|||SNP-PROFEI":1,"An\u00e1lise de Algoritmos e Complexidade de Computa\u00e7\u00e3o|||SNP-PROFEI":1,"Processos da Comunica\u00e7\u00e3o|||SNP-PROFEI":1,"Engenharia de Software|||CAC-PPGL":1,"Processamento Gr\u00e1fico (Graphics)|||PROFAGUA":2,"Hidrologia|||PROFAGUA":5,"Saneamento B\u00e1sico/Esgotos/Reator Anaer\u00f3bico|||PROFAGUA":1,"Cartografia B\u00e1sica|||PROFAGUA":2,"Transmiss\u00e3o da Energia El\u00e9trica, Distribui\u00e7\u00e3o da Energia El\u00e9trica|||PROFAGUA":1,"Processamento Gr\u00e1fico (Graphics)|||SNP-PROFMAT":2,"Hidrologia|||SNP-PROFMAT":1,"Saneamento B\u00e1sico/Esgotos/Reator Anaer\u00f3bico|||SNP-PROFMAT":1,"Cartografia B\u00e1sica|||SNP-PROFMAT":1,"Transmiss\u00e3o da Energia El\u00e9trica, Distribui\u00e7\u00e3o da Energia El\u00e9trica|||SNP-PROFMAT":1,"Ci\u00eancias Ambientais|||CAC-PPGCA":3,"Hidrologia|||CAC-PPGCA":1,"Economia dos Recursos Naturais|||CAC-PPGCA":1,"Ci\u00eancias Ambientais|||PROFAGUA":5,"Ecologia Aplicada|||PROFAGUA":3,"Economia dos Recursos Naturais|||PROFAGUA":2,"Geoecologia|||CAC-PPGGEO":3,"Servi\u00e7os Urbanos e Regionais|||CAC-PPGGEO":1,"M\u00e9todos e T\u00e9cnicas de Ensino|||TGA-PROFBIO":2,"Direitos Especiais|||TGA-PROFBIO":1,"Economia do Consumidor|||CBA-PROFNIT":1,"M\u00e9todos e Modelos Matem\u00e1ticos, Econom\u00e9tricos e Estat\u00edsticos|||CBA-PROFNIT":1,"Hist\u00f3ria Regional do Brasil|||CAC-PROFHISTORIA":3,"Tecnologia Educacional|||CAC-PROFHISTORIA":1,"Hist\u00f3ria do Brasil Col\u00f4nia|||CAC-PROFHISTORIA":1,"Multidisciplinar|||BBG-PPGECM":6,"Planejamento e Projetos da Edifica\u00e7\u00e3o|||BBG-PPGECM":1,"Biologia Molecular|||BBG-PPGECM":1,"Multidisciplinar|||CBA-PROFNIT":6,"M\u00e9todos e T\u00e9cnicas de Ensino|||CBA-PROFNIT":2,"Planejamento e Projetos da Edifica\u00e7\u00e3o|||CBA-PROFNIT":1,"Biologia Molecular|||CBA-PROFNIT":2,"Ensino|||CBA-PROFNIT":1,"Literatura Brasileira|||CAC-PPGL":1,"Lingu\u00edstica|||CAC-PPGL":2,"Servi\u00e7os Urbanos e Regionais|||PROFAGUA":1,"Arquitetura de Sistemas de Computa\u00e7\u00e3o|||PROFAGUA":1,"Educa\u00e7\u00e3o Especial|||SNP-PPGLETRAS":2,"Literatura Comparada|||SNP-PROFLETRAS":2,"Cr\u00edtica da Arte|||SNP-PROFLETRAS":1,"Economia dos Programas de Bem-Estar Social|||SNP-PROFNIT":1,"Fertilidade do Solo e Aduba\u00e7\u00e3o|||AFL-PPGBIOAGRO":10,"Manejo e Tratos Culturais|||AFL-PPGBIOAGRO":1,"Gen\u00e9tica Vegetal|||CAC-PGMP":1,"Fitotecnia|||CAC-PGMP":1,"Gen\u00e9tica Vegetal|||REDEPROCENTRO":2,"Fitotecnia|||REDEPROCENTRO":1,"Teoria Antropol\u00f3gica|||SNP-PROFEI":4,"Educa\u00e7\u00e3o|||SNP-PROFEI":2,"Teoria Geral de Planejamento e Desenvolvimento Curricular|||SNP-PROFEI":1,"Anatomia Vegetal|||AFL-PPGBIOAGRO":2,"Ci\u00eancias Ambientais|||AFL-PPGBIOAGRO":2,"Educa\u00e7\u00e3o|||AFL-PPGBIOAGRO":1,"M\u00e9todos e T\u00e9cnicas de Ensino|||CAC-PPGEDU":8,"Hist\u00f3ria da Educa\u00e7\u00e3o|||CAC-PPGEDU":2,"Geografia da Popula\u00e7\u00e3o|||CAC-PPGEDU":1,"Outras Sociologias Espec\u00edficas|||CAC-PPGEDU":2,"Pol\u00edtica Educacional|||CAC-PPGEDU":1,"M\u00e9todos e T\u00e9cnicas de Ensino|||CAC-PROFHISTORIA":8,"Hist\u00f3ria da Educa\u00e7\u00e3o|||CAC-PROFHISTORIA":2,"Geografia da Popula\u00e7\u00e3o|||CAC-PROFHISTORIA":1,"Outras Sociologias Espec\u00edficas|||CAC-PROFHISTORIA":1,"Pol\u00edtica Educacional|||CAC-PROFHISTORIA":1,"Cr\u00edtica da Arte|||TGA-PPGEL":2,"Biologia Molecular|||SNP-PROFMAT":1,"Automa\u00e7\u00e3o Eletr\u00f4nica de Processos El\u00e9tricos e Industriais|||SNP-PROFMAT":2,"Controle de Processos Eletr\u00f4nicos, Retroalimenta\u00e7\u00e3o|||SNP-PROFMAT":1,"Gen\u00e9tica Vegetal|||CBA-PROFNIT":1,"Morfologia dos Grupos Recentes|||CBA-PROFNIT":1,"Gen\u00e9tica Animal|||CBA-PROFNIT":1,"Gen\u00e9tica Vegetal|||NVX-PPGEC":1,"Biologia Molecular|||NVX-PPGEC":2,"Multidisciplinar|||NVX-PPGEC":1,"Morfologia dos Grupos Recentes|||NVX-PPGEC":1,"Gen\u00e9tica Animal|||NVX-PPGEC":1,"Biologia Molecular|||REDEPROCENTRO":1,"Multidisciplinar|||REDEPROCENTRO":1,"Morfologia dos Grupos Recentes|||REDEPROCENTRO":1,"Gen\u00e9tica Animal|||REDEPROCENTRO":1,"Sociolingu\u00edstica e Dialetologia|||CAC-PPGL":2,"L\u00ednguas Ind\u00edgenas|||CAC-PPGL":1,"Letras|||CAC-PPGL":1,"Geografia Pol\u00edtica|||SNP-PROFSOCIO":1,"Outras Sociologias Espec\u00edficas|||SNP-PROFSOCIO":2,"Ci\u00eancias Cont\u00e1beis|||CAC-PROFLETRAS":1,"Hist\u00f3ria Moderna e Contempor\u00e2nea|||SNP-PROFEI":1,"Teoria do Estado|||CAC-PPGL":2,"Extens\u00e3o Rural|||CAC-PPGGEO":1,"Sa\u00fade P\u00fablica|||TGA-PPGASP":11,"Enfermagem de Sa\u00fade P\u00fablica|||TGA-PPGASP":5,"Epidemiologia|||TGA-PPGASP":1,"Pol\u00edtica e Planejamento Governamentais|||TGA-PPGASP":2,"Lingu\u00edstica Aplicada|||SNP-PPGLETRAS":4,"Lingu\u00edstica Aplicada|||SNP-PROFLETRAS":4,"Prote\u00e7\u00e3o Florestal|||AFL-PPGBIOAGRO":5,"Recupera\u00e7\u00e3o de Areas Degradadas|||AFL-PPGBIOAGRO":1,"Equa\u00e7\u00f5es Diferenciais Parciais|||BBG-PROFMAT":2,"Produ\u00e7\u00e3o de Mudas|||CAC-PGMP":4,"Matologia|||CAC-PGMP":1,"Engenharia de Constru\u00e7\u00f5es Rurais|||CAC-PGMP":1,"Fitopatologia|||CAC-PGMP":6,"Produ\u00e7\u00e3o de Mudas|||REDEPROCENTRO":4,"Matologia|||REDEPROCENTRO":3,"Engenharia de Constru\u00e7\u00f5es Rurais|||REDEPROCENTRO":1,"Educa\u00e7\u00e3o Permanente|||CAC-PPGEDU":4,"Sociologia do Conhecimento|||CAC-PPGEDU":2,"Economia dos Programas de Bem-Estar Social|||CAC-PPGEDU":1,"Sociolingu\u00edstica e Dialetologia|||SNP-PPGLETRAS":1,"Sociolingu\u00edstica e Dialetologia|||SNP-PROFLETRAS":1,"Literatura Brasileira|||BBG-PPGECII":1,"Literatura Comparada|||BBG-PPGECII":1,"Endocrinologia|||TGA-PROFBIO":1,"Helmintologia Animal|||TGA-PROFBIO":1,"Alergologia e Imunologia Cl\u00ednica|||TGA-PROFBIO":1,"Ci\u00eancia da Computa\u00e7\u00e3o|||CAC-PPGEDU":1,"Administra\u00e7\u00e3o de Unidades Educativas|||CAC-PPGEDU":1,"Produ\u00e7\u00e3o e Beneficiamento de Sementes|||CAC-PGMP":2,"Produ\u00e7\u00e3o e Beneficiamento de Sementes|||REDEPROCENTRO":2,"Geoecologia|||BBG-PPGECII":1,"Etnologia Ind\u00edgena|||BBG-PPGECII":4,"Geografia Humana|||BBG-PPGECII":3,"Ensino|||CAC-PPGGEO":1,"Etnologia Ind\u00edgena|||CAC-PPGGEO":1,"Geografia Humana|||CAC-PPGGEO":1,"Educa\u00e7\u00e3o Permanente|||PPGREAMEC":1,"Sociologia do Conhecimento|||PPGREAMEC":1,"Avalia\u00e7\u00e3o da Aprendizagem|||BBG-PPGECM":2,"Avalia\u00e7\u00e3o da Aprendizagem|||BBG-PROFMAT":1,"An\u00e1lise Num\u00e9rica|||SNP-PROFMAT":6,"Matem\u00e1tica|||SNP-PROFMAT":3,"Ensino|||SNP-PROFMAT":3,"Curr\u00edculos Espec\u00edficos para N\u00edveis e Tipos de Educa\u00e7\u00e3o|||SNP-PROFEI":3,"Sa\u00fade P\u00fablica|||SNP-PROFEI":1,"Morfologia Externa|||TGA-PROFBIO":1,"Morfologia Vegetal|||TGA-PROFBIO":1,"Arquitetura de Sistemas de Computa\u00e7\u00e3o|||SNP-PROFEI":2,"Software B\u00e1sico|||SNP-PROFEI":1,"Hardware|||SNP-PROFEI":1,"Manejo e Tratos Culturais|||CAC-PGMP":3,"Biologia Molecular|||CAC-PGMP":1,"Microbiologia e Bioqu\u00edmica do Solo|||AFL-PPGBIOAGRO":1,"Agrometeorologia|||AFL-PPGBIOAGRO":1,"Fertilidade do Solo e Aduba\u00e7\u00e3o|||REDEPROCENTRO":5,"Prote\u00e7\u00e3o Florestal|||REDEPROCENTRO":4,"Microbiologia e Bioqu\u00edmica do Solo|||REDEPROCENTRO":1,"Agrometeorologia|||REDEPROCENTRO":1,"Prote\u00e7\u00e3o Florestal|||TGA-PPGASP":2,"Matologia|||TGA-PPGASP":3,"Microbiologia e Bioqu\u00edmica do Solo|||TGA-PPGASP":1,"Agrometeorologia|||TGA-PPGASP":3,"Mec\u00e2nica das Estruturas|||BBG-PPGECM":2,"Irriga\u00e7\u00e3o e Drenagem|||CAC-PPGCA":1,"Qu\u00edmica do Solo|||CAC-PPGCA":1,"Administra\u00e7\u00e3o de Sistemas Educacionais|||CAC-PPGEDU":1,"L\u00edngua Portuguesa|||AIA-PROFEDUCATEC":1,"Teoria e An\u00e1lise Lingu\u00edstica|||AIA-PROFEDUCATEC":1,"Curr\u00edculos Espec\u00edficos para N\u00edveis e Tipos de Educa\u00e7\u00e3o|||CAC-PPGEDU":3,"Geografia Urbana|||CAC-PROFHISTORIA":1,"Sensoriamento Remoto|||AFL-PPGBIOAGRO":2,"Ci\u00eancias Cont\u00e1beis|||BBG-PPGECM":3,"Ci\u00eancias Cont\u00e1beis|||BBG-PROFMAT":3,"Taxonomia dos Grupos Recentes|||REDEPROCENTRO":2,"Comunica\u00e7\u00e3o Visual|||REDEPROCENTRO":1,"Microbiologia Agr\u00edcola|||REDEPROCENTRO":1,"Entomologia Agr\u00edcola|||REDEPROCENTRO":1,"Ecologia Aplicada|||REDEPROCENTRO":1,"Taxonomia dos Grupos Recentes|||TGA-PPGASP":2,"Comunica\u00e7\u00e3o Visual|||TGA-PPGASP":1,"Propriedades Fisico-Mec\u00e2nicas da Madeira|||REDEPROCENTRO":1,"Manejo Florestal|||REDEPROCENTRO":1,"Recursos Florestais e Engenharia Florestal|||REDEPROCENTRO":1,"Multidisciplinar|||BBG-PPGECII":1,"Teoria Antropol\u00f3gica|||CAC-PPGEDU":1,"Banco de Dados|||CAC-PPGEDU":1,"Educa\u00e7\u00e3o de Adultos|||CAC-PPGEDU":3,"Outras Sociologias Espec\u00edficas|||SNP-PROFEI":1,"Banco de Dados|||SNP-PROFEI":1,"Manejo e Tratos Culturais|||REDEPROCENTRO":2,"Matem\u00e1tica|||SNP-PROFEI":1,"Ensino|||SNP-PROFEI":3,"An\u00e1lise Num\u00e9rica|||SNP-PROFEI":1,"Ci\u00eancias Ambientais|||TGA-PPGASP":2,"Administra\u00e7\u00e3o de Setores Espec\u00edficos|||BBG-PPGECII":1,"Pol\u00edtica e Planejamento Governamentais|||BBG-PPGECII":1,"Ci\u00eancias Ambientais|||BBG-PPGECII":1,"Ensino|||TGA-PPGASP":1,"Tecnologia de Produtos de Origem Vegetal|||TGA-PPGASP":7,"Tecnologia Educacional|||TGA-PPGASP":2,"Alimentos|||TGA-PPGASP":2,"Tecnologia Qu\u00edmica|||TGA-PPGASP":1,"Processos Inorg\u00e2nicos|||TGA-PPGASP":1,"L\u00edngua Portuguesa|||BBG-PPGECII":1,"Sa\u00fade P\u00fablica|||CAC-PPGGEO":1,"Educa\u00e7\u00e3o F\u00edsica|||CAC-PPGEDU":6,"Medicina Preventiva|||CAC-PPGEDU":1,"Ecologia Aplicada|||CAC-PPGGEO":1,"Aspectos Sociais do Planejamento Urbano e Regional|||CAC-PPGGEO":1,"Educa\u00e7\u00e3o em Periferias Urbanas|||BBG-PPGECII":2,"Educa\u00e7\u00e3o de Adultos|||BBG-PPGECII":2,"Etnologia Ind\u00edgena|||CAC-PPGEDU":3,"Ensino|||CAC-PPGEDU":2,"Educa\u00e7\u00e3o em Periferias Urbanas|||CAC-PPGEDU":2,"Sociologia Jur\u00eddica|||CAC-PPGL":1,"Fotogeografia (F\u00edsico-Ecol\u00f3gica)|||CAC-PPGCA":10,"An\u00e1lise Regional|||CAC-PPGCA":1,"Geografia da Popula\u00e7\u00e3o|||CAC-PPGCA":1,"Entomologia e Malacologia de Parasitos e Vetores|||CAC-PPGGEO":3,"M\u00e9todos e T\u00e9cnicas de Ensino|||SNP-PROFSOCIO":6,"Administra\u00e7\u00e3o de Setores Espec\u00edficos|||CAC-PPGCA":2,"Ci\u00eancias Cont\u00e1beis|||CAC-PPGCA":1,"Pastagem e Forragicultura|||CAC-PPGCA":1,"Administra\u00e7\u00e3o de Setores Espec\u00edficos|||CAC-PPGEDU":2,"Ci\u00eancias Cont\u00e1beis|||CAC-PPGEDU":1,"Pastagem e Forragicultura|||CAC-PPGEDU":1,"Floricultura|||TGA-PPGASP":4,"Manejo e Tratos Culturais|||TGA-PPGASP":2,"Literatura Brasileira|||CAC-PROFLETRAS":3,"L\u00edngua Portuguesa|||CAC-PROFLETRAS":2,"Letras|||CAC-PROFLETRAS":2,"Teoria Liter\u00e1ria|||CAC-PROFLETRAS":2,"L\u00edngua Portuguesa|||SNP-PPGLETRAS":2,"Letras|||SNP-PPGLETRAS":2,"Zootecnia|||AFL-PPGBIOAGRO":1,"Avalia\u00e7\u00e3o de Alimentos para Animais|||AFL-PPGBIOAGRO":1,"Mec\u00e2nica das Estruturas|||SNP-PROFMAT":2,"Instrumenta\u00e7\u00e3o Espec\u00edfica de Uso Geral em F\u00edsica|||SNP-PROFMAT":1,"Arquitetura de Sistemas de Computa\u00e7\u00e3o|||SNP-PROFMAT":1,"F\u00edsica|||SNP-PROFMAT":1,"Geomorfologia|||NVX-PPGEC":1,"Sociologia Rural|||CAC-PPGCA":1,"Fotogeografia (F\u00edsico-Ecol\u00f3gica)|||PROFAGUA":4,"Sociologia Rural|||PROFAGUA":1,"Tecnologia de Produtos de Origem Vegetal|||BBG-PPGECM":5,"Alimentos|||BBG-PPGECM":1,"Tecnologia Qu\u00edmica|||BBG-PPGECM":1,"Tecnologia de Produtos de Origem Vegetal|||SNP-PROFEI":5,"Tecnologia Educacional|||SNP-PROFEI":2,"Alimentos|||SNP-PROFEI":1,"Tecnologia Qu\u00edmica|||SNP-PROFEI":1,"Planejamento Integrado dos Recursos H\u00eddricos|||PROFAGUA":1,"Matologia|||PROFAGUA":1,"Armazenamento de Produtos Agr\u00edcolas|||PROFAGUA":1,"Irriga\u00e7\u00e3o e Drenagem|||PROFAGUA":1,"Planejamento Integrado dos Recursos H\u00eddricos|||TGA-PPGASP":1,"Hidrologia|||TGA-PPGASP":1,"Armazenamento de Produtos Agr\u00edcolas|||TGA-PPGASP":1,"Irriga\u00e7\u00e3o e Drenagem|||TGA-PPGASP":1,"Entomologia e Malacologia de Parasitos e Vetores|||BBG-PPGECII":5,"Enfermagem|||BBG-PPGECII":1,"Enfermagem|||CAC-PPGCA":1,"Multidisciplinar|||AFL-PPGBIOAGRO":1,"Dendrometria e Invent\u00e1rio Florestal|||AFL-PPGBIOAGRO":1,"Explora\u00e7\u00e3o Florestal|||AFL-PPGBIOAGRO":1,"Geografia Pol\u00edtica|||AFL-PPGBIOAGRO":1,"Outras Sociologias Espec\u00edficas|||AFL-PPGBIOAGRO":1,"Outras Sociologias Espec\u00edficas|||CAC-PPGGEO":1,"Sensoriamento Remoto|||CAC-PPGGEO":1,"Geografia Humana|||CAC-PPGEDU":1,"Interpreta\u00e7\u00e3o Teatral|||SNP-PROFNIT":1,"An\u00e1lise de Algoritmos e Complexidade de Computa\u00e7\u00e3o|||SNP-PROFNIT":1,"Interpreta\u00e7\u00e3o Teatral|||TGA-PPGASP":1,"Direito Constitucional|||TGA-PPGASP":1,"Multidisciplinar|||TGA-PPGASP":1,"An\u00e1lise de Algoritmos e Complexidade de Computa\u00e7\u00e3o|||TGA-PPGASP":1,"Aspectos Sociais do Planejamento Urbano e Regional|||PROFAGUA":1,"M\u00e9todos e T\u00e9cnicas de Ensino|||BBG-PROFMAT":1,"Economia dos Recursos Naturais|||SNP-PROFNIT":4,"Software B\u00e1sico|||SNP-PROFNIT":1},"links_pe":{"BBG-PPGECII|||EDUCA\u00c7\u00c3O":19,"BBG-PPGECM|||EDUCA\u00c7\u00c3O":112,"TGA-PPGASP|||TECNOLOGIA E PRODU\u00c7\u00c3O":32,"SNP-PPGLETRAS|||CULTURA":3,"SNP-PPGLETRAS|||EDUCA\u00c7\u00c3O":37,"AFL-PPGBIOAGRO|||EDUCA\u00c7\u00c3O":13,"TGA-PPGEL|||CULTURA":30,"TGA-PPGEL|||EDUCA\u00c7\u00c3O":20,"TGA-PPGEL|||COMUNICA\u00c7\u00c3O":2,"CAC-PPGL|||EDUCA\u00c7\u00c3O":35,"TGA-PPGASP|||EDUCA\u00c7\u00c3O":9,"TGA-PROFBIO|||EDUCA\u00c7\u00c3O":13,"AFL-PPGBIOAGRO|||TECNOLOGIA E PRODU\u00c7\u00c3O":10,"AFL-PPGBIOAGRO|||MEIO AMBIENTE":16,"CAC-PPGGEO|||MEIO AMBIENTE":12,"PROFAGUA|||MEIO AMBIENTE":6,"SNP-PROFLETRAS|||EDUCA\u00c7\u00c3O":22,"NVX-PPGEC|||TECNOLOGIA E PRODU\u00c7\u00c3O":9,"NVX-PPGEC|||MEIO AMBIENTE":9,"NVX-PPGEC|||EDUCA\u00c7\u00c3O":2,"NVX-PPGEC|||CULTURA":1,"SNP-PROFNIT|||SA\u00daDE":2,"SNP-PROFNIT|||TECNOLOGIA E PRODU\u00c7\u00c3O":7,"SNP-PROFNIT|||TRABALHO":3,"SNP-PROFNIT|||MEIO AMBIENTE":3,"PROFAGUA|||CULTURA":10,"TGA-PROFBIO|||SA\u00daDE":3,"BBG-PPGECII|||COMUNICA\u00c7\u00c3O":3,"CAC-PPGEDU|||DIREITOS HUMANOS E JUSTI\u00c7A":3,"CAC-PPGEDU|||EDUCA\u00c7\u00c3O":35,"CAC-PPGCA|||SA\u00daDE":4,"SNP-PROFEI|||EDUCA\u00c7\u00c3O":93,"CAC-PPGCA|||EDUCA\u00c7\u00c3O":17,"CAC-PPGGEO|||EDUCA\u00c7\u00c3O":35,"CAC-PPGL|||CULTURA":4,"AIA-PROFEDUCATEC|||TECNOLOGIA E PRODU\u00c7\u00c3O":6,"CAC-PPGCA|||MEIO AMBIENTE":8,"BBG-PPGECII|||CULTURA":15,"CAC-PPGGEO|||COMUNICA\u00c7\u00c3O":4,"CAC-PPGGEO|||CULTURA":9,"SNP-PROFNIT|||COMUNICA\u00c7\u00c3O":2,"SNP-PROFNIT|||EDUCA\u00c7\u00c3O":1,"CAC-PPGCA|||COMUNICA\u00c7\u00c3O":1,"AIA-PROFEDUCATEC|||EDUCA\u00c7\u00c3O":7,"BIONORTE|||MEIO AMBIENTE":2,"BBG-PPGECII|||DIREITOS HUMANOS E JUSTI\u00c7A":1,"CAC-PROFHISTORIA|||EDUCA\u00c7\u00c3O":4,"CAC-PROFHISTORIA|||CULTURA":6,"CAC-PROFHISTORIA|||DIREITOS HUMANOS E JUSTI\u00c7A":1,"AIA-PROFEDUCATEC|||DIREITOS HUMANOS E JUSTI\u00c7A":1,"CAC-PGMP|||TECNOLOGIA E PRODU\u00c7\u00c3O":12,"REDEPROCENTRO|||TECNOLOGIA E PRODU\u00c7\u00c3O":15,"SNP-PROFMAT|||EDUCA\u00c7\u00c3O":45,"BBG-PPGECM|||CULTURA":16,"SNP-PROFLETRAS|||CULTURA":10,"TGA-PROFBIO|||TECNOLOGIA E PRODU\u00c7\u00c3O":3,"TGA-PROFBIO|||COMUNICA\u00c7\u00c3O":2,"PPGREAMEC|||EDUCA\u00c7\u00c3O":6,"REDEPROCENTRO|||MEIO AMBIENTE":18,"REDEPROCENTRO|||EDUCA\u00c7\u00c3O":6,"TGA-PPGASP|||MEIO AMBIENTE":4,"BBG-PPGECM|||TECNOLOGIA E PRODU\u00c7\u00c3O":15,"BBG-PROFMAT|||EDUCA\u00c7\u00c3O":21,"BBG-PROFMAT|||TECNOLOGIA E PRODU\u00c7\u00c3O":5,"AFL-PPGBIOAGRO|||CULTURA":5,"SNP-PROFSOCIO|||EDUCA\u00c7\u00c3O":6,"SNP-PROFSOCIO|||CULTURA":2,"TGA-PPGEL|||DIREITOS HUMANOS E JUSTI\u00c7A":1,"TGA-PPGASP|||SA\u00daDE":60,"TGA-PPGASP|||CULTURA":3,"PROFAGUA|||EDUCA\u00c7\u00c3O":9,"PROFAGUA|||TECNOLOGIA E PRODU\u00c7\u00c3O":4,"SNP-PROFMAT|||TECNOLOGIA E PRODU\u00c7\u00c3O":6,"CAC-PPGCA|||CULTURA":3,"CBA-PROFNIT|||TECNOLOGIA E PRODU\u00c7\u00c3O":4,"CBA-PROFNIT|||EDUCA\u00c7\u00c3O":5,"CAC-PPGL|||COMUNICA\u00c7\u00c3O":2,"SNP-PROFLETRAS|||COMUNICA\u00c7\u00c3O":1,"AFL-PPGBIOAGRO|||TRABALHO":1,"CAC-PGMP|||MEIO AMBIENTE":13,"CAC-PGMP|||EDUCA\u00c7\u00c3O":3,"CAC-PPGEDU|||CULTURA":5,"CBA-PROFNIT|||MEIO AMBIENTE":2,"SNP-PROFSOCIO|||DIREITOS HUMANOS E JUSTI\u00c7A":2,"CAC-PROFLETRAS|||EDUCA\u00c7\u00c3O":11,"CAC-PROFLETRAS|||CULTURA":1,"CAC-PPGL|||DIREITOS HUMANOS E JUSTI\u00c7A":3,"CAC-PPGGEO|||TECNOLOGIA E PRODU\u00c7\u00c3O":8,"TGA-PPGASP|||TRABALHO":2,"BBG-PPGECII|||TECNOLOGIA E PRODU\u00c7\u00c3O":2,"CAC-PPGEDU|||TECNOLOGIA E PRODU\u00c7\u00c3O":2,"SNP-PROFMAT|||CULTURA":2,"TGA-PROFBIO|||MEIO AMBIENTE":1,"SNP-PROFEI|||TECNOLOGIA E PRODU\u00c7\u00c3O":9,"CAC-PGMP|||COMUNICA\u00c7\u00c3O":2,"CAC-PPGCA|||TECNOLOGIA E PRODU\u00c7\u00c3O":4,"AIA-PROFEDUCATEC|||CULTURA":1,"TGA-PPGASP|||COMUNICA\u00c7\u00c3O":20,"CAC-PPGEDU|||SA\u00daDE":40,"CAC-PPGGEO|||TRABALHO":4,"SNP-PROFEI|||SA\u00daDE":9,"CAC-PPGCA|||TRABALHO":2,"CAC-PPGEDU|||TRABALHO":2,"BBG-PPGECM|||MEIO AMBIENTE":29,"BBG-PPGECM|||SA\u00daDE":8,"SNP-PROFEI|||MEIO AMBIENTE":29,"SNP-PROFEI|||CULTURA":8,"BBG-PPGECII|||SA\u00daDE":1,"SNP-PROFNIT|||DIREITOS HUMANOS E JUSTI\u00c7A":4,"TGA-PPGASP|||DIREITOS HUMANOS E JUSTI\u00c7A":4},"area_total":{"Ensino":68,"Enfermagem de Sa\u00fade P\u00fablica":18,"Sa\u00fade P\u00fablica":28,"Extens\u00e3o Rural":5,"Ci\u00eancias Cont\u00e1beis":21,"Fertilidade do Solo e Aduba\u00e7\u00e3o":24,"Administra\u00e7\u00e3o de Setores Espec\u00edficos":8,"Planejamento Educacional":10,"Teoria Liter\u00e1ria":26,"Literatura Comparada":8,"Literatura Brasileira":19,"Cr\u00edtica da Arte":7,"Matologia":28,"Teoria e An\u00e1lise Lingu\u00edstica":33,"Microbiologia Industrial e de Fermenta\u00e7\u00e3o":2,"Microbiologia Agr\u00edcola":4,"Entomologia Agr\u00edcola":6,"Ecofisiologia Vegetal":4,"Fitotecnia":3,"Manejo e Conserva\u00e7\u00e3o de Pastagens":1,"Sementes Florestais":4,"Pavimentos":4,"Hidrogeologia":3,"Geografia Pol\u00edtica":9,"Ecologia de Ecossistemas":19,"Manejo e Tratos Culturais":10,"Agrometeorologia":6,"Ecologia Aplicada":16,"Educa\u00e7\u00e3o Permanente":10,"Multidisciplinar":21,"Pol\u00edtica Educacional":4,"Pol\u00edtica e Planejamento Governamentais":4,"Taxonomia de Cript\u00f3gamos":1,"Entomologia e Malacologia de Parasitos e Vetores":24,"Jornalismo Especializado (Comunit\u00e1rio, Rural, Empresarial, Cient\u00edfico)":2,"Tecnologia Educacional":11,"Jornalismo e Editora\u00e7\u00e3o":1,"Hist\u00f3ria do Brasil Col\u00f4nia":3,"Sociologia Jur\u00eddica":3,"L\u00edngua Portuguesa":8,"Letras":6,"Direito":1,"Helmintologia Animal":3,"M\u00e9todos e T\u00e9cnicas de Ensino":54,"Hist\u00f3ria da Educa\u00e7\u00e3o":5,"Literaturas Estrangeiras Modernas":5,"Classes Sociais e Grupos de Interesse":2,"Hidrogeografia":18,"Curr\u00edculos Espec\u00edficos para N\u00edveis e Tipos de Educa\u00e7\u00e3o":9,"Lingu\u00edstica Aplicada":12,"Arquitetura de Sistemas de Computa\u00e7\u00e3o":6,"Saneamento B\u00e1sico/Esgotos/Reator Anaer\u00f3bico":3,"Software B\u00e1sico":3,"Banco de Dados":4,"An\u00e1lise Regional":10,"Geografia da Popula\u00e7\u00e3o":6,"Fotogeografia (F\u00edsico-Ecol\u00f3gica)":27,"Direito Constitucional":4,"Paleobot\u00e2nica":1,"Sistemas de Informa\u00e7\u00e3o":1,"Processamento Gr\u00e1fico (Graphics)":5,"Sensoriamento Remoto":5,"Hist\u00f3ria da Arte":6,"Administra\u00e7\u00e3o Municipal e Urbana":5,"Hist\u00f3ria do Brasil Rep\u00fablica":3,"Ecologia Te\u00f3rica":2,"Floricultura":31,"Tecnologia e Inova\u00e7\u00e3o":4,"Educa\u00e7\u00e3o de Adultos":10,"M\u00e9todos e Modelos Matem\u00e1ticos, Econom\u00e9tricos e Estat\u00edsticos":5,"Contabilidade e Finan\u00e7as P\u00fablicas":4,"Aspectos Sociais do Planejamento Urbano e Regional":4,"Conserva\u00e7\u00e3o das Esp\u00e9cies Animais":3,"Melhoramento Vegetal":42,"Fitopatologia":10,"Agronomia":6,"Materiais e Componentes de Constru\u00e7\u00e3o":1,"Biologia Geral":1,"Orienta\u00e7\u00e3o Educacional":1,"Bot\u00e2nica":1,"Ecologia":1,"Educa\u00e7\u00e3o Pr\u00e9-Escolar":2,"Teoria Geral de Planejamento e Desenvolvimento Curricular":3,"Pol\u00edticas P\u00fablicas":4,"Administra\u00e7\u00e3o de Unidades Educativas":2,"Educa\u00e7\u00e3o Especial":5,"Interpreta\u00e7\u00e3o Teatral":3,"An\u00e1lise de Algoritmos e Complexidade de Computa\u00e7\u00e3o":3,"Processos da Comunica\u00e7\u00e3o":1,"Engenharia de Software":1,"Hidrologia":8,"Cartografia B\u00e1sica":3,"Transmiss\u00e3o da Energia El\u00e9trica, Distribui\u00e7\u00e3o da Energia El\u00e9trica":2,"Ci\u00eancias Ambientais":13,"Economia dos Recursos Naturais":7,"Geoecologia":4,"Servi\u00e7os Urbanos e Regionais":2,"Direitos Especiais":1,"Economia do Consumidor":1,"Hist\u00f3ria Regional do Brasil":3,"Planejamento e Projetos da Edifica\u00e7\u00e3o":2,"Biologia Molecular":8,"Lingu\u00edstica":2,"Economia dos Programas de Bem-Estar Social":2,"Gen\u00e9tica Vegetal":5,"Teoria Antropol\u00f3gica":5,"Educa\u00e7\u00e3o":3,"Anatomia Vegetal":2,"Outras Sociologias Espec\u00edficas":8,"Automa\u00e7\u00e3o Eletr\u00f4nica de Processos El\u00e9tricos e Industriais":2,"Controle de Processos Eletr\u00f4nicos, Retroalimenta\u00e7\u00e3o":1,"Morfologia dos Grupos Recentes":3,"Gen\u00e9tica Animal":3,"Sociolingu\u00edstica e Dialetologia":4,"L\u00ednguas Ind\u00edgenas":1,"Hist\u00f3ria Moderna e Contempor\u00e2nea":1,"Teoria do Estado":2,"Epidemiologia":1,"Prote\u00e7\u00e3o Florestal":11,"Recupera\u00e7\u00e3o de Areas Degradadas":1,"Equa\u00e7\u00f5es Diferenciais Parciais":2,"Produ\u00e7\u00e3o de Mudas":8,"Engenharia de Constru\u00e7\u00f5es Rurais":2,"Sociologia do Conhecimento":3,"Endocrinologia":1,"Alergologia e Imunologia Cl\u00ednica":1,"Ci\u00eancia da Computa\u00e7\u00e3o":1,"Produ\u00e7\u00e3o e Beneficiamento de Sementes":4,"Etnologia Ind\u00edgena":8,"Geografia Humana":5,"Avalia\u00e7\u00e3o da Aprendizagem":3,"An\u00e1lise Num\u00e9rica":7,"Matem\u00e1tica":4,"Morfologia Externa":1,"Morfologia Vegetal":1,"Hardware":1,"Microbiologia e Bioqu\u00edmica do Solo":3,"Mec\u00e2nica das Estruturas":4,"Irriga\u00e7\u00e3o e Drenagem":3,"Qu\u00edmica do Solo":1,"Administra\u00e7\u00e3o de Sistemas Educacionais":1,"Geografia Urbana":1,"Taxonomia dos Grupos Recentes":4,"Comunica\u00e7\u00e3o Visual":2,"Propriedades Fisico-Mec\u00e2nicas da Madeira":1,"Manejo Florestal":1,"Recursos Florestais e Engenharia Florestal":1,"Tecnologia de Produtos de Origem Vegetal":17,"Alimentos":4,"Tecnologia Qu\u00edmica":3,"Processos Inorg\u00e2nicos":1,"Educa\u00e7\u00e3o F\u00edsica":6,"Medicina Preventiva":1,"Educa\u00e7\u00e3o em Periferias Urbanas":4,"Pastagem e Forragicultura":2,"Zootecnia":1,"Avalia\u00e7\u00e3o de Alimentos para Animais":1,"Instrumenta\u00e7\u00e3o Espec\u00edfica de Uso Geral em F\u00edsica":1,"F\u00edsica":1,"Geomorfologia":1,"Sociologia Rural":2,"Planejamento Integrado dos Recursos H\u00eddricos":2,"Armazenamento de Produtos Agr\u00edcolas":2,"Enfermagem":2,"Dendrometria e Invent\u00e1rio Florestal":1,"Explora\u00e7\u00e3o Florestal":1},"tema_total":{"EDUCA\u00c7\u00c3O":586,"TECNOLOGIA E PRODU\u00c7\u00c3O":153,"CULTURA":134,"COMUNICA\u00c7\u00c3O":39,"MEIO AMBIENTE":152,"SA\u00daDE":127,"TRABALHO":14,"DIREITOS HUMANOS E JUSTI\u00c7A":20},"ppg_info":{"BBG-PPGECM":{"nm":"ENSINO DE CI\u00caNCIAS E MATEM\u00c1TICA","cp":"Barra do Bugres","nv":"MESTRADO, DOUTORADO","nd":18,"np":82,"ne":206},"TGA-PPGASP":{"nm":"AMBIENTE E SISTEMAS DE PRODU\u00c7\u00c3O AGR\u00cdCOLA","cp":"Tangar\u00e1 da Serra","nv":"MESTRADO","nd":19,"np":120,"ne":156},"SNP-PROFEI":{"nm":"EDUCA\u00c7\u00c3O INCLUSIVA","cp":"Sinop","nv":"MESTRADO","nd":23,"np":82,"ne":176},"CAC-PPGEDU":{"nm":"EDUCA\u00c7\u00c3O","cp":"C\u00e1ceres","nv":"DOUTORADO, MESTRADO","nd":22,"np":85,"ne":106},"CAC-PPGGEO":{"nm":"GEOGRAFIA","cp":"C\u00e1ceres","nv":"DOUTORADO, MESTRADO","nd":15,"np":95,"ne":95},"CAC-PPGCA":{"nm":"CI\u00caNCIAS AMBIENTAIS","cp":"C\u00e1ceres","nv":"MESTRADO, DOUTORADO","nd":23,"np":126,"ne":50},"AFL-PPGBIOAGRO":{"nm":"BIODIVERSIDADE E AGROECOSSISTEMAS AMAZ\u00d4NICOS","cp":"Alta Floresta","nv":"MESTRADO","nd":16,"np":95,"ne":69},"REDEPROCENTRO":{"nm":"BIOTECNOLOGIA E BIODIVERSIDADE - REDE PR\u00d3-CENTRO-OESTE","cp":"Cuiab\u00e1","nv":"DOUTORADO","nd":16,"np":92,"ne":62},"SNP-PROFMAT":{"nm":"MATEM\u00c1TICA","cp":"Sinop","nv":"MESTRADO","nd":16,"np":51,"ne":93},"CAC-PPGL":{"nm":"LINGU\u00cdSTICA","cp":"C\u00e1ceres","nv":"MESTRADO, DOUTORADO","nd":26,"np":80,"ne":56},"PROFAGUA":{"nm":"GEST\u00c3O E REGULA\u00c7\u00c3O DE RECURSOS H\u00cdDRICOS","cp":"Cuiab\u00e1","nv":"MESTRADO","nd":13,"np":86,"ne":39},"CAC-PGMP":{"nm":"GEN\u00c9TICA E MELHORAMENTO DE PLANTAS","cp":"Alta Floresta","nv":"MESTRADO","nd":14,"np":77,"ne":45},"BBG-PPGECII":{"nm":"ENSINO EM CONTEXTO IND\u00cdGENA INTERCULTURAL","cp":"Barra do Bugres","nv":"MESTRADO","nd":18,"np":69,"ne":52},"SNP-PPGLETRAS":{"nm":"LETRAS","cp":"Sinop","nv":"MESTRADO, DOUTORADO","nd":18,"np":45,"ne":51},"TGA-PPGEL":{"nm":"ESTUDOS LITER\u00c1RIOS","cp":"Tangar\u00e1 da Serra","nv":"DOUTORADO, MESTRADO","nd":14,"np":31,"ne":57},"SNP-PROFNIT":{"nm":"PROPRIEDADE INTELECTUAL E TRANSFER\u00caNCIA DE TECNOLOGIA PARA INOVA\u00c7\u00c3O","cp":"Sinop","nv":"MESTRADO","nd":9,"np":51,"ne":29},"NVX-PPGEC":{"nm":"ECOLOGIA E CONSERVA\u00c7\u00c3O","cp":"Nova Xavantina","nv":"DOUTORADO, MESTRADO","nd":12,"np":45,"ne":28},"SNP-PROFLETRAS":{"nm":"LETRAS","cp":"Sinop","nv":"MESTRADO","nd":13,"np":35,"ne":36},"TGA-PROFBIO":{"nm":"ENSINO DE BIOLOGIA","cp":"Tangar\u00e1 da Serra","nv":"MESTRADO","nd":13,"np":41,"ne":30},"BBG-PROFMAT":{"nm":"MATEM\u00c1TICA","cp":"Barra do Bugres","nv":"MESTRADO","nd":9,"np":21,"ne":41},"CAC-PROFHISTORIA":{"nm":"ENSINO DE HIST\u00d3RIA","cp":"C\u00e1ceres","nv":"MESTRADO, DOUTORADO","nd":10,"np":36,"ne":22},"SNP-PROFSOCIO":{"nm":"SOCIOLOGIA","cp":"Sinop","nv":"MESTRADO","nd":10,"np":35,"ne":15},"AIA-PROFEDUCATEC":{"nm":"PROCESSOS E TECNOLOGIAS EDUCACIONAIS","cp":"Alto Araguaia","nv":"MESTRADO","nd":10,"np":19,"ne":20},"CBA-PROFNIT":{"nm":"PROPRIEDADE INTELECTUAL E TRANSFER\u00caNCIA DE TECNOLOGIA PARA INOVA\u00c7\u00c3O- PROFNIT/CBA","cp":"Cuiab\u00e1","nv":"MESTRADO","nd":3,"np":19,"ne":16},"CAC-PROFLETRAS":{"nm":"LETRAS","cp":"C\u00e1ceres","nv":"MESTRADO","nd":12,"np":19,"ne":14},"BIONORTE":{"nm":"BIODIVERSIDADE E BIOTECNOLOGIA DA AMAZONIA LEGAL - REDE BIONORTE","cp":"Cuiab\u00e1","nv":"DOUTORADO","nd":5,"np":11,"ne":2},"PPGREAMEC":{"nm":"EDUCA\u00c7\u00c3O EM CI\u00caNCIAS E MATEM\u00c1TICA - REAMEC","cp":"Cuiab\u00e1","nv":"DOUTORADO","nd":2,"np":6,"ne":6},"":{"nm":"27 programas | 283 docentes \u00fanicos | 379 v\u00ednculos","cp":"N/I","nv":"","nd":0,"np":0,"ne":0}},"n_docentes":172,"temas":["EDUCA\u00c7\u00c3O","TECNOLOGIA E PRODU\u00c7\u00c3O","MEIO AMBIENTE","CULTURA","SA\u00daDE","COMUNICA\u00c7\u00c3O","DIREITOS HUMANOS E JUSTI\u00c7A","TRABALHO"]};
 
+// ============================================================
+// COLORS
+// ============================================================
 const EXT_COL = {
-  "EDUCA\u00c7\u00c3O":"#1565c0","SA\u00daDE":"#c62828","MEIO AMBIENTE":"#2e7d32",
-  "TECNOLOGIA E PRODU\u00c7\u00c3O":"#e65100","CULTURA":"#6a1b9a",
-  "COMUNICA\u00c7\u00c3O":"#00695c","TRABALHO":"#bf360c",
-  "DIREITOS HUMANOS E JUSTI\u00c7A":"#4527a0"
+  'EDUCAÇÃO':'#1565c0','SAÚDE':'#c62828','MEIO AMBIENTE':'#2e7d32',
+  'TECNOLOGIA E PRODUÇÃO':'#e65100','CULTURA':'#6a1b9a',
+  'COMUNICAÇÃO':'#00695c','TRABALHO':'#bf360c',
+  'DIREITOS HUMANOS E JUSTIÇA':'#4527a0'
 };
 
-let activeTema = null;
-let chartTema = null;
-
-// Parse links into usable maps
-const LAP = {}; // "area|||ppg" -> value
-const LPE = {}; // "ppg|||tema" -> value
-Object.entries(PE.links_ap).forEach(([k,v]) => LAP[k] = v);
-Object.entries(PE.links_pe).forEach(([k,v]) => LPE[k] = v);
-
-function getAreaPPGVal(area, ppg) { return LAP[area+"|||"+ppg] || 0; }
-function getPPGTemaVal(ppg, tema)  { return LPE[ppg+"|||"+tema]  || 0; }
-
-// Build top lists
-function topAreas(n) {
-  return Object.entries(PE.area_total).sort((a,b)=>b[1]-a[1]).slice(0,n).map(e=>e[0]);
+// ============================================================
+// TABS
+// ============================================================
+let tabsInit = {};
+function showTab(id, btn) {
+  document.querySelectorAll('.tab-pane').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+  document.getElementById('tab-' + id).classList.add('active');
+  btn.classList.add('active');
+  if (!tabsInit[id]) { tabsInit[id] = true; initTab(id); }
 }
-function topPPGs(n, campusFilter) {
-  const ppgScore = {};
-  Object.entries(LAP).forEach(([k,v]) => {
-    const ppg = k.split("|||")[1];
-    if (campusFilter && !ppg.startsWith(campusFilter)) return;
-    ppgScore[ppg] = (ppgScore[ppg]||0) + v;
-  });
-  return Object.entries(ppgScore).sort((a,b)=>b[1]-a[1]).slice(0,n).map(e=>e[0]);
+function initTab(id) {
+  if (id === 'bubbles')  initBubbles();
+  if (id === 'network')  initNetwork();
+  if (id === 'ranking')  initRanking();
 }
 
-function buildGraph() {
-  const nA  = parseInt(document.getElementById("c-areas").value);
-  const nP  = parseInt(document.getElementById("c-ppg").value);
-  const ft  = activeTema || document.getElementById("c-tema").value;
-  const fc  = document.getElementById("c-campus").value;
-  const min = parseFloat(document.getElementById("c-min").value) || 1;
+// ============================================================
+// MODAL
+// ============================================================
+function openModal(title, bodyHtml) {
+  document.getElementById('modal-title').textContent = title;
+  document.getElementById('modal-body').innerHTML = bodyHtml;
+  document.getElementById('modal-bg').classList.add('open');
+}
+function closeModal() { document.getElementById('modal-bg').classList.remove('open'); }
 
-  const areas = topAreas(nA);
-  const ppgs  = topPPGs(nP, fc);
+// ============================================================
+// HEATMAP
+// ============================================================
+function initHeatmap() {
+  const areas = PE.matrix_areas;
+  const temas = PE.matrix_temas;
+  const matrix = PE.matrix;
 
-  const nodes = [], nodeMap = {}, links = [];
-  function node(id, label, col) {
-    if (nodeMap[id] === undefined) { nodeMap[id] = nodes.length; nodes.push({id,label,col}); }
-    return nodeMap[id];
+  // Find max for color scaling
+  let maxVal = 0;
+  matrix.forEach(row => row.forEach(cell => { if(cell.v > maxVal) maxVal = cell.v; }));
+
+  // Color scale per tema
+  function cellColor(temaIdx, val) {
+    if (val === 0) return null;
+    const tema = temas[temaIdx];
+    const base = EXT_COL[tema] || '#888';
+    const alpha = 0.12 + (val / maxVal) * 0.88;
+    return { bg: hexToRgba(base, alpha), text: alpha > 0.55 ? '#fff' : base };
   }
 
-  // area -> ppg links
-  areas.forEach(area => {
-    ppgs.forEach(ppg => {
-      const v = getAreaPPGVal(area, ppg);
-      if (v < min) return;
-      // If tema filter active, only include PPG if it has that tema link
-      if (ft && getPPGTemaVal(ppg, ft) < min) return;
-      node("A:"+area, area, "pesq");
-      node("P:"+ppg, ppg, "ppg");
-      links.push({ source: nodeMap["A:"+area], target: nodeMap["P:"+ppg], value: v });
-    });
-  });
-
-  // ppg -> tema links
-  ppgs.forEach(ppg => {
-    if (nodeMap["P:"+ppg] === undefined) return; // skip if not in graph
-    const temas = ft ? [ft] : PE.temas;
-    temas.forEach(tema => {
-      const v = getPPGTemaVal(ppg, tema);
-      if (v < min) return;
-      node("P:"+ppg, ppg, "ppg");
-      node("T:"+tema, tema, "ext");
-      links.push({ source: nodeMap["P:"+ppg], target: nodeMap["T:"+tema], value: v });
-    });
-  });
-
-  return { nodes, links };
-}
-
-function renderSankey() {
-  const wrap = document.getElementById("sankey-wrap");
-  const msg  = document.getElementById("sankey-msg");
-  wrap.querySelectorAll("svg").forEach(s => s.remove());
-  msg.style.display = "none";
-
-  const { nodes, links } = buildGraph();
-
-  if (!nodes.length || !links.length) {
-    msg.style.display = "block";
-    return;
+  function hexToRgba(hex, a) {
+    const r = parseInt(hex.slice(1,3),16);
+    const g = parseInt(hex.slice(3,5),16);
+    const b = parseInt(hex.slice(5,7),16);
+    return `rgba(${r},${g},${b},${a})`;
   }
 
-  const W = Math.max(800, wrap.offsetWidth || 1000);
-  const H = Math.max(480, nodes.length * 16 + 60);
-
-  const svg = d3.select("#sankey-wrap").append("svg")
-    .attr("id","sk-svg")
-    .attr("viewBox","0 0 "+W+" "+H)
-    .attr("width","100%")
-    .style("display","block");
-
-  const sk = d3Sankey.sankey()
-    .nodeWidth(22).nodePadding(9)
-    .extent([[1,1],[W-1,H-1]]);
-
-  const graph = sk({
-    nodes: nodes.map(n=>({...n})),
-    links: links.map(l=>({...l}))
+  // Legend
+  const leg = document.getElementById('hm-legend');
+  leg.innerHTML = '';
+  [0.15,0.35,0.55,0.75,0.95].forEach((a,i) => {
+    const d = document.createElement('div');
+    d.style.cssText = `width:18px;height:18px;border-radius:4px;background:rgba(30,136,229,${a})`;
+    leg.appendChild(d);
+  });
+  const labels = ['Fraco','','','','Forte'];
+  labels.forEach((l,i) => {
+    if (!l) return;
+    const s = document.createElement('span');
+    s.style.cssText = 'font-size:.68em;font-weight:700;color:#9e9e9e;margin-left:-2px;margin-right:4px';
+    s.textContent = l;
+    leg.appendChild(s);
   });
 
-  const tip = document.getElementById("sk-tip");
+  // Build table
+  const wrap = document.getElementById('hm-wrap');
+  let html = '<table class="hm-table"><thead><tr><th class="area-head">Área de Pesquisa</th>';
+  temas.forEach(t => {
+    const short = t === 'TECNOLOGIA E PRODUÇÃO' ? 'TEC. E PROD.' :
+                  t === 'DIREITOS HUMANOS E JUSTIÇA' ? 'DIR. HUMANOS' : t;
+    html += `<th class="tema-head" style="color:${EXT_COL[t]||'#888'}">${short}</th>`;
+  });
+  html += '</tr></thead><tbody>';
 
-  function getCol(d) {
-    if (d.col === "ext") return EXT_COL[d.label] || "#2e7d32";
-    if (d.col === "ppg") return "#ef6c00";
-    return "#1e88e5";
-  }
-
-  // Links
-  svg.append("g").attr("fill","none")
-    .selectAll("path").data(graph.links).join("path")
-    .attr("d", d3Sankey.sankeyLinkHorizontal())
-    .attr("stroke", d => getCol(d.target))
-    .attr("stroke-width", d => Math.max(1, d.width))
-    .attr("stroke-opacity", 0.3)
-    .style("cursor","pointer")
-    .on("mouseover", (e,d) => {
-      d3.select(e.target).attr("stroke-opacity",0.65);
-      tip.style.display = "block";
-      tip.innerHTML = "<div style='opacity:.7;font-size:.78em;margin-bottom:3px'>Conexão</div>"
-        +"<strong>"+d.source.label+"</strong>"
-        +"<div style='opacity:.6;margin:2px 0'>↓</div>"
-        +"<strong>"+d.target.label+"</strong>"
-        +"<div style='margin-top:6px;font-size:.85em'>Força: <strong style='color:#ffd54f'>"+d.value+"</strong></div>";
-    })
-    .on("mousemove", e => { tip.style.left=(e.clientX+14)+"px"; tip.style.top=(e.clientY-30)+"px"; })
-    .on("mouseout", e => { d3.select(e.target).attr("stroke-opacity",0.3); tip.style.display="none"; });
-
-  // Nodes
-  svg.append("g").selectAll("rect").data(graph.nodes).join("rect")
-    .attr("x",d=>d.x0).attr("y",d=>d.y0)
-    .attr("height",d=>Math.max(1,d.y1-d.y0))
-    .attr("width",d=>d.x1-d.x0)
-    .attr("fill",d=>getCol(d)).attr("rx",4)
-    .style("cursor","pointer")
-    .on("mouseover",(e,d)=>{
-      tip.style.display="block";
-      let extra = "";
-      if (d.col==="ppg" && PE.ppg_info[d.label]) {
-        const info = PE.ppg_info[d.label];
-        extra = "<div style='font-size:.8em;opacity:.8;margin-top:4px'>"+(info.nm||"")+"</div>"
-          +"<div style='font-size:.75em;opacity:.65'>"+(info.cp||"")+" · "+(info.nv||"")+"</div>"
-          +"<div style='font-size:.76em;margin-top:4px'>Docentes: "+info.nd+" · Pesq: "+info.np+" · Ext: "+info.ne+"</div>";
-      }
-      tip.innerHTML = "<div style='opacity:.7;font-size:.78em;margin-bottom:3px'>"
-        +(d.col==="pesq"?"Área de Pesquisa":d.col==="ppg"?"Programa PPG":"Tema de Extensão")+"</div>"
-        +"<strong>"+d.label+"</strong>"+extra
-        +"<div style='margin-top:6px;font-size:.85em'>Fluxo total: <strong style='color:#ffd54f'>"+d.value+"</strong></div>";
-    })
-    .on("mousemove",e=>{tip.style.left=(e.clientX+14)+"px";tip.style.top=(e.clientY-30)+"px";})
-    .on("mouseout",()=>tip.style.display="none");
-
-  // Labels
-  svg.append("g").selectAll("text").data(graph.nodes).join("text")
-    .attr("x",d=>d.x0<W/2?d.x1+7:d.x0-7)
-    .attr("y",d=>(d.y1+d.y0)/2)
-    .attr("dy","0.35em")
-    .attr("text-anchor",d=>d.x0<W/2?"start":"end")
-    .attr("font-size","11px").attr("font-weight","700").attr("fill","#1a2340")
-    .text(d=>d.label.length>32?d.label.substring(0,30)+"..":d.label);
-}
-
-function resetAll() {
-  activeTema = null;
-  document.querySelectorAll(".tema-btn").forEach(b=>b.classList.remove("active"));
-  document.getElementById("c-areas").value = "15";
-  document.getElementById("c-ppg").value   = "15";
-  document.getElementById("c-tema").value  = "";
-  document.getElementById("c-campus").value= "";
-  document.getElementById("c-min").value   = "1";
-  renderSankey();
-}
-
-function buildTemaBtns() {
-  const row = document.getElementById("tema-row");
-  PE.temas.forEach(t => {
-    const btn = document.createElement("button");
-    btn.className = "tema-btn";
-    btn.textContent = t;
-    btn.style.background = (EXT_COL[t]||"#888")+"22";
-    btn.style.color = EXT_COL[t]||"#888";
-    btn.style.borderColor = "transparent";
-    btn.addEventListener("click",()=>{
-      if (activeTema===t) {
-        activeTema=null; btn.classList.remove("active");
+  areas.forEach((area, ri) => {
+    const rowTotal = matrix[ri].reduce((s,c)=>s+c.v,0);
+    html += `<tr><td class="area-label">${area} <span style="font-size:.72em;color:#bbb">(${rowTotal})</span></td>`;
+    matrix[ri].forEach((cell, ci) => {
+      const col = cellColor(ci, cell.v);
+      if (!col) {
+        html += `<td class="hm-cell zero">—</td>`;
       } else {
-        activeTema=t;
-        document.querySelectorAll(".tema-btn").forEach(b=>b.classList.remove("active"));
-        btn.classList.add("active");
-        btn.style.borderColor = EXT_COL[t]||"#888";
+        const ppgList = cell.ppgs.slice(0,5).join(', ') + (cell.ppgs.length > 5 ? '...' : '');
+        html += `<td class="hm-cell" style="background:${col.bg};color:${col.text}"
+          onclick="showCellDetail('${area.replace(/'/g,"\\'")}','${temas[ci]}',${cell.v},'${cell.ppgs.join(',')}')"
+          title="${cell.v} docentes · PPGs: ${ppgList}">${cell.v}</td>`;
       }
-      renderSankey();
     });
-    row.appendChild(btn);
+    html += '</tr>';
   });
+  html += '</tbody></table>';
+  wrap.innerHTML = html;
+
+  // Rankings
+  renderRankings();
 }
 
-function populateTemaSelect() {
-  const sel = document.getElementById("c-tema");
-  PE.temas.forEach(t => {
-    const o=document.createElement("option");o.value=t;o.textContent=t;sel.appendChild(o);
-  });
+function showCellDetail(area, tema, val, ppgsStr) {
+  const ppgs = ppgsStr ? ppgsStr.split(',') : [];
+  const ppgHtml = ppgs.map(p => `<span class="ppg-pill">${p}</span>`).join('');
+  openModal(`${area} × ${tema}`,
+    `<p style="margin-bottom:12px;font-size:.88em;color:#6b7a99;font-weight:600">
+      <strong style="color:#1a2340">${val} docente(s)</strong> fazem a ponte entre esta área de pesquisa e este tema de extensão via PPG.
+    </p>
+    <div style="font-size:.8em;font-weight:800;color:#6b7a99;margin-bottom:8px;text-transform:uppercase;letter-spacing:.8px">PPGs que fazem essa ponte:</div>
+    <div>${ppgHtml || '<span style="color:#aaa">Nenhum PPG identificado</span>'}</div>`
+  );
 }
 
 function renderRankings() {
   const topA = Object.entries(PE.area_total).sort((a,b)=>b[1]-a[1]).slice(0,12);
   const maxA = topA[0]?.[1]||1;
-  document.getElementById("rank-areas").innerHTML = topA.map(([n,v],i)=>
-    `<div class="rank-item"><div class="rank-num">${i+1}</div><div class="rank-bar-wrap"><div class="rank-name">${n}</div><div class="rank-bar" style="width:${v/maxA*100}%;background:#1e88e5"></div></div><div class="rank-val" style="color:#1e88e5">${v}</div></div>`
-  ).join("");
+  document.getElementById('rank-areas').innerHTML = topA.map(([n,v],i)=>
+    `<div class="rank-item"><div class="rank-num">${i+1}</div><div class="rank-bar-w">
+    <div class="rank-name">${n}</div>
+    <div class="rank-bar" style="width:${v/maxA*100}%;background:#1e88e5"></div></div>
+    <div class="rank-val" style="color:#1e88e5">${v}</div></div>`).join('');
   const topT = Object.entries(PE.tema_total).sort((a,b)=>b[1]-a[1]);
   const maxT = topT[0]?.[1]||1;
-  document.getElementById("rank-temas").innerHTML = topT.map(([n,v],i)=>
-    `<div class="rank-item"><div class="rank-num">${i+1}</div><div class="rank-bar-wrap"><div class="rank-name">${n}</div><div class="rank-bar" style="width:${v/maxT*100}%;background:${EXT_COL[n]||"#888"}"></div></div><div class="rank-val" style="color:${EXT_COL[n]||"#888"}">${v}</div></div>`
-  ).join("");
+  document.getElementById('rank-temas').innerHTML = topT.map(([n,v],i)=>
+    `<div class="rank-item"><div class="rank-num">${i+1}</div><div class="rank-bar-w">
+    <div class="rank-name">${n}</div>
+    <div class="rank-bar" style="width:${v/maxT*100}%;background:${EXT_COL[n]||'#888'}"></div></div>
+    <div class="rank-val" style="color:${EXT_COL[n]||'#888'}">${v}</div></div>`).join('');
 }
 
-function renderBridge() {
-  const inflow={}, outflow={};
-  Object.entries(LAP).forEach(([k,v])=>{ const ppg=k.split("|||")[1]; inflow[ppg]=(inflow[ppg]||0)+v; });
-  Object.entries(LPE).forEach(([k,v])=>{ const ppg=k.split("|||")[0]; outflow[ppg]=(outflow[ppg]||0)+v; });
-  const rows = Object.keys(PE.ppg_info).map(sg=>({
-    sg, nm:PE.ppg_info[sg].nm, cp:PE.ppg_info[sg].cp, nv:PE.ppg_info[sg].nv,
-    inp:inflow[sg]||0, out:outflow[sg]||0, score:(inflow[sg]||0)+(outflow[sg]||0)
-  })).sort((a,b)=>b.score-a.score);
-  const mx = rows[0]?.score||1;
-  document.getElementById("bridge-tbody").innerHTML = rows.map((r,i)=>{
-    const pct=r.score/mx;
-    const cls=pct>0.6?"sc-hi":pct>0.3?"sc-md":"sc-lo";
-    return `<tr><td><strong>${i+1}</strong></td>
-      <td><strong>${r.sg}</strong><div style="font-size:.76em;color:#6b7a99;margin-top:1px">${r.nm}</div></td>
-      <td>${r.cp}</td><td style="font-size:.76em">${r.nv}</td>
-      <td><div class="mb"><div class="mb-bar" style="width:${Math.max(3,r.inp/mx*90)}px;background:#1e88e5"></div><span style="font-weight:700;color:#1e88e5">${r.inp}</span></div></td>
-      <td><div class="mb"><div class="mb-bar" style="width:${Math.max(3,r.out/mx*90)}px;background:#2e7d32"></div><span style="font-weight:700;color:#2e7d32">${r.out}</span></div></td>
-      <td><div class="mb"><div class="mb-bar" style="width:${Math.max(3,pct*100)}px;background:#ef6c00"></div><span style="font-weight:800;color:#ef6c00">${r.score}</span></div></td>
-      <td><span class="sc ${cls}">${pct>0.6?"Alto":pct>0.3?"Médio":"Baixo"}</span></td>
-    </tr>`;
-  }).join("");
-}
+// ============================================================
+// BUBBLE MATRIX
+// ============================================================
+function initBubbles() {
+  const areas = PE.matrix_areas.slice(0, 15);
+  const temas = PE.matrix_temas;
+  const matrix = PE.matrix.slice(0, 15);
 
-function renderChart() {
-  const flows = {};
-  Object.entries(LPE).forEach(([k,v])=>{ const t=k.split("|||")[1]; flows[t]=(flows[t]||0)+v; });
-  const sorted = Object.entries(flows).sort((a,b)=>b[1]-a[1]);
-  if (chartTema) chartTema.destroy();
-  chartTema = new Chart(document.getElementById("chart-tema").getContext("2d"),{
-    type:"bar",
-    data:{ labels:sorted.map(e=>e[0]), datasets:[{
-      data:sorted.map(e=>e[1]),
-      backgroundColor:sorted.map(e=>EXT_COL[e[0]]||"#888"),
-      borderRadius:8
-    }]},
-    options:{responsive:true,plugins:{legend:{display:false},tooltip:{callbacks:{label:c=>" Força: "+c.parsed.y}}},scales:{y:{beginAtZero:true,grid:{color:"#f0f0f0"}},x:{grid:{display:false}}}}
+  let maxVal = 0;
+  matrix.forEach(row => row.forEach(c => { if(c.v > maxVal) maxVal = c.v; }));
+
+  const marginL = 200, marginT = 110, cellW = 95, cellH = 52;
+  const W = marginL + temas.length * cellW + 20;
+  const H = marginT + areas.length * cellH + 20;
+
+  const svg = d3.select('#bm-wrap').html('').append('svg')
+    .attr('id','bm-svg')
+    .attr('viewBox',`0 0 ${W} ${H}`)
+    .attr('width','100%')
+    .style('display','block');
+
+  const tip = document.getElementById('tip');
+
+  // Tema headers
+  temas.forEach((t, ci) => {
+    const x = marginL + ci * cellW + cellW/2;
+    svg.append('text').attr('x',x).attr('y',30)
+      .attr('text-anchor','middle').attr('font-size','10px').attr('font-weight','800')
+      .attr('fill', EXT_COL[t]||'#888')
+      .text(t === 'TECNOLOGIA E PRODUÇÃO' ? 'TEC. PROD.' : t === 'DIREITOS HUMANOS E JUSTIÇA' ? 'DIR. HUM.' : t);
+    // Vertical line
+    svg.append('line')
+      .attr('x1',x).attr('y1',40).attr('x2',x).attr('y2',marginT + areas.length*cellH)
+      .attr('stroke','#e0e7ef').attr('stroke-width',1).attr('stroke-dasharray','3,3');
+  });
+
+  // Area labels
+  areas.forEach((a, ri) => {
+    const y = marginT + ri * cellH + cellH/2;
+    svg.append('text').attr('x', marginL - 8).attr('y', y+4)
+      .attr('text-anchor','end').attr('font-size','10.5px').attr('font-weight','700').attr('fill','#1a2340')
+      .text(a.length > 26 ? a.substring(0,24)+'..' : a);
+    svg.append('line')
+      .attr('x1', marginL).attr('y1', y).attr('x2', marginL + temas.length*cellW).attr('y2', y)
+      .attr('stroke','#e0e7ef').attr('stroke-width',1).attr('stroke-dasharray','3,3');
+  });
+
+  // Bubbles
+  matrix.forEach((row, ri) => {
+    row.forEach((cell, ci) => {
+      if (cell.v === 0) return;
+      const x = marginL + ci * cellW + cellW/2;
+      const y = marginT + ri * cellH + cellH/2;
+      const r = Math.max(4, Math.sqrt(cell.v / maxVal) * 28);
+      const col = EXT_COL[temas[ci]] || '#888';
+
+      svg.append('circle')
+        .attr('cx', x).attr('cy', y).attr('r', r)
+        .attr('fill', col).attr('fill-opacity', 0.18 + (cell.v/maxVal)*0.5)
+        .attr('stroke', col).attr('stroke-width', 1.5)
+        .style('cursor','pointer')
+        .on('mouseover', (e) => {
+          d3.select(e.target).attr('fill-opacity', 0.75);
+          tip.style.display = 'block';
+          tip.innerHTML = `<div style="font-size:.75em;opacity:.7;margin-bottom:3px">Conexão P×E</div>
+            <strong>${areas[ri]}</strong><div style="opacity:.6;margin:2px 0">↕</div>
+            <strong>${temas[ci]}</strong>
+            <div style="margin-top:5px;font-size:.82em">Docentes: <strong style="color:#ffd54f">${cell.v}</strong></div>
+            <div style="font-size:.76em;opacity:.8;margin-top:3px">Clique para ver PPGs</div>`;
+        })
+        .on('mousemove', e => { tip.style.left=(e.clientX+12)+'px'; tip.style.top=(e.clientY-28)+'px'; })
+        .on('mouseout', e => { d3.select(e.target).attr('fill-opacity', 0.18 + (cell.v/maxVal)*0.5); tip.style.display='none'; })
+        .on('click', () => showCellDetail(areas[ri], temas[ci], cell.v, cell.ppgs.join(',')));
+
+      svg.append('text')
+        .attr('x',x).attr('y',y+4).attr('text-anchor','middle')
+        .attr('font-size', r > 14 ? '11px' : '9px').attr('font-weight','800')
+        .attr('fill', col).attr('pointer-events','none')
+        .text(cell.v);
+    });
   });
 }
 
-function exportSVG() {
-  const svg = document.getElementById("sk-svg");
-  if (!svg) return alert("Gere o Sankey primeiro.");
-  const blob = new Blob([new XMLSerializer().serializeToString(svg)],{type:"image/svg+xml"});
-  const a=document.createElement("a");a.href=URL.createObjectURL(blob);a.download="sankey_pe_unemat.svg";a.click();
+// ============================================================
+// NETWORK (Canvas-based for performance)
+// ============================================================
+let netSim = null;
+let netNodes = [], netEdges = [];
+let netTransform = {x:0, y:0, k:1};
+let netDrag = null;
+let netHover = null;
+let netCanvas, netCtx;
+
+function initNetwork() {
+  netCanvas = document.getElementById('net-canvas');
+  netCtx = netCanvas.getContext('2d');
+  const minVal = parseInt(document.getElementById('net-min-range').value) || 5;
+  const showLabels = document.getElementById('net-labels').value;
+
+  // Set canvas size
+  netCanvas.width = netCanvas.offsetWidth || 900;
+  netCanvas.height = 560;
+
+  // Build filtered nodes and edges
+  const usedNodeIds = new Set();
+  const filteredEdges = PE.edges.filter(e => e.v >= minVal);
+  filteredEdges.forEach(e => { usedNodeIds.add(e.s); usedNodeIds.add(e.t); });
+
+  netNodes = PE.nodes.filter(n => usedNodeIds.has(PE.nodes.indexOf(n)));
+  // Remap indices
+  const idxMap = {};
+  PE.nodes.forEach((n,i) => { idxMap[i] = netNodes.indexOf(n); });
+  netEdges = filteredEdges.map(e => ({...e, si: idxMap[e.s], ti: idxMap[e.t], v: e.v}))
+    .filter(e => e.si >= 0 && e.ti >= 0);
+
+  // Force simulation
+  if (netSim) netSim.stop();
+  const maxSize = Math.max(...netNodes.map(n=>n.size));
+
+  netSim = d3.forceSimulation(netNodes)
+    .force('link', d3.forceLink(netEdges.map(e=>({source:e.si,target:e.ti,value:e.v})))
+      .id((_,i)=>i).distance(d => 80 + 60/Math.sqrt(d.value+1)))
+    .force('charge', d3.forceManyBody().strength(n => n.type==='ppg' ? -300 : -150))
+    .force('center', d3.forceCenter(netCanvas.width/2, netCanvas.height/2))
+    .force('collide', d3.forceCollide(n => nodeRadius(n, maxSize) + 4))
+    .on('tick', () => drawNetwork(showLabels, maxSize));
+
+  // Mouse events
+  netCanvas.onmousedown = e => {
+    const pos = canvasPos(e);
+    const found = findNode(pos, maxSize);
+    if (found) { netDrag = {node: found, ox: pos.x - found.x, oy: pos.y - found.y}; found.fx=found.x; found.fy=found.y; }
+  };
+  netCanvas.onmousemove = e => {
+    const pos = canvasPos(e);
+    if (netDrag) {
+      netDrag.node.fx = pos.x - netDrag.ox;
+      netDrag.node.fy = pos.y - netDrag.oy;
+      netSim.alphaTarget(0.1).restart();
+    } else {
+      const found = findNode(pos, maxSize);
+      if (found !== netHover) { netHover = found; netCanvas.style.cursor = found ? 'pointer' : 'default'; drawNetwork(showLabels, maxSize); }
+      showNetTip(e, found);
+    }
+  };
+  netCanvas.onmouseup = () => { if(netDrag){netDrag.node.fx=null;netDrag.node.fy=null;netDrag=null;netSim.alphaTarget(0).restart();} };
+  netCanvas.onmouseleave = () => { document.getElementById('tip').style.display='none'; netHover=null; };
+  netCanvas.onclick = e => { const pos=canvasPos(e); const f=findNode(pos,maxSize); if(f) showNodeDetail(f); };
+  netCanvas.onwheel = e => {
+    e.preventDefault();
+    netTransform.k = Math.max(0.3, Math.min(3, netTransform.k * (e.deltaY > 0 ? 0.9 : 1.1)));
+    drawNetwork(showLabels, maxSize);
+  };
 }
 
+function nodeRadius(n, maxSize) {
+  const base = n.type === 'ppg' ? 14 : 8;
+  return base + Math.sqrt(n.size / maxSize) * (n.type === 'ppg' ? 16 : 12);
+}
+
+function canvasPos(e) {
+  const rect = netCanvas.getBoundingClientRect();
+  return { x: (e.clientX - rect.left - netTransform.x) / netTransform.k,
+           y: (e.clientY - rect.top - netTransform.y) / netTransform.k };
+}
+
+function findNode(pos, maxSize) {
+  return netNodes.find(n => {
+    const r = nodeRadius(n, maxSize);
+    return Math.hypot((n.x||0)-pos.x, (n.y||0)-pos.y) < r + 4;
+  });
+}
+
+function drawNetwork(showLabels, maxSize) {
+  const W = netCanvas.width, H = netCanvas.height;
+  netCtx.clearRect(0, 0, W, H);
+  netCtx.save();
+  netCtx.translate(netTransform.x, netTransform.y);
+  netCtx.scale(netTransform.k, netTransform.k);
+
+  const maxEdge = Math.max(...netEdges.map(e=>e.v));
+
+  // Edges
+  netEdges.forEach(e => {
+    const s = netNodes[e.si], t = netNodes[e.ti];
+    if (!s || !t) return;
+    const alpha = 0.1 + (e.v/maxEdge)*0.5;
+    const col = t.type==='tema' ? EXT_COL[t.label]||'#888' : '#ef6c00';
+    netCtx.beginPath();
+    netCtx.moveTo(s.x||0, s.y||0);
+    netCtx.lineTo(t.x||0, t.y||0);
+    netCtx.strokeStyle = col;
+    netCtx.globalAlpha = alpha;
+    netCtx.lineWidth = Math.max(0.5, e.v/maxEdge*5);
+    netCtx.stroke();
+    netCtx.globalAlpha = 1;
+  });
+
+  // Nodes
+  netNodes.forEach(n => {
+    const r = nodeRadius(n, maxSize);
+    const col = n.type==='area'?'#1e88e5': n.type==='ppg'?'#ef6c00': EXT_COL[n.label]||'#2e7d32';
+    const isHover = n === netHover;
+
+    netCtx.beginPath();
+    netCtx.arc(n.x||0, n.y||0, r + (isHover?3:0), 0, Math.PI*2);
+    netCtx.fillStyle = col;
+    netCtx.globalAlpha = isHover ? 1 : 0.85;
+    netCtx.fill();
+    netCtx.globalAlpha = 1;
+    netCtx.strokeStyle = '#fff';
+    netCtx.lineWidth = isHover ? 3 : 1.5;
+    netCtx.stroke();
+
+    // Label
+    const showThis = showLabels==='all' || (showLabels==='ppg' && n.type==='ppg') || isHover;
+    if (showThis) {
+      netCtx.font = `${isHover?'800 ':'700 '}${n.type==='ppg'?11:9}px Nunito,sans-serif`;
+      netCtx.fillStyle = '#1a2340';
+      netCtx.textAlign = 'center';
+      const lbl = n.label.length > 20 ? n.label.substring(0,18)+'..' : n.label;
+      netCtx.fillText(lbl, n.x||0, (n.y||0) + r + 12);
+    }
+  });
+  netCtx.restore();
+}
+
+function showNetTip(e, node) {
+  const tip = document.getElementById('tip');
+  if (!node) { tip.style.display='none'; return; }
+  tip.style.display='block';
+  tip.style.left=(e.clientX+12)+'px';
+  tip.style.top=(e.clientY-28)+'px';
+  const typeLabel = node.type==='area'?'Área de Pesquisa':node.type==='ppg'?'Programa PPG':'Tema de Extensão';
+  let extra = '';
+  if (node.type==='ppg' && PE.ppg_info[node.label]) {
+    const info = PE.ppg_info[node.label];
+    extra = `<div style="font-size:.78em;opacity:.8;margin-top:3px">${info.nm}</div>
+      <div style="font-size:.75em;opacity:.6">${info.cp} · ${info.nv}</div>`;
+  }
+  tip.innerHTML = `<div style="font-size:.75em;opacity:.7;margin-bottom:2px">${typeLabel}</div>
+    <strong>${node.label}</strong>${extra}
+    <div style="margin-top:5px;font-size:.8em">Força: <strong style="color:#ffd54f">${node.size}</strong></div>`;
+}
+
+function showNodeDetail(node) {
+  let html = '';
+  if (node.type === 'ppg' && PE.ppg_info[node.label]) {
+    const info = PE.ppg_info[node.label];
+    html = `<p style="font-size:.86em;color:#6b7a99;margin-bottom:12px">${info.nm} · ${info.cp} · ${info.nv}</p>
+      <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;margin-bottom:14px;text-align:center">
+        <div style="background:#e3f2fd;border-radius:10px;padding:12px"><div style="font-family:'Barlow Condensed';font-size:1.8em;font-weight:800;color:#1e88e5">${info.nd}</div><div style="font-size:.76em;color:#6b7a99;font-weight:700">Docentes</div></div>
+        <div style="background:#e8f5e9;border-radius:10px;padding:12px"><div style="font-family:'Barlow Condensed';font-size:1.8em;font-weight:800;color:#2e7d32">${info.ne}</div><div style="font-size:.76em;color:#6b7a99;font-weight:700">Ações Ext.</div></div>
+        <div style="background:#fff3e0;border-radius:10px;padding:12px"><div style="font-family:'Barlow Condensed';font-size:1.8em;font-weight:800;color:#ef6c00">${info.np}</div><div style="font-size:.76em;color:#6b7a99;font-weight:700">Proj. Pesq.</div></div>
+      </div>`;
+  } else if (node.type === 'area') {
+    const connections = PE.temas.map(t => {
+      const v = PE.links_ap[Object.keys(PE.links_ap).find(k=>k.startsWith(node.label+'|||'))] || 0;
+      return null;
+    });
+    html = `<p style="font-size:.86em;color:#6b7a99;margin-bottom:10px">Força de conexão total: <strong>${node.size}</strong></p>`;
+  } else {
+    html = `<p style="font-size:.86em;color:#6b7a99;margin-bottom:10px">Força de conexão total via PPGs: <strong>${node.size}</strong></p>`;
+  }
+  openModal(node.label, html);
+}
+
+function resetNetwork() {
+  netTransform = {x:0,y:0,k:1};
+  if(netSim){netSim.alpha(0.5).restart();}
+}
+
+function exportNetwork() {
+  const w=netCanvas.width, h=netCanvas.height;
+  const link=document.createElement('a');
+  link.download='rede_pe_unemat.png';
+  link.href=netCanvas.toDataURL('image/png');
+  link.click();
+}
+
+// ============================================================
+// RANKING
+// ============================================================
+function initRanking() {
+  const inflow={}, outflow={};
+  Object.entries(PE.links_ap).forEach(([k,v])=>{ const ppg=k.split('|||')[1]; inflow[ppg]=(inflow[ppg]||0)+v; });
+  Object.entries(PE.links_pe).forEach(([k,v])=>{ const ppg=k.split('|||')[0]; outflow[ppg]=(outflow[ppg]||0)+v; });
+  const rows = Object.keys(PE.ppg_info).map(sg=>({
+    sg, ...PE.ppg_info[sg],
+    inp:inflow[sg]||0, out:outflow[sg]||0, score:(inflow[sg]||0)+(outflow[sg]||0)
+  })).sort((a,b)=>b.score-a.score);
+  const mx = rows[0]?.score||1;
+  document.getElementById('bridge-tbody').innerHTML = rows.map((r,i)=>{
+    const pct=r.score/mx;
+    const cls=pct>0.6?'sc-hi':pct>0.3?'sc-md':'sc-lo';
+    return `<tr style="cursor:pointer" onclick="openModal('${r.sg}','<p style=\\'font-size:.86em;color:#6b7a99;margin-bottom:12px\\'>${r.nm} · ${r.cp}</p><p style=\\'font-size:.86em\\'>Pesquisa recebida: <strong>${r.inp}</strong><br>Extensão produzida: <strong>${r.out}</strong><br>Força de ponte: <strong>${r.score}</strong></p>')">
+      <td><strong>${i+1}</strong></td>
+      <td><strong>${r.sg}</strong><div style="font-size:.74em;color:#6b7a99;margin-top:1px">${r.nm}</div></td>
+      <td>${r.cp}</td><td style="font-size:.74em">${r.nv}</td>
+      <td><div class="mb"><div class="mb-bar" style="width:${Math.max(3,r.inp/mx*80)}px;background:#1e88e5"></div><span style="font-weight:700;color:#1e88e5">${r.inp}</span></div></td>
+      <td><div class="mb"><div class="mb-bar" style="width:${Math.max(3,r.out/mx*80)}px;background:#2e7d32"></div><span style="font-weight:700;color:#2e7d32">${r.out}</span></div></td>
+      <td><div class="mb"><div class="mb-bar" style="width:${Math.max(3,pct*90)}px;background:#ef6c00"></div><span style="font-weight:800;color:#ef6c00">${r.score}</span></div></td>
+      <td><span class="sc ${cls}">${pct>0.6?'Alto':pct>0.3?'Médio':'Baixo'}</span></td>
+    </tr>`;
+  }).join('');
+}
+
+// ============================================================
 // INIT
-populateTemaSelect();
-buildTemaBtns();
-renderRankings();
-renderBridge();
-renderChart();
-renderSankey();
+// ============================================================
+initHeatmap();
 </script>
 </body>
 </html>

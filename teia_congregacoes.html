@@ -1,0 +1,698 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>Teia de Congregações — HUB da Pós UNEMAT</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,wght@0,400;0,600;0,700;1,400&family=Syne:wght@700;800&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#0d1117;--s1:#161b22;--s2:#1f2937;--bd:#30363d;
+  --bl:#58a6ff;--gn:#3fb950;--or:#f78166;--tl:#39d0c2;--yl:#e3b341;--pu:#bc8cff;
+  --tx:#e6edf3;--mt:#8b949e}
+*{margin:0;padding:0;box-sizing:border-box}
+html,body{height:100%;overflow:hidden;background:var(--bg);color:var(--tx);font-family:'DM Sans',sans-serif}
+.bar{height:52px;background:var(--s1);border-bottom:1.5px solid var(--bd);
+  padding:0 14px;display:flex;align-items:center;gap:9px;flex-shrink:0;z-index:200}
+.logo{font-family:'Syne',sans-serif;font-size:.98em;font-weight:800;color:var(--bl);white-space:nowrap;flex-shrink:0}
+.logo b{color:var(--gn)}
+.sep{width:1px;height:26px;background:var(--bd);flex-shrink:0}
+.kw{flex:1;max-width:300px;background:var(--s2);border:1.5px solid var(--bd);border-radius:8px;
+  padding:7px 12px;color:var(--tx);font-size:.87em;outline:none;font-family:'DM Sans',sans-serif}
+.kw:focus{border-color:var(--bl)}
+.kw::placeholder{color:var(--mt)}
+.fsel{background:var(--s2);border:1.5px solid var(--bd);border-radius:8px;padding:6px 9px;
+  color:var(--tx);font-size:.83em;outline:none;cursor:pointer;font-family:'DM Sans',sans-serif}
+.fsel:focus{border-color:var(--bl)}
+.run{padding:8px 16px;background:linear-gradient(135deg,#1e88e5,#1565c0);color:#fff;
+  border:none;border-radius:8px;font-size:.87em;font-weight:700;cursor:pointer;
+  white-space:nowrap;font-family:'DM Sans',sans-serif;transition:all .15s}
+.run:hover{transform:translateY(-1px);box-shadow:0 4px 14px rgba(88,166,255,.35)}
+.run:disabled{opacity:.5;cursor:not-allowed;transform:none}
+.leg{display:flex;gap:7px;align-items:center;margin-left:auto;flex-wrap:nowrap}
+.li{display:flex;align-items:center;gap:4px;font-size:.69em;color:var(--mt);white-space:nowrap}
+.ld{width:9px;height:9px;border-radius:50%}
+.ll{width:18px;height:3px;border-radius:2px}
+.layout{display:flex;height:calc(100vh - 52px)}
+.cvw{flex:1;position:relative;overflow:hidden;
+  background:radial-gradient(ellipse at 50% 42%,#0a1e35 0%,#0d1117 66%)}
+.cvw::before{content:'';position:absolute;inset:0;pointer-events:none;
+  background-image:linear-gradient(rgba(88,166,255,.022) 1px,transparent 1px),
+    linear-gradient(90deg,rgba(88,166,255,.022) 1px,transparent 1px);
+  background-size:50px 50px}
+canvas{display:block}
+.zc{position:absolute;right:12px;top:12px;display:flex;flex-direction:column;gap:4px;z-index:10}
+.zb{width:32px;height:32px;background:var(--s1);border:1px solid var(--bd);border-radius:8px;
+  color:var(--tx);font-size:1.1em;cursor:pointer;display:flex;align-items:center;
+  justify-content:center;transition:all .15s}
+.zb:hover{background:var(--s2);border-color:var(--bl);color:var(--bl)}
+.emsg{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;
+  justify-content:center;pointer-events:none;gap:12px}
+.emsg-ico{font-size:3.5em;opacity:.18}
+.emsg-txt{font-size:.9em;color:var(--mt);text-align:center;opacity:.6;max-width:300px;line-height:1.65}
+.emsg-txt strong{color:var(--tx)}
+#loading{position:absolute;inset:0;background:rgba(13,17,23,.86);display:none;
+  align-items:center;justify-content:center;flex-direction:column;gap:14px;z-index:50;backdrop-filter:blur(4px)}
+#loading.on{display:flex}
+.spin{width:38px;height:38px;border:3px solid var(--bd);border-top-color:var(--bl);
+  border-radius:50%;animation:sp .8s linear infinite}
+@keyframes sp{to{transform:rotate(360deg)}}
+.ltxt{font-size:.87em;color:var(--mt);font-weight:600}
+.tl{position:absolute;bottom:0;left:0;right:0;background:rgba(13,17,23,.93);
+  border-top:1px solid var(--bd);padding:7px 18px 10px;backdrop-filter:blur(12px)}
+.tl-lbl{font-size:.61em;font-weight:600;color:var(--mt);text-transform:uppercase;letter-spacing:1px;margin-bottom:5px}
+.tl-lanes{display:flex;height:34px;border:1px solid var(--bd);border-radius:8px;overflow:hidden}
+.tl-lane{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;
+  cursor:pointer;transition:background .15s;border-right:1px solid var(--bd);gap:1px}
+.tl-lane:last-child{border-right:none}
+.tl-lane:hover{background:rgba(88,166,255,.09)}
+.tl-lane.on{background:rgba(88,166,255,.18)}
+.tl-yr{font-size:.71em;font-weight:700;color:var(--mt)}
+.tl-lane.on .tl-yr,.tl-lane.on .tl-cn{color:var(--bl)}
+.tl-cn{font-size:.59em;color:var(--mt)}
+#tip{position:fixed;background:rgba(22,27,34,.97);border:1px solid var(--bd);
+  border-radius:10px;padding:10px 14px;font-size:.81em;pointer-events:none;z-index:900;
+  max-width:300px;display:none;box-shadow:0 8px 32px rgba(0,0,0,.6);line-height:1.5}
+.t1{font-weight:700;color:var(--tx);margin-bottom:4px}
+.t2{color:var(--mt);font-size:.9em}
+.t3{color:var(--yl);font-size:.85em;margin-top:3px}
+
+/* ── SIDE PANEL ── */
+.sp{width:400px;flex-shrink:0;background:var(--s1);border-left:1.5px solid var(--bd);
+  display:flex;flex-direction:column;overflow:hidden}
+.sp-idle{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;
+  padding:28px 22px;text-align:center;gap:14px;color:var(--mt)}
+.sp-idle-ico{font-size:3em;opacity:.2}
+.sp-idle p{font-size:.88em;line-height:1.7;opacity:.65}
+.sp-idle p strong{color:var(--tx)}
+.sp-det{display:none;flex-direction:column;height:100%;overflow:hidden}
+.sp-det.on{display:flex}
+
+/* Selected header */
+.sph{padding:15px 16px 12px;border-bottom:1.5px solid var(--bd);flex-shrink:0;
+  background:linear-gradient(160deg,rgba(88,166,255,.07) 0%,transparent 100%)}
+.sph-type{font-size:.69em;font-weight:700;text-transform:uppercase;letter-spacing:1.2px;margin-bottom:6px}
+.sph-title{font-family:'Syne',sans-serif;font-size:1.02em;font-weight:700;line-height:1.4;
+  margin-bottom:10px;color:var(--tx)}
+.tags{display:flex;flex-wrap:wrap;gap:4px}
+.tag{border-radius:7px;padding:4px 10px;font-size:.75em;font-weight:600;border:1px solid;white-space:nowrap}
+.tag.cp{background:rgba(88,166,255,.1);border-color:rgba(88,166,255,.35);color:var(--bl)}
+.tag.yr{background:rgba(227,179,65,.1);border-color:rgba(227,179,65,.35);color:var(--yl)}
+.tag.ar{background:rgba(188,140,255,.1);border-color:rgba(188,140,255,.35);color:var(--pu)}
+.tag.pg{background:rgba(63,185,80,.1);border-color:rgba(63,185,80,.35);color:var(--gn)}
+.tag.pr{background:rgba(139,148,158,.1);border-color:rgba(139,148,158,.3);color:var(--mt)}
+
+/* Toolbars */
+.tb{padding:8px 13px;border-bottom:1px solid var(--bd);flex-shrink:0;
+  display:flex;align-items:center;gap:7px;flex-wrap:wrap}
+.tb-lbl{font-size:.77em;font-weight:600;color:var(--mt)}
+.afbg{display:flex;gap:4px}
+.afb{padding:5px 10px;border-radius:20px;font-size:.73em;font-weight:700;
+  cursor:pointer;border:1px solid var(--bd);background:transparent;
+  color:var(--mt);font-family:'DM Sans',sans-serif;transition:all .15s}
+.afb.on{background:var(--bl);border-color:var(--bl);color:#fff}
+.afb:hover:not(.on){border-color:var(--bl);color:var(--bl)}
+.xbtn{padding:5px 11px;border-radius:20px;font-size:.73em;font-weight:700;
+  cursor:pointer;border:1px solid;font-family:'DM Sans',sans-serif;transition:all .15s}
+.xbtn.t{background:rgba(63,185,80,.12);border-color:rgba(63,185,80,.4);color:var(--gn)}
+.xbtn.t:hover{background:var(--gn);color:#fff}
+.xbtn.c{background:rgba(88,166,255,.1);border-color:rgba(88,166,255,.35);color:var(--bl)}
+.xbtn.c:hover{background:var(--bl);color:#fff}
+.xbtn.m{background:rgba(188,140,255,.1);border-color:rgba(188,140,255,.35);color:var(--pu);margin-left:auto}
+.xbtn.m:hover{background:var(--pu);color:#fff}
+
+/* Affinity list */
+.afl{flex:1;overflow-y:auto;padding:10px 12px 18px}
+.afl::-webkit-scrollbar{width:4px}
+.afl::-webkit-scrollbar-thumb{background:var(--bd);border-radius:2px}
+.afi{background:var(--s2);border:1px solid var(--bd);border-radius:12px;
+  padding:14px 15px;margin-bottom:10px;cursor:pointer;
+  transition:border-color .15s,transform .15s,box-shadow .15s;position:relative;overflow:hidden}
+.afi::before{content:'';position:absolute;top:0;left:0;bottom:0;width:3px;border-radius:3px 0 0 3px}
+.afi.P::before{background:var(--bl)}
+.afi.E::before{background:var(--gn)}
+.afi:hover{border-color:var(--bl);transform:translateX(3px);box-shadow:0 3px 18px rgba(88,166,255,.18)}
+
+/* Score */
+.sc-row{display:flex;align-items:center;gap:12px;margin-bottom:8px}
+.sc-pct{font-family:'Syne',sans-serif;font-size:2.2em;font-weight:800;min-width:62px;line-height:1;letter-spacing:-.5px}
+.sc-right{flex:1}
+.sc-bar{height:7px;background:rgba(255,255,255,.08);border-radius:4px;overflow:hidden;margin-bottom:4px}
+.sc-fill{height:7px;border-radius:4px}
+.sc-meta{display:flex;justify-content:space-between;align-items:center}
+.sc-stars{font-size:.9em;letter-spacing:2px}
+.sc-lbl{font-size:.71em;color:var(--mt);font-weight:600}
+
+/* Time */
+.tm-row{display:flex;align-items:center;gap:7px;margin-bottom:8px}
+.tm-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0}
+.tm-yr{font-size:.79em;color:var(--mt);font-weight:700}
+.tm-b{font-size:.7em;padding:3px 8px;border-radius:10px;font-weight:700}
+.tm-ok{background:rgba(63,185,80,.15);color:var(--gn)}
+.tm-near{background:rgba(227,179,65,.13);color:var(--yl)}
+.tm-far{background:rgba(139,148,158,.1);color:var(--mt)}
+
+/* Terms */
+.tr-row{display:flex;flex-wrap:wrap;gap:4px;margin-bottom:8px;align-items:center}
+.tr-lbl{font-size:.68em;color:var(--mt);font-weight:600}
+.tr-c{border-radius:20px;padding:3px 9px;font-size:.71em;font-weight:700;border:1px solid}
+.tr-h{background:rgba(247,129,102,.12);border-color:rgba(247,129,102,.4);color:var(--or)}
+.tr-w{background:rgba(57,208,194,.1);border-color:rgba(57,208,194,.3);color:var(--tl)}
+
+/* Why */
+.why{background:rgba(255,255,255,.034);border-radius:8px;padding:8px 11px;
+  font-size:.79em;color:var(--mt);line-height:1.6;margin-bottom:8px}
+.why strong{color:var(--tx);font-weight:700}
+
+.afi-title{font-size:.9em;font-weight:700;color:var(--tx);line-height:1.45;margin-bottom:7px}
+.afi-tags{display:flex;flex-wrap:wrap;gap:4px}
+
+/* Method modal */
+.mov{position:fixed;inset:0;background:rgba(0,0,0,.75);z-index:1000;
+  display:none;align-items:center;justify-content:center;backdrop-filter:blur(5px)}
+.mov.on{display:flex}
+.mbox{background:var(--s1);border:1px solid var(--bd);border-radius:14px;
+  max-width:640px;width:95vw;max-height:88vh;overflow-y:auto;padding:26px;
+  box-shadow:0 24px 80px rgba(0,0,0,.8)}
+.mhdr{display:flex;justify-content:space-between;align-items:center;margin-bottom:16px}
+.mttl{font-family:'Syne',sans-serif;font-size:1.08em;font-weight:800;color:var(--bl)}
+.mx{background:none;border:none;color:var(--mt);font-size:1.3em;cursor:pointer;padding:0 4px}
+.mx:hover{color:#ef4444}
+.mstep{background:var(--s2);border-radius:10px;padding:13px;margin-bottom:9px;border-left:3px solid var(--bl)}
+.mstep-t{font-size:.88em;font-weight:700;color:var(--tx);margin-bottom:4px}
+.mstep p{font-size:.82em;color:var(--mt);line-height:1.65}
+.mbtn{margin-top:14px;padding:8px 20px;background:var(--bl);color:#fff;border:none;
+  border-radius:8px;font-family:'DM Sans',sans-serif;font-size:.87em;font-weight:700;cursor:pointer}
+
+@media(max-width:900px){.sp{display:none}}
+</style>
+</head>
+<body>
+
+<div class="bar">
+  <div class="logo">HUB <b>da Pós</b> · Teia</div>
+  <div class="sep"></div>
+  <input class="kw" id="kwinp" placeholder="🔍 Projeto, professor, tema..." autocomplete="off">
+  <select class="fsel" id="f-cp"><option value="">Todos os campi</option></select>
+  <select class="fsel" id="f-pg" style="max-width:185px"><option value="">Todos os PPGs</option></select>
+  <select class="fsel" id="f-tp"><option value="">P + E</option><option value="P">Pesquisa</option><option value="E">Extensão</option></select>
+  <select class="fsel" id="f-an"><option value="">Todos os anos</option></select>
+  <button class="run" id="run-btn" onclick="runSearch()">▶ Analisar</button>
+  <div class="sep"></div>
+  <div class="leg">
+    <div class="li"><div class="ld" style="background:#58a6ff;box-shadow:0 0 5px #58a6ff"></div>Pesquisa</div>
+    <div class="li"><div class="ld" style="background:#3fb950;box-shadow:0 0 5px #3fb950"></div>Extensão</div>
+    <div class="li"><div class="ld" style="background:#f78166;box-shadow:0 0 5px #f78166"></div>Sel.</div>
+    <div class="li"><div class="ld" style="background:#e3b341;box-shadow:0 0 5px #e3b341"></div>Afim</div>
+    <div class="sep" style="margin:0 2px"></div>
+    <div class="li"><div class="ll" style="background:#3fb950;box-shadow:0 0 4px #3fb950"></div>≥60%</div>
+    <div class="li"><div class="ll" style="background:#e3b341;box-shadow:0 0 4px #e3b341"></div>≥40%</div>
+    <div class="li"><div class="ll" style="background:#f78166"></div>≥25%</div>
+    <div class="li"><div class="ll" style="background:#bc8cff"></div>&lt;25%</div>
+  </div>
+</div>
+
+<div class="layout">
+  <div class="cvw" id="cvw">
+    <canvas id="cv"></canvas>
+    <div class="zc">
+      <button class="zb" onclick="doZoom(1.3)">+</button>
+      <button class="zb" onclick="doZoom(0.77)">−</button>
+      <button class="zb" onclick="resetView()">⌂</button>
+    </div>
+    <div class="emsg" id="emsg">
+      <div class="emsg-ico">🕸️</div>
+      <div class="emsg-txt">Use os filtros e clique em <strong>▶ Analisar</strong> para gerar a teia.<br><br>Clique num nó para ver suas afinidades no painel lateral.</div>
+    </div>
+    <div id="loading">
+      <div class="spin"></div>
+      <div class="ltxt" id="ltxt">Filtrando projetos...</div>
+    </div>
+    <div class="tl">
+      <div class="tl-lbl">⏱ Linha do tempo — clique para filtrar por ano</div>
+      <div class="tl-lanes" id="tl-lanes"></div>
+    </div>
+  </div>
+
+  <div class="sp">
+    <div class="sp-idle" id="sp-idle">
+      <div class="sp-idle-ico">🕸️</div>
+      <p>Clique em qualquer nó para ver <strong>quem ele conecta</strong>, o <strong>índice de afinidade</strong>, os <strong>termos em comum</strong> e a <strong>sobreposição temporal</strong>.<br><br>A rede não muda ao clicar.</p>
+    </div>
+    <div class="sp-det" id="sp-det">
+      <div class="sph" id="sph"></div>
+      <div class="tb">
+        <span class="tb-lbl" id="tb-lbl"></span>
+        <div class="afbg">
+          <button class="afb on" onclick="setAF('all')">Todos</button>
+          <button class="afb" onclick="setAF('P')">🔍 Pesq</button>
+          <button class="afb" onclick="setAF('E')">🌐 Ext</button>
+        </div>
+      </div>
+      <div class="tb">
+        <button class="xbtn t" onclick="exportTXT()">📄 TXT</button>
+        <button class="xbtn c" onclick="exportCSV()">📊 CSV</button>
+        <button class="xbtn m" onclick="openMet()">📐 Método</button>
+      </div>
+      <div class="afl" id="afl"></div>
+    </div>
+  </div>
+</div>
+
+<div id="tip"><div class="t1" id="t1"></div><div class="t2" id="t2"></div><div class="t3" id="t3"></div></div>
+
+<div class="mov" id="met-modal">
+  <div class="mbox">
+    <div class="mhdr"><div class="mttl">📐 Metodologia — Índice de Afinidade</div>
+      <button class="mx" onclick="closeMet()">✕</button></div>
+    <div class="mstep"><div class="mstep-t">1. Representação TF-IDF</div>
+      <p>Cada projeto é vetorizado com TF-IDF (Term Frequency–Inverse Document Frequency). O título recebe peso duplo e a área/tema peso simples. Termos com menos de 4 caracteres e stop-words do português são removidos.</p></div>
+    <div class="mstep"><div class="mstep-t">2. Índice de Afinidade (0–100%)</div>
+      <p>Similaridade de cosseno entre os vetores TF-IDF dos dois projetos, multiplicada por 100. Mede o ângulo entre vetores no espaço de termos — 100% = projetos idênticos, 0% = sem vocabulário em comum.</p></div>
+    <div class="mstep" style="border-left-color:#e3b341"><div class="mstep-t">3. Escala de Cores das Ligações</div>
+      <p>🟢 ≥60% Alta integração — vocabulário muito próximo, eixo temático claro<br>
+         🟡 40–59% Boa integração — conceitos sobrepostos, programa viável<br>
+         🟠 25–39% Complementar — áreas distintas com articulação possível<br>
+         🟣 &lt;25% Emergente — conexão fraca, requer validação do colegiado</p></div>
+    <div class="mstep" style="border-left-color:#bc8cff"><div class="mstep-t">4. Termos em Comum</div>
+      <p>Para cada par de projetos, identifica os termos onde ambos têm peso TF-IDF positivo. Os termos são ranqueados pelo mínimo entre os dois pesos — os mais altos descrevem melhor a interseção temática.</p></div>
+    <div class="mstep" style="border-left-color:#3fb950"><div class="mstep-t">5. Sobreposição Temporal</div>
+      <p>Projetos do mesmo ano têm alta chance de congregação imediata. Anos consecutivos indicam possibilidade de extensão do programa. A diferença temporal é considerada na viabilidade da integração.</p></div>
+    <div class="mstep" style="border-left-color:#f78166"><div class="mstep-t">6. Limitações</div>
+      <p>A análise é baseada exclusivamente em títulos e áreas cadastradas no SIGAA. Projetos com títulos pouco descritivos podem ter índice baixo mesmo sendo temáticamente próximos. A decisão final de congregação é sempre do colegiado.</p></div>
+    <button class="mbtn" onclick="closeMet()">Fechar</button>
+  </div>
+</div>
+
+<script src="teia_data.js"></script>
+<script>
+var cv=document.getElementById('cv');
+var ctx=cv.getContext('2d');
+var W=0,H=0,DPR=window.devicePixelRatio||1;
+var tx=0,ty=0,sc=1,dragging=false,dragStart={x:0,y:0},dragDist=0;
+var nodes=[],edges=[],selIdx=null,hovIdx=null,afFilter='all',yearF='';
+var simStep=0,animId=0;
+window._si=undefined;
+
+function resize(){
+  var w=document.getElementById('cvw'),tl=w.querySelector('.tl');
+  W=w.clientWidth;H=w.clientHeight-(tl?tl.offsetHeight:68);
+  cv.style.width=w.clientWidth+'px';cv.style.height=w.clientHeight+'px';
+  cv.width=w.clientWidth*DPR;cv.height=w.clientHeight*DPR;
+  ctx.setTransform(DPR,0,0,DPR,0,0);redraw();
+}
+window.addEventListener('resize',resize);
+
+function init(){
+  var camps={},ppgs={},anos={};
+  PROJ.forEach(function(p){
+    if(p[5]&&p[5]!='N/I'&&p[5]!='Outros')camps[p[5]]=1;
+    (p[6]||[]).forEach(function(sg){ppgs[sg]=1;});
+    if(p[3])anos[p[3]]=1;
+  });
+  ao('f-cp',Object.keys(camps).sort());
+  Object.keys(ppgs).sort().forEach(function(pg){
+    var o=document.createElement('option');o.value=pg;o.textContent=pg;
+    document.getElementById('f-pg').appendChild(o);
+  });
+  ao('f-an',Object.keys(anos).sort());
+  buildTL(Object.keys(anos).sort());
+  resize();
+}
+function ao(id,arr){arr.forEach(function(v){var o=document.createElement('option');o.value=v;o.textContent=v;document.getElementById(id).appendChild(o);});}
+
+function buildTL(anos){
+  var el=document.getElementById('tl-lanes');
+  el.innerHTML=anos.map(function(y){
+    var cnt=PROJ.filter(function(p){return p[3]===y;}).length;
+    return '<div class="tl-lane" id="tly'+y+'" onclick="toggleY(\''+y+'\')">'
+      +'<span class="tl-yr">'+y+'</span><span class="tl-cn">'+cnt+'</span></div>';
+  }).join('');
+}
+function toggleY(y){
+  yearF=yearF===y?'':y;
+  document.querySelectorAll('.tl-lane').forEach(function(l){l.classList.remove('on');});
+  if(yearF){var e=document.getElementById('tly'+yearF);if(e)e.classList.add('on');}
+}
+
+function runSearch(){
+  var btn=document.getElementById('run-btn');
+  btn.disabled=true;btn.textContent='⏳...';
+  document.getElementById('ltxt').textContent='Filtrando projetos...';
+  document.getElementById('loading').classList.add('on');
+  setTimeout(function(){
+    try{_run();}
+    catch(e){console.error(e);document.getElementById('loading').classList.remove('on');btn.disabled=false;btn.textContent='▶ Analisar';}
+  },50);
+}
+function _run(){
+  var kw=document.getElementById('kwinp').value.trim().toLowerCase();
+  var fc=document.getElementById('f-cp').value;
+  var fp=document.getElementById('f-pg').value;
+  var ft=document.getElementById('f-tp').value;
+  var fa=document.getElementById('f-an').value;
+  var idxs=PROJ.map(function(_,i){return i;}).filter(function(i){
+    var p=PROJ[i];
+    if(fc&&p[5]!==fc)return false;
+    if(fp&&!(p[6]||[]).includes(fp))return false;
+    if(ft&&p[0]!==ft)return false;
+    if(fa&&p[3]!==fa)return false;
+    if(yearF&&p[3]!==yearF)return false;
+    return true;
+  });
+  if(kw.length>=2){
+    var toks=kw.split(' ').filter(function(t){return t.length>=2;});
+    var sc2=idxs.map(function(i){
+      var p=PROJ[i],h=(p[1]+' '+p[2]+' '+p[4]).toLowerCase(),s=0;
+      toks.forEach(function(t){var pos=-1,cnt=0;while((pos=h.indexOf(t,pos+1))>=0)cnt++;s+=cnt;});
+      return[s,i];
+    }).filter(function(x){return x[0]>0;});
+    sc2.sort(function(a,b){return b[0]-a[0];});
+    idxs=sc2.map(function(x){return x[1];});
+  } else {
+    idxs.sort(function(a,b){return(ADJ[b]||ADJ[String(b)]||[]).length-(ADJ[a]||ADJ[String(a)]||[]).length;});
+  }
+  idxs=idxs.slice(0,55);
+  document.getElementById('ltxt').textContent='Posicionando '+idxs.length+' nós...';
+  setTimeout(function(){
+    buildNet(idxs);
+    document.getElementById('loading').classList.remove('on');
+    var btn=document.getElementById('run-btn');btn.disabled=false;btn.textContent='▶ Analisar';
+  },40);
+}
+
+function getAdj(i){return ADJ[i]||ADJ[String(i)]||[];}
+
+function buildNet(idxs){
+  document.getElementById('emsg').style.display=idxs.length?'none':'flex';
+  if(!idxs.length){nodes=[];edges=[];selIdx=null;closePanel();redraw();return;}
+  var idxSet=new Set(idxs),cx=W/2,cy=H/2;
+  nodes=idxs.map(function(i,k){
+    var ring=Math.floor(k/8),pos=k-ring*8,cnt=Math.min(8,idxs.length-ring*8);
+    var angle=(pos/cnt)*Math.PI*2-Math.PI/2;
+    var r=130+ring*105+(Math.random()-.5)*18;
+    var p=PROJ[i],adj=getAdj(i).filter(function(x){return idxSet.has(x[1]);}).length;
+    return{i:i,x:cx+Math.cos(angle)*r,y:cy+Math.sin(angle)*r,vx:0,vy:0,r:Math.max(10,10+adj*2),tipo:p[0],year:p[3]};
+  });
+  var seen=new Set();edges=[];
+  idxs.forEach(function(i){
+    getAdj(i).forEach(function(item){
+      var sim=item[0],j=item[1];
+      if(idxSet.has(j)&&sim>=0.15){
+        var key=Math.min(i,j)+'-'+Math.max(i,j);
+        if(!seen.has(key)){seen.add(key);edges.push({from:i,to:j,sim:sim,terms:item[2]||''});}
+      }
+    });
+  });
+  selIdx=null;closePanel();tx=0;ty=0;sc=1;simStep=0;
+  cancelAnimationFrame(animId);animate();
+}
+
+function simulate(){
+  if(simStep>200)return;simStep++;
+  var cx=W/2,cy=H/2,nm={};nodes.forEach(function(n){nm[n.i]=n;});
+  nodes.forEach(function(n){n.vx=0;n.vy=0;});
+  for(var a=0;a<nodes.length;a++){
+    for(var b=a+1;b<nodes.length;b++){
+      var na=nodes[a],nb=nodes[b],dx=na.x-nb.x,dy=na.y-nb.y,d=Math.sqrt(dx*dx+dy*dy)||.01;
+      var min=(na.r+nb.r)*3;
+      if(d<min){var f=(min-d)/d*.55;na.vx+=dx*f;na.vy+=dy*f;nb.vx-=dx*f;nb.vy-=dy*f;}
+    }
+  }
+  edges.forEach(function(e){
+    var na=nm[e.from],nb=nm[e.to];if(!na||!nb)return;
+    var dx=nb.x-na.x,dy=nb.y-na.y,d=Math.sqrt(dx*dx+dy*dy)||.01;
+    var ideal=95+85*(1-e.sim),f=(d-ideal)/d*0.04*e.sim;
+    na.vx+=dx*f;na.vy+=dy*f;nb.vx-=dx*f;nb.vy-=dy*f;
+  });
+  nodes.forEach(function(n){n.vx+=(cx-n.x)*.012;n.vy+=(cy-n.y)*.012;});
+  nodes.forEach(function(n){
+    n.x=Math.max(n.r+10,Math.min(W-n.r-10,n.x+n.vx*.73));
+    n.y=Math.max(n.r+10,Math.min(H-n.r-10,n.y+n.vy*.73));
+  });
+}
+function animate(){simulate();redraw();if(simStep<200)animId=requestAnimationFrame(animate);else redraw();}
+
+function ec(sim,sel){
+  if(sel){if(sim>=.6)return[63,185,80];if(sim>=.4)return[227,179,65];if(sim>=.25)return[247,129,102];return[188,140,255];}
+  if(sim>=.55)return[63,185,80];if(sim>=.35)return[88,166,255];return[57,208,194];
+}
+
+function redraw(){
+  ctx.clearRect(0,0,cv.width/DPR,cv.height/DPR);
+  if(!nodes.length)return;
+  ctx.save();ctx.translate(tx,ty);ctx.scale(sc,sc);
+  var nm={};nodes.forEach(function(n){nm[n.i]=n;});
+  var nbrs=new Set();
+  if(selIdx!==null)getAdj(selIdx).forEach(function(x){nbrs.add(x[1]);});
+
+  edges.forEach(function(e){
+    var na=nm[e.from],nb=nm[e.to];if(!na||!nb)return;
+    var isSel=e.from===selIdx||e.to===selIdx;
+    var conn=selIdx===null||isSel||nbrs.has(e.from)||nbrs.has(e.to);
+    if(!conn)return;
+    var c=ec(e.sim,isSel),al=isSel?.28+e.sim*.62:.06+e.sim*.3;
+    ctx.save();
+    ctx.beginPath();ctx.moveTo(na.x,na.y);ctx.lineTo(nb.x,nb.y);
+    ctx.strokeStyle='rgba('+c[0]+','+c[1]+','+c[2]+','+al+')';
+    ctx.lineWidth=isSel?2+e.sim*3.5:.7+e.sim*1.5;
+    if(isSel&&e.sim>=.4){ctx.shadowBlur=7;ctx.shadowColor='rgba('+c[0]+','+c[1]+','+c[2]+',.5)';}
+    ctx.stroke();ctx.shadowBlur=0;
+    if(isSel&&e.sim>=.15){
+      var mx=(na.x+nb.x)/2,my=(na.y+nb.y)/2,pct=Math.round(e.sim*100)+'%';
+      ctx.font='bold 11px DM Sans';ctx.textAlign='center';ctx.textBaseline='middle';
+      ctx.strokeStyle='rgba(13,17,23,.9)';ctx.lineWidth=3.5;ctx.strokeText(pct,mx,my);
+      ctx.fillStyle='rgba('+c[0]+','+c[1]+','+c[2]+',.95)';ctx.fillText(pct,mx,my);
+    }
+    ctx.restore();
+  });
+
+  nodes.forEach(function(n){
+    var p=PROJ[n.i],isSel=n.i===selIdx,isNbr=nbrs.has(n.i),isHov=n.i===hovIdx;
+    var dim=selIdx!==null&&!isSel&&!isNbr;
+    var col=isSel?'#f78166':isNbr?'#e3b341':p[0]==='P'?'#58a6ff':'#3fb950';
+    var rgb=isSel?'247,129,102':isNbr?'227,179,65':p[0]==='P'?'88,166,255':'63,185,80';
+    var r=n.r*(isSel?1.4:isNbr?1.15:isHov?1.18:1);
+    ctx.save();ctx.globalAlpha=dim?.22:1;
+    if(!dim&&(isSel||isNbr||isHov)){
+      var gr=ctx.createRadialGradient(n.x,n.y,r*.3,n.x,n.y,r*3);
+      gr.addColorStop(0,'rgba('+rgb+',.38)');gr.addColorStop(1,'transparent');
+      ctx.beginPath();ctx.arc(n.x,n.y,r*3,0,Math.PI*2);ctx.fillStyle=gr;ctx.fill();
+    }
+    ctx.beginPath();ctx.arc(n.x,n.y,r,0,Math.PI*2);ctx.fillStyle=col;ctx.fill();
+    if(isSel){
+      ctx.beginPath();ctx.arc(n.x,n.y,r+5,0,Math.PI*2);
+      ctx.strokeStyle=col;ctx.lineWidth=1.5;ctx.globalAlpha=.3;ctx.stroke();ctx.globalAlpha=1;
+    }
+    if(p[3]){
+      var yc={'2024':'#e3b341','2025':'#39d0c2','2026':'#bc8cff'}[p[3]]||'#8b949e';
+      ctx.beginPath();ctx.arc(n.x+r*.68,n.y-r*.68,Math.max(3.5,r*.26),0,Math.PI*2);
+      ctx.fillStyle=yc;ctx.fill();
+    }
+    var title=p[1]||'?',mc=isSel?28:isNbr?22:r>14?18:14;
+    var lbl=title.length>mc?title.slice(0,mc-1)+'…':title;
+    var fsz=isSel?13:isNbr?11:Math.max(9.5,r*.88);
+    ctx.font=(isSel||isNbr?'600 ':'400 ')+fsz+'px DM Sans';
+    ctx.textAlign='center';ctx.textBaseline='top';
+    var lx=n.x,ly=n.y+r+5;
+    ctx.strokeStyle='rgba(13,17,23,.88)';ctx.lineWidth=3.5;ctx.strokeText(lbl,lx,ly);
+    ctx.fillStyle=isSel?'#fff':isNbr?'rgba(230,237,243,.95)':'rgba(230,237,243,.8)';
+    ctx.fillText(lbl,lx,ly);
+    if((isSel||isNbr)&&p[4]){
+      var pf=p[4].charAt(0)+p[4].slice(1).toLowerCase();
+      ctx.font='italic 9.5px DM Sans';
+      ctx.strokeStyle='rgba(13,17,23,.8)';ctx.lineWidth=2.5;ctx.strokeText(pf,lx,ly+fsz+2);
+      ctx.fillStyle='rgba(139,148,158,.8)';ctx.fillText(pf,lx,ly+fsz+2);
+    }
+    ctx.restore();
+  });
+  ctx.restore();
+}
+
+function doZoom(f){var ns=Math.max(.2,Math.min(6,sc*f)),r=ns/sc;tx=W/2-(W/2-tx)*r;ty=H/2-(H/2-ty)*r;sc=ns;redraw();}
+function resetView(){tx=0;ty=0;sc=1;redraw();}
+cv.addEventListener('wheel',function(e){
+  e.preventDefault();
+  var rect=cv.getBoundingClientRect(),mx=e.clientX-rect.left,my=e.clientY-rect.top;
+  var f=e.deltaY>0?.87:1.15,ns=Math.max(.2,Math.min(6,sc*f)),r=ns/sc;
+  tx=mx-(mx-tx)*r;ty=my-(my-ty)*r;sc=ns;redraw();
+},{passive:false});
+cv.addEventListener('mousedown',function(e){dragging=true;dragDist=0;dragStart={x:e.clientX-tx,y:e.clientY-ty};cv.style.cursor='grabbing';});
+window.addEventListener('mousemove',function(e){
+  if(dragging){var nx=e.clientX-dragStart.x,ny=e.clientY-dragStart.y;dragDist+=Math.abs(nx-tx)+Math.abs(ny-ty);tx=nx;ty=ny;redraw();}
+});
+window.addEventListener('mouseup',function(){dragging=false;cv.style.cursor='default';});
+
+function gn(ex,ey){
+  var rect=cv.getBoundingClientRect(),x=(ex-rect.left-tx)/sc,y=(ey-rect.top-ty)/sc;
+  for(var k=nodes.length-1;k>=0;k--){var n=nodes[k];if((x-n.x)**2+(y-n.y)**2<=(n.r+6)**2)return n;}
+  return null;
+}
+cv.addEventListener('mousemove',function(e){
+  var n=gn(e.clientX,e.clientY);hovIdx=n?n.i:null;
+  var tip=document.getElementById('tip');
+  if(n&&!dragging){
+    var p=PROJ[n.i];cv.style.cursor='pointer';
+    document.getElementById('t1').textContent=p[1]||'Sem título';
+    document.getElementById('t2').textContent=(p[0]==='P'?'🔍 Pesquisa':'🌐 Extensão')+' · '+(p[5]||'?')+' · '+(p[3]||'')+(p[2]?' · '+p[2]:'');
+    document.getElementById('t3').textContent='🔗 '+getAdj(n.i).length+' afinidade(s)'+(p[4]?' · 👤 '+p[4].charAt(0)+p[4].slice(1).toLowerCase():'');
+    tip.style.left=(e.clientX+15)+'px';tip.style.top=(e.clientY-8)+'px';tip.style.display='block';
+  }else{if(!dragging)cv.style.cursor='default';tip.style.display='none';}
+  if(simStep>=200)redraw();
+});
+cv.addEventListener('mouseleave',function(){hovIdx=null;document.getElementById('tip').style.display='none';if(simStep>=200)redraw();});
+
+cv.addEventListener('click',function(e){
+  if(dragDist>5)return;
+  var n=gn(e.clientX,e.clientY);
+  selIdx=n?(n.i===selIdx?null:n.i):null;
+  if(selIdx!==null)showPanel(selIdx);else closePanel();
+  redraw();
+});
+
+function showPanel(i){
+  var p=PROJ[i];
+  document.getElementById('sp-idle').style.display='none';
+  document.getElementById('sp-det').classList.add('on');
+  var tc=p[0]==='P'?'var(--bl)':'var(--gn)';
+  document.getElementById('sph').innerHTML=
+    '<div class="sph-type" style="color:'+tc+'">'+(p[0]==='P'?'🔍 Pesquisa':'🌐 Extensão')+'</div>'
+    +'<div class="sph-title">'+(p[1]||'Sem título')+'</div>'
+    +'<div class="tags">'
+    +(p[5]?'<span class="tag cp">📍 '+p[5]+'</span>':'')
+    +(p[3]?'<span class="tag yr">📅 '+p[3]+'</span>':'')
+    +(p[2]?'<span class="tag ar">🏷️ '+p[2]+'</span>':'')
+    +(p[4]?'<span class="tag pr">👤 '+p[4].charAt(0)+p[4].slice(1).toLowerCase()+'</span>':'')
+    +(p[6]||[]).map(function(sg){return'<span class="tag pg">'+sg+'</span>';}).join('')
+    +'</div>';
+  var pairs=getAdj(i);
+  document.getElementById('tb-lbl').textContent=pairs.length+' projeto(s) com afinidade';
+  window._si=i;afFilter='all';
+  document.querySelectorAll('.afb').forEach(function(b,k){b.classList.toggle('on',k===0);});
+  renderPanel(i);
+}
+function closePanel(){
+  document.getElementById('sp-idle').style.display='';
+  document.getElementById('sp-det').classList.remove('on');
+  window._si=undefined;
+}
+function setAF(f){
+  afFilter=f;
+  document.querySelectorAll('.afb').forEach(function(b){
+    b.classList.toggle('on',(f==='all'&&b.textContent.startsWith('T'))||(f==='P'&&b.textContent.includes('Pesq'))||(f==='E'&&b.textContent.includes('Ext')));
+  });
+  if(window._si!==undefined)renderPanel(window._si);
+}
+function renderPanel(i){
+  var p=PROJ[i];
+  var pairs=getAdj(i).filter(function(x){return afFilter==='all'||PROJ[x[1]][0]===afFilter;});
+  var list=document.getElementById('afl');
+  if(!pairs.length){list.innerHTML='<div style="text-align:center;padding:28px;color:var(--mt);font-size:.9em">Nenhum projeto com afinidade para este filtro.</div>';return;}
+  list.innerHTML=pairs.map(function(item){
+    var sim=item[0],j=item[1],terms=item[2],q=PROJ[j];
+    var pct=Math.round(sim*100),c=ec(sim,true),bc='rgb('+c[0]+','+c[1]+','+c[2]+')';
+    var stars=pct>=60?'★★★':pct>=40?'★★':'★',slbl=pct>=60?'Alta':pct>=40?'Boa':pct>=25?'Complementar':'Emergente';
+    var ta=typeof terms==='string'?terms.split(', ').filter(Boolean):(terms||[]);
+    var sy=p[3],qy=q[3],same=sy&&qy&&sy===qy,diff=sy&&qy?Math.abs(parseInt(sy)-parseInt(qy)):null;
+    var tmMsg=same?'Mesmo período — alta chance':diff===1?'Anos consecutivos':diff?diff+' ano(s)':'Desconhecido';
+    var tmCls=same?'tm-ok':diff===1?'tm-near':'tm-far',tmDot=same?'#3fb950':diff===1?'#e3b341':'#8b949e';
+    var why=[];
+    if(p[2]===q[2])why.push('mesma área: <strong>'+p[2]+'</strong>');
+    if(p[5]===q[5])why.push('mesmo campus: <strong>'+p[5]+'</strong>');
+    var ppgi=(p[6]||[]).filter(function(sg){return(q[6]||[]).includes(sg);});
+    if(ppgi.length)why.push('PPG: <strong>'+ppgi.join(', ')+'</strong>');
+    if(ta.length)why.push('termos: <strong>'+ta.slice(0,3).join(', ')+'</strong>');
+    return '<div class="afi '+q[0]+'" onclick="jumpTo('+j+')">'
+      +'<div class="sc-row"><div class="sc-pct" style="color:'+bc+'">'+pct+'%</div>'
+      +'<div class="sc-right"><div class="sc-bar"><div class="sc-fill" style="width:'+pct+'%;background:'+bc+'"></div></div>'
+      +'<div class="sc-meta"><span class="sc-stars" style="color:'+bc+'">'+stars+'</span><span class="sc-lbl">'+slbl+'</span></div></div></div>'
+      +'<div class="tm-row"><div class="tm-dot" style="background:'+tmDot+'"></div>'
+      +'<span class="tm-yr">'+(qy||'?')+'</span><span class="tm-b '+tmCls+'">'+tmMsg+'</span></div>'
+      +(ta.length?'<div class="tr-row"><span class="tr-lbl">🔑</span>'
+        +ta.map(function(t,k){return'<span class="tr-c '+(k<2?'tr-h':'tr-w')+'">'+t+'</span>';}).join('')+'</div>':'')
+      +(why.length?'<div class="why">Por que integrar: '+why.join(' · ')+'</div>':'')
+      +'<div class="afi-title">'+(q[1]||'')+'</div>'
+      +'<div class="afi-tags">'
+      +'<span class="tag '+(q[0]==='P'?'cp':'pg')+'" style="font-size:.74em">'+(q[0]==='P'?'Pesquisa':'Extensão')+'</span>'
+      +(q[5]?'<span class="tag cp" style="font-size:.74em">📍 '+q[5]+'</span>':'')
+      +(q[4]?'<span class="tag pr" style="font-size:.74em">👤 '+q[4].charAt(0)+q[4].slice(1).toLowerCase()+'</span>':'')
+      +(q[6]||[]).map(function(sg){return'<span class="tag pg" style="font-size:.74em">'+sg+'</span>';}).join('')
+      +'</div></div>';
+  }).join('');
+}
+function jumpTo(j){
+  var n=nodes.find(function(nd){return nd.i===j;});
+  if(n){selIdx=j;showPanel(j);redraw();}
+  else{selIdx=null;closePanel();document.getElementById('kwinp').value=PROJ[j][1]||'';runSearch();
+    setTimeout(function(){var f=nodes.find(function(nd){return nd.i===j;});if(f){selIdx=j;showPanel(j);redraw();}},600);}
+}
+
+function openMet(){document.getElementById('met-modal').classList.add('on');}
+function closeMet(){document.getElementById('met-modal').classList.remove('on');}
+document.getElementById('met-modal').addEventListener('click',function(e){if(e.target===this)closeMet();});
+
+function exportTXT(){
+  var i=window._si;if(i===undefined){alert('Selecione um projeto primeiro.');return;}
+  var p=PROJ[i],pairs=getAdj(i).filter(function(x){return afFilter==='all'||PROJ[x[1]][0]===afFilter;});
+  if(!pairs.length){alert('Nenhum projeto com afinidade.');return;}
+  var NL='\n',S='='.repeat(62),s='-'.repeat(62);
+  var out=[S,'RELATÓRIO DE CONGREGAÇÃO — HUB da Pós / UNEMAT','Método: TF-IDF + Similaridade de Cosseno',S,NL,
+    'PROJETO CENTRAL:','  Título   : '+(p[1]||''),'  Tipo     : '+(p[0]==='P'?'Pesquisa':'Extensão'),
+    '  Campus   : '+(p[5]||'—'),'  Período  : '+(p[3]||'—'),'  Área     : '+(p[2]||'—'),
+    '  Professor: '+(p[4]||'—'),'  PPGs     : '+((p[6]||[]).join(', ')||'—'),
+    NL,'PROJETOS COM AFINIDADE ('+pairs.length+'):',s];
+  pairs.forEach(function(item,k){
+    var sim=item[0],j=item[1],terms=item[2],q=PROJ[j],pct=Math.round(sim*100);
+    var ta=typeof terms==='string'?terms.split(', ').filter(Boolean):(terms||[]);
+    var sy=p[3],qy=q[3],same=sy&&qy&&sy===qy,diff=sy&&qy?Math.abs(parseInt(sy)-parseInt(qy)):null;
+    var tm=same?'Mesmo período':diff===1?'Anos consecutivos':diff?diff+' ano(s)':'Desconhecido';
+    var why=[];
+    if(p[2]===q[2])why.push('mesma área ('+p[2]+')');
+    if(p[5]===q[5])why.push('mesmo campus ('+p[5]+')');
+    var ppgi=(p[6]||[]).filter(function(sg){return(q[6]||[]).includes(sg);});
+    if(ppgi.length)why.push('mesmo PPG ('+ppgi.join(', ')+')');
+    if(ta.length)why.push('termos: '+ta.join(', '));
+    out.push((k+1)+'. ÍNDICE: '+pct+'% '+(pct>=60?'★★★':pct>=40?'★★':'★'));
+    out.push('   Título   : '+(q[1]||''),'   Tipo     : '+(q[0]==='P'?'Pesquisa':'Extensão'));
+    out.push('   Campus   : '+(q[5]||'—'),'   Período  : '+(q[3]||'—')+' ('+tm+')');
+    out.push('   Área     : '+(q[2]||'—'),'   Professor: '+(q[4]||'—'));
+    out.push('   PPGs     : '+((q[6]||[]).join(', ')||'—'));
+    if(ta.length)out.push('   Termos   : '+ta.join(', '));
+    if(why.length)out.push('   Por quê  : '+why.join(' · '));
+    out.push('   '+s);
+  });
+  out.push(NL,'Gerado por: HUB da Pós — UNEMAT','Data: '+new Date().toLocaleString('pt-BR'));
+  var blob=new Blob([out.join(NL)],{type:'text/plain;charset=utf-8'});
+  var a=document.createElement('a');a.href=URL.createObjectURL(blob);
+  a.download='congregacao_'+(p[1]||'proj').slice(0,28).replace(/[^a-zA-Z0-9]/g,'_')+'.txt';a.click();
+}
+function exportCSV(){
+  var i=window._si;if(i===undefined){alert('Selecione um projeto primeiro.');return;}
+  var p=PROJ[i],pairs=getAdj(i).filter(function(x){return afFilter==='all'||PROJ[x[1]][0]===afFilter;});
+  if(!pairs.length){alert('Nenhum projeto com afinidade.');return;}
+  function esc(v){var s=String(v==null?'':v);return(s.indexOf(',')>=0||s.indexOf('"')>=0||s.indexOf('\n')>=0)?'"'+s.replace(/"/g,'""')+'"':s;}
+  var rows=[['Proj Central','Tipo Central','Campus Central','Período Central','Área Central','Prof Central','PPGs Central',
+    'Proj Afim','Tipo Afim','Campus Afim','Período Afim','Área Afim','Prof Afim','PPGs Afim',
+    'Índice (%)','Termos Comuns','Sobreposição Temporal','Por que Integrar'].map(esc).join(',')];
+  pairs.forEach(function(item){
+    var sim=item[0],j=item[1],terms=item[2],q=PROJ[j],pct=Math.round(sim*100);
+    var ta=typeof terms==='string'?terms:(terms||[]).join(', ');
+    var sy=p[3],qy=q[3],same=sy&&qy&&sy===qy,diff=sy&&qy?Math.abs(parseInt(sy)-parseInt(qy)):null;
+    var tm=same?'Mesmo período':diff===1?'Anos consecutivos':diff?diff+' ano(s)':'Desconhecido';
+    var why=[];
+    if(p[2]===q[2])why.push('mesma área');if(p[5]===q[5])why.push('mesmo campus');
+    var ppgi=(p[6]||[]).filter(function(sg){return(q[6]||[]).includes(sg);});
+    if(ppgi.length)why.push('mesmo PPG');if(ta)why.push('termos comuns');
+    rows.push([p[1],p[0]==='P'?'Pesquisa':'Extensão',p[5],p[3],p[2],p[4],(p[6]||[]).join(';'),
+      q[1],q[0]==='P'?'Pesquisa':'Extensão',q[5],q[3],q[2],q[4],(q[6]||[]).join(';'),
+      pct,ta,tm,why.join('; ')].map(esc).join(','));
+  });
+  var blob=new Blob(['\uFEFF'+rows.join('\n')],{type:'text/csv;charset=utf-8'});
+  var a=document.createElement('a');a.href=URL.createObjectURL(blob);
+  a.download='congregacao_'+(p[1]||'proj').slice(0,28).replace(/[^a-zA-Z0-9]/g,'_')+'.csv';a.click();
+}
+
+document.getElementById('kwinp').addEventListener('keydown',function(e){if(e.key==='Enter')runSearch();});
+init();
+</script>
+</body>
+</html>

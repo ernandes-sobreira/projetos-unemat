@@ -905,8 +905,9 @@ tbody tr:nth-child(even):hover { background: var(--blue-light); }
     <ul class="nav-menu">
         <li><a href="#" class="nav-link" data-page="pe-integracao" style="color:#ef6c00;"><span class="nav-icon">&#128279;</span><span class="nav-label">Integração P&amp;E</span></a></li>
         <li><a href="#" class="nav-link" data-page="kw-dinamica" style="color:#00838f;"><span class="nav-icon">&#128202;</span><span class="nav-label">Palavras-Chave</span></a></li>
+        <li><a href="#" class="nav-link" data-page="teia-congregacoes" style="color:#6a1b9a;"><span class="nav-icon">&#127760;</span><span class="nav-label">Teia de Congregações</span></a></li>
         <li><a href="#" class="nav-link" data-page="sobre"><span class="nav-icon">&#8505;</span><span class="nav-label">Sobre</span></a></li>
-        <li><a href="#" class="nav-link nav-admin-link" data-page="admin-revisao" style="border-top:1.5px solid #e0e7ef;margin-top:4px;padding-top:10px;color:#6a1b9a;"><span class="nav-icon">&#128274;</span><span class="nav-label" style="color:#6a1b9a;font-weight:800">Revisão (Admin)</span></a></li>
+        <li><a href="#" class="nav-link nav-admin-link" data-page="admin-revisao" style="border-top:1.5px solid #e0e7ef;margin-top:4px;padding-top:10px;color:#6a1b9a;"><span class="nav-icon">&#128274;</span><span class="nav-label" style="color:#6a1b9a;font-weight:800">Admin</span></a></li>
     </ul>
 
     <!-- FILTROS GLOBAIS -->
@@ -1319,12 +1320,19 @@ tbody tr:nth-child(even):hover { background: var(--blue-light); }
         </div>
     </section>
 
+    <!-- TEIA DE CONGREGAÇÕES -->
+    <section id="teia-congregacoes" class="page">
+        <div style="height:calc(100vh - 32px);margin:-28px -28px -40px -28px;">
+            <iframe src="teia_congregacoes.html" style="width:100%;height:100%;border:none;display:block;"></iframe>
+        </div>
+    </section>
+
     <!-- ADMIN: REVISÃO DE PROGRAMAS -->
     <section id="admin-revisao" class="page">
         <div id="admin-login-box" style="max-width:380px;margin:60px auto 0;text-align:center;background:#fff;border-radius:16px;padding:40px 36px;box-shadow:0 8px 40px rgba(106,27,154,0.12);border:2px solid #e1bee7;">
             <div style="font-size:2.2em;margin-bottom:10px">&#128274;</div>
             <div style="font-family:'Barlow Condensed',sans-serif;font-size:1.7em;font-weight:800;color:#4a148c;margin-bottom:4px">Acesso Restrito</div>
-            <div style="font-size:.82em;color:#6b7a99;font-weight:600;margin-bottom:24px">Revisão de Programas — Admin</div>
+            <div style="font-size:.82em;color:#6b7a99;font-weight:600;margin-bottom:24px">Área Administrativa — HUB da Pós</div>
             <label style="display:block;text-align:left;font-size:.78em;font-weight:800;color:#6b7a99;margin-bottom:6px;letter-spacing:.5px">CÓDIGO DE ACESSO</label>
             <input id="admin-code-input" type="password" maxlength="20" autocomplete="off"
                 style="width:100%;padding:13px 16px;border:2px solid #e0e7ef;border-radius:10px;font-family:'Nunito',sans-serif;font-size:1em;font-weight:700;letter-spacing:4px;text-align:center;outline:none;margin-bottom:12px;"
@@ -1338,8 +1346,29 @@ tbody tr:nth-child(even):hover { background: var(--blue-light); }
                 Código inválido. Tente novamente.
             </div>
         </div>
-        <div id="admin-iframe-box" style="display:none;height:calc(100vh - 32px);margin:-28px -28px -40px -28px;">
-            <iframe id="admin-iframe" src="" style="width:100%;height:100%;border:none;display:block;"></iframe>
+        <div id="admin-content-box" style="display:none;height:calc(100vh - 32px);margin:-28px -28px -40px -28px;flex-direction:column;">
+            <!-- Admin tab bar -->
+            <div style="display:flex;align-items:center;gap:0;background:#fff;border-bottom:2px solid #e0e7ef;padding:0 18px;height:46px;flex-shrink:0;box-shadow:0 2px 8px rgba(106,27,154,0.07);">
+                <span style="font-family:'Barlow Condensed',sans-serif;font-size:1em;font-weight:800;color:#4a148c;margin-right:16px;letter-spacing:.3px;">&#128274; ADMIN</span>
+                <button id="atab-revisao" onclick="switchAdminTab('revisao')"
+                    style="padding:10px 18px;border:none;background:none;font-family:'Nunito',sans-serif;font-size:.85em;font-weight:800;color:#4a148c;cursor:pointer;border-bottom:3px solid #6a1b9a;margin-bottom:-2px;">
+                    &#128196; Revisão de Programas
+                </button>
+                <button id="atab-teia" onclick="switchAdminTab('teia')"
+                    style="padding:10px 18px;border:none;background:none;font-family:'Nunito',sans-serif;font-size:.85em;font-weight:800;color:#6b7a99;cursor:pointer;border-bottom:3px solid transparent;margin-bottom:-2px;">
+                    &#127760; Teia de Congregações
+                </button>
+                <button onclick="adminLogout()"
+                    style="margin-left:auto;padding:6px 14px;background:#ffebee;color:#c62828;border:1.5px solid #ef9a9a;border-radius:8px;font-family:'Nunito',sans-serif;font-size:.78em;font-weight:800;cursor:pointer;">
+                    Sair
+                </button>
+            </div>
+            <div id="atab-pane-revisao" style="flex:1;display:block;overflow:hidden;">
+                <iframe id="admin-iframe" src="" style="width:100%;height:calc(100vh - 78px);border:none;display:block;"></iframe>
+            </div>
+            <div id="atab-pane-teia" style="flex:1;display:none;overflow:hidden;">
+                <iframe id="admin-teia-iframe" src="" style="width:100%;height:calc(100vh - 78px);border:none;display:block;"></iframe>
+            </div>
         </div>
     </section>
 
@@ -2715,7 +2744,7 @@ function closeDocentePanel() {
 
 <script>
 // ============================================================
-// ADMIN LOGIN — Revisão de Programas
+// ADMIN LOGIN — Área Administrativa
 // ============================================================
 const ADMIN_CODE = 'UNEMAT2026';
 
@@ -2735,17 +2764,42 @@ function adminLogin() {
 
 function showAdminContent() {
     document.getElementById('admin-login-box').style.display = 'none';
-    const iframeBox = document.getElementById('admin-iframe-box');
-    iframeBox.style.display = 'block';
+    const box = document.getElementById('admin-content-box');
+    box.style.display = 'flex';
+    // Load revisao iframe if not yet loaded
     const iframe = document.getElementById('admin-iframe');
-    if (!iframe.src || iframe.src === window.location.href) {
+    if (!iframe.src || iframe.src === window.location.href || iframe.src === '') {
         iframe.src = 'revisao.html';
+    }
+}
+
+function adminLogout() {
+    sessionStorage.removeItem('hub_admin_auth');
+    document.getElementById('admin-content-box').style.display = 'none';
+    document.getElementById('admin-login-box').style.display = 'block';
+    document.getElementById('admin-code-input').value = '';
+}
+
+function switchAdminTab(tab) {
+    // Toggle panes
+    document.getElementById('atab-pane-revisao').style.display = tab === 'revisao' ? 'block' : 'none';
+    document.getElementById('atab-pane-teia').style.display    = tab === 'teia'    ? 'block' : 'none';
+    // Toggle tab button styles
+    const activeStyle  = 'padding:10px 18px;border:none;background:none;font-family:\'Nunito\',sans-serif;font-size:.85em;font-weight:800;color:#4a148c;cursor:pointer;border-bottom:3px solid #6a1b9a;margin-bottom:-2px;';
+    const inactiveStyle = 'padding:10px 18px;border:none;background:none;font-family:\'Nunito\',sans-serif;font-size:.85em;font-weight:800;color:#6b7a99;cursor:pointer;border-bottom:3px solid transparent;margin-bottom:-2px;';
+    document.getElementById('atab-revisao').style.cssText = tab === 'revisao' ? activeStyle : inactiveStyle;
+    document.getElementById('atab-teia').style.cssText    = tab === 'teia'    ? activeStyle : inactiveStyle;
+    // Lazy-load teia iframe
+    if (tab === 'teia') {
+        const tf = document.getElementById('admin-teia-iframe');
+        if (!tf.src || tf.src === window.location.href || tf.src === '') {
+            tf.src = 'teia_congregacoes.html';
+        }
     }
 }
 
 // Ao navegar para a aba admin, verificar se já autenticado
 document.addEventListener('DOMContentLoaded', function() {
-    // Intercepta clique na aba admin para checar sessão
     document.querySelector('[data-page="admin-revisao"]').addEventListener('click', function() {
         setTimeout(function() {
             if (sessionStorage.getItem('hub_admin_auth') === '1') {

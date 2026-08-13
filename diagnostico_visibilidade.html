@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Diagnóstico de Visibilidade — Detalhado — HUB da Pós UNEMAT</title>
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&family=Barlow+Condensed:wght@600;700;800&display=swap" rel="stylesheet">
+<style>
+:root{
+ --blue:#1e88e5;--blue-dark:#1565c0;--blue-light:#e3f2fd;
+ --green:#2e7d32;--green-light:#e8f5e9;--white:#fff;--bg:#f4f7fb;
+ --border:#e0e7ef;--text:#1a2340;--muted:#6b7a99;--radius:14px;--radius-sm:8px;
+ --v:#2e7d32;--vp:#e8f5e9;--p:#ef8c00;--pp:#fff3e0;--x:#c62828;--xp:#ffebee;--n:#8a93a8;--np:#eef1f6;
+}
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:'Nunito',sans-serif;background:var(--bg);color:var(--text);padding:22px 26px 60px}
+h1{font-family:'Barlow Condensed',sans-serif;font-size:1.9em;font-weight:800;color:var(--blue-dark);letter-spacing:.3px}
+.lead{font-size:.9em;color:var(--muted);font-weight:600;margin-top:2px;max-width:96ch;line-height:1.55}
+.tagbar{display:flex;flex-wrap:wrap;gap:8px;margin:16px 0 18px}
+.tg{font-size:.74em;font-weight:800;padding:6px 12px;border-radius:999px;background:var(--white);border:1.5px solid var(--border);color:var(--muted)}
+.tg b{color:var(--text)}
+.card{background:var(--white);border:1.5px solid var(--border);border-radius:var(--radius);padding:20px 22px;margin-bottom:18px;box-shadow:0 2px 14px rgba(30,136,229,.07)}
+.card h2{font-family:'Barlow Condensed',sans-serif;font-size:1.28em;font-weight:800;color:var(--text);margin-bottom:4px}
+.card h2 .em{color:var(--blue)}
+.card .sub{font-size:.82em;color:var(--muted);font-weight:600;margin-bottom:14px;line-height:1.5}
+.legend{display:flex;flex-wrap:wrap;gap:14px;font-size:.76em;font-weight:700;color:var(--muted);margin-bottom:12px}
+.legend span{display:inline-flex;align-items:center;gap:5px}
+.dot{width:12px;height:12px;border-radius:3px;display:inline-block}
+.d-v{background:var(--v)}.d-p{background:var(--p)}.d-x{background:var(--x)}.d-n{background:var(--n)}
+.filters{display:flex;flex-wrap:wrap;gap:10px;margin-bottom:14px}
+.filters input,.filters select{padding:9px 13px;border:1.5px solid var(--border);border-radius:var(--radius-sm);font-family:'Nunito',sans-serif;font-size:.85em;font-weight:600;outline:none}
+.filters input{flex:1;min-width:200px}
+.matrix-wrap{overflow-x:auto;border:1px solid var(--border);border-radius:var(--radius-sm)}
+table{border-collapse:collapse;width:100%;font-size:.82em;min-width:820px}
+th,td{padding:9px 8px;text-align:center;border-bottom:1px solid var(--border)}
+th{background:#f7fafd;font-weight:800;color:var(--muted);font-size:.86em;position:sticky;top:0;z-index:2}
+th.prog,td.prog{text-align:left;min-width:230px;position:sticky;left:0;background:var(--white);z-index:1}
+th.prog{z-index:3;background:#f7fafd}
+tr:hover td{background:#fbfdff}
+tr:hover td.prog{background:#f2f8ff}
+.pnm{font-weight:800;color:var(--text)}
+.pmeta{font-size:.82em;color:var(--muted);font-weight:600}
+.badge{display:inline-block;font-size:.68em;font-weight:800;padding:2px 7px;border-radius:6px;margin-left:6px;vertical-align:middle}
+.b-proprio{background:var(--blue-light);color:var(--blue-dark)}
+.b-rede{background:#f3e5f5;color:#6a1b9a}
+.mk{display:inline-flex;width:26px;height:26px;border-radius:7px;align-items:center;justify-content:center;font-weight:900;font-size:.9em}
+.m-v{background:var(--vp);color:var(--v)}.m-p{background:var(--pp);color:var(--p)}
+.m-x{background:var(--xp);color:var(--x)}.m-n{background:var(--np);color:var(--n)}
+.datecell{font-size:.86em;color:var(--muted);font-weight:700;white-space:nowrap}
+.note{font-size:.8em;color:var(--muted);font-weight:600;line-height:1.6;margin-top:12px;padding:12px 15px;background:#f7fafd;border-radius:var(--radius-sm);border-left:3px solid var(--blue)}
+.warn{border-left-color:var(--p);background:var(--pp)}
+.pcols{display:grid;grid-template-columns:34px 1fr;gap:8px 10px;font-size:.8em;font-weight:600;color:var(--muted);margin-top:10px}
+.pcols b{color:var(--text)}
+.prog-detail{display:none;background:#f7fafd;border-top:1px dashed var(--border)}
+.prog-detail td{text-align:left;padding:14px 18px}
+.prog-detail ul{margin:6px 0 0 18px}
+.prog-detail li{margin-bottom:4px;font-size:.95em;line-height:1.45}
+.rec{background:var(--green-light);border-left:3px solid var(--green);border-radius:var(--radius-sm);padding:10px 14px;margin-top:8px;font-size:.92em;color:#1b5e20;font-weight:700}
+.click-hint{font-size:.72em;color:var(--blue);font-weight:800;cursor:pointer}
+.print-btn{padding:9px 16px;background:var(--blue);color:#fff;border:none;border-radius:var(--radius-sm);font-family:'Nunito',sans-serif;font-weight:800;font-size:.82em;cursor:pointer}
+@media print{.filters,.print-btn,.click-hint{display:none}body{padding:0}}
+</style>
+</head>
+<body>
+<div style="display:flex;align-items:flex-start;justify-content:space-between;gap:16px;flex-wrap:wrap">
+ <div>
+  <h1>&#128269; Diagnóstico de Visibilidade Digital — versão detalhada</h1>
+  <p class="lead">Leitura nominal, por programa, dos 10 pontos que a Ficha de Avaliação CAPES observa no eixo <b>Internacionalização, Inserção e Visibilidade</b>. Material de trabalho interno da PRPPG e dos colegiados — não destinado a publicação. As avaliações abaixo descrevem o que a página de cada programa <b>servia publicamente na data da auditoria</b>, não a qualidade do programa nem o trabalho de suas equipes.</p>
+ </div>
+ <button class="print-btn" onclick="window.print()">&#128424; Imprimir / PDF</button>
+</div>
+
+<div class="tagbar">
+ <span class="tg"><b>27</b> ofertas auditadas</span>
+ <span class="tg"><b>12</b> páginas próprias · <b>15</b> em rede</span>
+ <span class="tg">Auditoria: <b>13/08/2026</b></span>
+ <span class="tg">Critério: <b>Quesito 3 · CAPES</b></span>
+</div>
+
+<div class="card">
+ <div class="legend">
+  <span><i class="dot d-v"></i>Presente</span>
+  <span><i class="dot d-p"></i>Parcial</span>
+  <span><i class="dot d-x"></i>Ausente</span>
+  <span><i class="dot d-n"></i>Não verificável</span>
+ </div>
+ <div class="pcols">
+  <b>P1</b><span>Site abre sem erro no primeiro acesso</span>
+  <b>P2</b><span>Idioma além do português — tradução <b>editorial</b>, não tradutor automático</span>
+  <b>P3</b><span>Identidade visual própria do programa (não só o template institucional)</span>
+  <b>P4</b><span>Produção, defesas ou notícias com data recente</span>
+  <b>P5</b><span>Linhas e projetos de pesquisa com docentes vinculados</span>
+  <b>P6</b><span>Corpo docente com contato direto (e-mail/Lattes, não só link do SIGAA)</span>
+  <b>P7</b><span>Editais de seleção atualizados / próxima turma</span>
+  <b>P8</b><span>Parceria internacional com <b>ação descrita</b> (mobilidade, cotutela, publicação)</span>
+  <b>P9</b><span>Redes sociais ou canal de vídeo do próprio programa</span>
+  <b>P10</b><span>Informação sobre egressos</span>
+ </div>
+</div>
+
+<div class="card">
+ <h2>Matriz nominal — <span class="em">27 ofertas</span></h2>
+ <div class="sub">Clique em qualquer linha para abrir a leitura ponto a ponto e as recomendações. Use os filtros para isolar um recorte.</div>
+ <div class="filters">
+  <input id="search" type="text" placeholder="&#128269; Buscar programa ou campus...">
+  <select id="ftipo"><option value="">Todos os tipos</option><option value="proprio">Página própria</option><option value="rede">Programa em rede</option></select>
+  <select id="fponto"><option value="">Realçar um ponto...</option></select>
+ </div>
+ <div class="matrix-wrap">
+  <table id="mtx">
+   <thead><tr>
+    <th class="prog">Programa (campus)</th>
+    <th>P1</th><th>P2</th><th>P3</th><th>P4</th><th>P5</th><th>P6</th><th>P7</th><th>P8</th><th>P9</th><th>P10</th>
+    <th>Data mais recente</th>
+   </tr></thead>
+   <tbody id="mtx-body"></tbody>
+  </table>
+ </div>
+ <div class="note warn"><b>Como ler sem culpar equipes.</b> Quase toda marca vermelha nesta matriz é propriedade do <b>molde institucional</b> ou do <b>preenchimento</b>, não do trabalho acadêmico. Idioma só por tradutor automático (P2) e contato via SIGAA (P6) são <b>iguais em 100% dos programas</b> — logo, são falha de sistema, corrigível uma vez no template da PRPPG/TI, não tarefa de cada coordenação.</div>
+</div>
+
+<div class="card">
+ <h2>Recomendações por programa</h2>
+ <div class="sub">Geradas a partir dos pontos ausentes ou parciais de cada oferta. Cada linha da matriz acima abre estas mesmas recomendações inline.</div>
+ <div id="recs"></div>
+</div>
+
+<script>
+const RECS = {
+ "AFL-PPGBIOAGRO":["Publicar defesas e produção mais recentes (última verificável: 04/2025) para manter P4 vivo.","Vincular as linhas de pesquisa aos docentes responsáveis e a projetos ativos (P5).","Criar aba de egressos e um canal próprio de divulgação (P9, P10)."],
+ "NVX-PPGEC":["Preencher a página de produção/defesas — o programa tem internacionalização forte (P8 ✓) mas a produção não aparece datada (P4).","Expor a cooperação internacional já existente com ações descritas, aproveitando o que a auditoria confirmou.","Abrir canal próprio e seção de egressos."],
+ "CAC-PPGGEO":["Melhor presença em redes do conjunto — manter e datar a produção (referência interna).","Descrever parceria internacional com ação concreta (P8 não verificável).","Formalizar seção de egressos (P10)."],
+ "TGA-PPGEL":["Dar identidade visual própria à página (P3).","Descrever parcerias internacionais com ação (P8).","Criar redes próprias e seção de egressos (P9, P10)."],
+ "CAC-PPGL":["Já tem redes próprias (P9 ✓) — falta descrever a internacionalização com ação verificável (P8).","Formalizar seção de egressos (P10)."],
+ "SNP-PPGLETRAS":["Referência interna: produção atual, projetos com coordenador nomeado, internacionalização descrita (Perugia) e redes próprias.","Único ponto a fechar: criar seção de egressos (P10)."],
+ "CAC-PPGCA":["Prioridade: publicar versão editorial do site em inglês e espanhol — a cooperação já é latino-americana, o site não (P2, P8).","Abrir presença em redes e seção de egressos (P9, P10).","Dar identidade própria à página (P3)."],
+ "TGA-PPGASP":["Volume interno de pesquisa e extensão é dos maiores da UNEMAT, mas a vitrine pública é das mais fracas — foco total em P4, P5, P8, P9.","Vincular linhas a docentes e projetos; publicar produção datada.","Descrever qualquer parceria e abrir canal próprio."],
+ "CAC-PPGEDU":["Internacionalização descrita e redes próprias — referência interna.","Único ponto a fechar: seção de egressos (P10)."],
+ "BBG-PPGECM":["Tem redes próprias — falta produção datada na página (P4).","Descrever parcerias internacionais com ação (P8).","Criar seção de egressos (P10)."],
+ "REDEPROCENTRO":["Programa em rede: linkar explicitamente o portal nacional e descrever o papel da UNEMAT na rede.","Descrever internacionalização com ação (P8 não verificável).","Abrir canal próprio e seção de egressos."],
+ "BBG-PPGECII":["Acervo de dissertações atualizado é um ativo — usá-lo para criar a seção de egressos (P10 já parcial).","Descrever parcerias internacionais com ação (P8).","Aproveitar as redes próprias já existentes para dar visibilidade à produção."],
+ "BBG-PROFMAT":["Publicar produção/defesas na página (P4).","Vincular docentes e linhas (P5).","Criar seção de egressos e canal próprio."],
+ "SNP-PROFMAT":["Amarrar docentes e projetos à linha e publicar defesas concluídas (P4, P5).","Criar feed de notícias do programa e seção de egressos."],
+ "CAC-PROFLETRAS":["Corrigir a carga em lote das defesas (todas com a mesma data) para refletir datas reais (P4).","Descrever internacionalização e egressos com dado verificável."],
+ "SNP-PROFLETRAS":["Dar identidade própria à página (P3).","Descrever parcerias internacionais (P8) e criar seção de egressos (P10)."],
+ "CAC-PROFHISTORIA":["Tem redes próprias e produção datada — falta vincular linhas a docentes de forma verificável (P5).","Descrever internacionalização com ação e criar seção de egressos."],
+ "SNP-PROFEI":["Volume de extensão é dos maiores da universidade — publicá-lo com data e vínculo (P4, P5).","Dar identidade própria à página, descrever parcerias e criar egressos."],
+ "PROFAGUA":["Programa em rede com página-casca: linkar o portal nacional e listar docentes/discentes da UNEMAT na rede (P4, P5, P6).","Sinalizar explicitamente a inserção em rede para não parecer parado."],
+ "BIONORTE":["Página-casca em rede: publicar quais docentes e produção são da UNEMAT dentro da rede (P4, P5, P6).","Linkar o portal nacional com destaque."],
+ "CAC-PGMP":["Vincular linhas a docentes (P5) e descrever internacionalização (P8).","Formalizar seção de egressos (P10)."],
+ "AIA-PROFEDUCATEC":["Popular urgentemente 'Linhas', 'Área de Concentração' e 'Grupos', hoje vazias, vinculando cada linha aos docentes e ao Diretório do CNPq (P5).","Alimentar 'Dissertações e Teses' assim que houver defesas.","Adicionar e-mail por docente e criar aba de egressos."],
+ "CBA-PROFNIT":["Popular linhas, dissertações e seleção com dados locais — hoje depende 100% do portal nacional, o que penaliza a inserção da UNEMAT (P4, P5, P7).","Adicionar e-mail e Lattes/ORCID aos 5 docentes.","Inserir bloco 'Notícias do PROFNIT' linkando o portal nacional, deixando explícito que editais e internacionalização ocorrem no nível da rede."],
+ "SNP-PROFNIT":["Aproveitar a vantagem que já tem (editais 2027 + linha nomeada): amarrar docentes e projetos à linha e publicar defesas (P4, P5).","Incluir e-mail e Lattes/ORCID nos 10 docentes.","Criar feed de notícias do programa e linkar o portal nacional."],
+ "SNP-PROFSOCIO":["Popular as três páginas hoje vazias — Docentes (com e-mail/Lattes), Linhas (com projetos e docentes) e Dissertações (P5, P6, P4).","Criar link visível para o portal nacional (profsocio.ufc.br), explicitando a rede.","Página-síntese em inglês/espanhol e canal próprio do polo."],
+ "TGA-PROFBIO":["Vincular as 3 linhas aos docentes LOCAIS de Tangará e a projetos do campus — hoje só aparecem coordenadores nacionais (P5).","Usar o forte acervo de dissertações (até 05/2026) para criar a seção de egressos com destino dos titulados (P10).","Publicar e-mail dos docentes e abrir canal próprio (P6, P9)."],
+ "PPGREAMEC":["Transformar a casca em página-espelho útil: link de destaque para o portal nacional e lista dos docentes/discentes da UNEMAT na rede (P4, P5, P6).","Publicar 'Produção do polo UNEMAT' e notícias datadas.","Documentar convênios/mobilidade da rede e criar canal audiovisual próprio."]
+};
+
+let DATA=null;
+const MK={v:['✓','m-v'],p:['~','m-p'],x:['✗','m-x'],n:['?','m-n']};
+const PLAB={p1:'Site abre',p2:'Idioma real',p3:'Identidade própria',p4:'Produção recente',p5:'Linhas c/ docentes',p6:'Contato direto',p7:'Editais',p8:'Internacional c/ ação',p9:'Redes próprias',p10:'Egressos'};
+const PTS=['p1','p2','p3','p4','p5','p6','p7','p8','p9','p10'];
+
+fetch('visibilidade.json').then(r=>r.json()).then(d=>{DATA=d;init();})
+ .catch(e=>{document.getElementById('mtx-body').innerHTML='<tr><td colspan="12" style="padding:20px;color:#c62828;font-weight:700">Não foi possível carregar visibilidade.json. Verifique se o arquivo está na mesma pasta.</td></tr>';});
+
+function init(){
+ const sel=document.getElementById('fponto');
+ PTS.forEach(p=>{const o=document.createElement('option');o.value=p;o.textContent=PLAB[p]+' ('+p.toUpperCase()+')';sel.appendChild(o);});
+ render();
+ document.getElementById('search').addEventListener('input',render);
+ document.getElementById('ftipo').addEventListener('change',render);
+ document.getElementById('fponto').addEventListener('change',render);
+ renderRecs();
+}
+
+function render(){
+ const q=document.getElementById('search').value.toLowerCase().trim();
+ const tp=document.getElementById('ftipo').value;
+ const hl=document.getElementById('fponto').value;
+ const tb=document.getElementById('mtx-body');
+ let rows=DATA.detalhe.filter(d=>{
+  if(tp && d.tipo!==tp) return false;
+  if(q && !(d.label.toLowerCase().includes(q)||d.campus.toLowerCase().includes(q))) return false;
+  return true;
+ });
+ tb.innerHTML=rows.map(d=>{
+  const cells=PTS.map(p=>{
+   const [ch,cls]=MK[d[p]];
+   const glow = (hl===p) ? 'box-shadow:0 0 0 2px var(--blue)' : '';
+   return '<td><span class="mk '+cls+'" style="'+glow+'">'+ch+'</span></td>';
+  }).join('');
+  const bcls = d.tipo==='proprio'?'b-proprio':'b-rede';
+  const btxt = d.tipo==='proprio'?'própria':'rede';
+  return '<tr class="mrow" data-sg="'+d.sg+'">'+
+   '<td class="prog"><span class="pnm">'+d.label+'</span><span class="badge '+bcls+'">'+btxt+'</span><br><span class="pmeta">'+d.campus+' &middot; <span class="click-hint">ver detalhe &#9660;</span></span></td>'+
+   cells+
+   '<td class="datecell">'+d.data+'</td></tr>'+
+   '<tr class="prog-detail" id="det-'+d.sg+'"><td colspan="12">'+detailHTML(d)+'</td></tr>';
+ }).join('');
+ document.querySelectorAll('.mrow').forEach(r=>{
+  r.addEventListener('click',()=>{
+   const dt=document.getElementById('det-'+r.dataset.sg);
+   dt.style.display = dt.style.display==='table-row'?'none':'table-row';
+  });
+ });
+}
+
+function detailHTML(d){
+ const items=PTS.map(p=>{
+  const [ch]=MK[d[p]];
+  const st={v:'#2e7d32',p:'#ef8c00',x:'#c62828',n:'#8a93a8'}[d[p]];
+  return '<li><b style="color:'+st+'">'+ch+' '+p.toUpperCase()+'</b> — '+PLAB[p]+'</li>';
+ }).join('');
+ const recs=(RECS[d.sg]||[]).map(r=>'<div class="rec">&#8594; '+r+'</div>').join('');
+ return '<ul>'+items+'</ul>'+recs;
+}
+
+function renderRecs(){
+ const box=document.getElementById('recs');
+ box.innerHTML=DATA.detalhe.map(d=>{
+  const recs=(RECS[d.sg]||[]).map(r=>'<div class="rec">&#8594; '+r+'</div>').join('');
+  const bcls = d.tipo==='proprio'?'b-proprio':'b-rede';
+  return '<div style="margin-bottom:16px"><div style="font-weight:800;color:var(--text);margin-bottom:4px">'+d.label+' <span class="badge '+bcls+'">'+d.campus+'</span></div>'+recs+'</div>';
+ }).join('');
+}
+</script>
+</body>
+</html>

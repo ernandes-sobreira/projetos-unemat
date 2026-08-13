@@ -1293,6 +1293,7 @@ tbody tr:nth-child(even):hover { background: var(--blue-light); }
                 <button id="atab-revisao" onclick="switchAdminTab('revisao')" style="padding:10px 18px;border:none;background:none;font-family:'Nunito',sans-serif;font-size:.85em;font-weight:800;color:#4a148c;cursor:pointer;border-bottom:3px solid #6a1b9a;margin-bottom:-2px;">&#128196; Revisão de Programas</button>
                 <button id="atab-teia" onclick="switchAdminTab('teia')" style="padding:10px 18px;border:none;background:none;font-family:'Nunito',sans-serif;font-size:.85em;font-weight:800;color:#6b7a99;cursor:pointer;border-bottom:3px solid transparent;margin-bottom:-2px;">&#127760; Teia de Congregações</button>
                 <button id="atab-visibilidade" onclick="switchAdminTab('visibilidade')" style="padding:10px 18px;border:none;background:none;font-family:'Nunito',sans-serif;font-size:.85em;font-weight:800;color:#6b7a99;cursor:pointer;border-bottom:3px solid transparent;margin-bottom:-2px;">&#128269; Diagnóstico de Visibilidade</button>
+                <button id="atab-fofa" onclick="switchAdminTab('fofa')" style="padding:10px 18px;border:none;background:none;font-family:'Nunito',sans-serif;font-size:.85em;font-weight:800;color:#6b7a99;cursor:pointer;border-bottom:3px solid transparent;margin-bottom:-2px;">&#129513; FOFA por Programa</button>
                 <button onclick="adminLogout()" style="margin-left:auto;padding:6px 14px;background:#ffebee;color:#c62828;border:1.5px solid #ef9a9a;border-radius:8px;font-family:'Nunito',sans-serif;font-size:.78em;font-weight:800;cursor:pointer;">Sair</button>
             </div>
             <div id="atab-pane-revisao" style="flex:1;display:block;overflow:hidden;">
@@ -1303,6 +1304,9 @@ tbody tr:nth-child(even):hover { background: var(--blue-light); }
             </div>
             <div id="atab-pane-visibilidade" style="flex:1;display:none;overflow:hidden;">
                 <iframe id="admin-vis-iframe" src="" style="width:100%;height:calc(100vh - 78px);border:none;display:block;"></iframe>
+            </div>
+            <div id="atab-pane-fofa" style="flex:1;display:none;overflow:hidden;">
+                <iframe id="admin-fofa-iframe" src="" style="width:100%;height:calc(100vh - 78px);border:none;display:block;"></iframe>
             </div>
         </div>
     </section>
@@ -2702,13 +2706,16 @@ function switchAdminTab(tab) {
     document.getElementById('atab-pane-revisao').style.display=tab==='revisao'?'block':'none';
     document.getElementById('atab-pane-teia').style.display=tab==='teia'?'block':'none';
     document.getElementById('atab-pane-visibilidade').style.display=tab==='visibilidade'?'block':'none';
+    document.getElementById('atab-pane-fofa').style.display=tab==='fofa'?'block':'none';
     const on ="padding:10px 18px;border:none;background:none;font-family:'Nunito',sans-serif;font-size:.85em;font-weight:800;color:#4a148c;cursor:pointer;border-bottom:3px solid #6a1b9a;margin-bottom:-2px;";
     const off="padding:10px 18px;border:none;background:none;font-family:'Nunito',sans-serif;font-size:.85em;font-weight:800;color:#6b7a99;cursor:pointer;border-bottom:3px solid transparent;margin-bottom:-2px;";
     document.getElementById('atab-revisao').style.cssText=tab==='revisao'?on:off;
     document.getElementById('atab-teia').style.cssText=tab==='teia'?on:off;
     document.getElementById('atab-visibilidade').style.cssText=tab==='visibilidade'?on:off;
+    document.getElementById('atab-fofa').style.cssText=tab==='fofa'?on:off;
     if(tab==='teia'){const tf=document.getElementById('admin-teia-iframe');if(!tf.src||tf.src===window.location.href||tf.src==='')tf.src='teia_congregacoes.html';}
     if(tab==='visibilidade'){const vf=document.getElementById('admin-vis-iframe');if(!vf.src||vf.src===window.location.href||vf.src==='')vf.src='diagnostico_visibilidade.html';}
+    if(tab==='fofa'){const ff=document.getElementById('admin-fofa-iframe');if(!ff.src||ff.src===window.location.href||ff.src==='')ff.src='fofa_programas.html';}
 }
 document.addEventListener('DOMContentLoaded',function(){
     document.querySelector('[data-page="admin-revisao"]').addEventListener('click',function(){

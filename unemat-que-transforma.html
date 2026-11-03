@@ -14,9 +14,9 @@
 <div class="card stat"><strong id="topicsN">—</strong><span>Temas distintos registrados</span></div>
 </div>
 <div class="dashboard">
-<section class="panel accent"><h2>Palavras que movem a UNEMAT</h2><p>Termos frequentes nos títulos de projetos de pesquisa e ações de extensão. Clique em uma palavra para pesquisar.</p><div class="cloud" id="cloud">Carregando nuvem…</div><div class="tags"><span class="tag">Pesquisa + extensão</span><span class="tag">Títulos cadastrados</span></div></section>
+<section class="panel accent"><h2>Palavras que movem a UNEMAT</h2><p>Termos frequentes nos títulos de projetos de pesquisa e ações de extensão. Clique em uma palavra para pesquisar.</p><div class="cloud" id="cloud">Carregando nuvem…</div><div id="wordResult" class="muted"></div><div class="tags"><span class="tag">Pesquisa + extensão</span><span class="tag">Títulos cadastrados</span></div></section>
 <section class="panel"><h2>Pessoas e projetos</h2><p>Docentes com mais registros associados no recorte da base, sem juízo de impacto ou desempenho.</p><div id="peopleBars"></div></section>
-<section class="panel"><h2>Áreas da pesquisa</h2><p>Distribuição de registros por área cadastrada.</p><div id="areaBars"></div></section>
+<section class="panel"><h2>Quantidade de projetos por docente</h2><p>Distribuição do total de registros associados a cada perfil.</p><div id="distBars"></div></section><section class="panel"><h2>Áreas da pesquisa</h2><p>Distribuição de registros por área cadastrada.</p><div id="areaBars"></div></section>
 <section class="panel"><h2>Temas da extensão</h2><p>Temas informados nas ações de extensão.</p><div id="themeBars"></div></section>
 </div>
 <div class="cols3 section">
@@ -59,14 +59,19 @@ fetch('data.json').then(r=>{if(!r.ok)throw Error('HTTP '+r.status);return r.json
  let areas=count(p,x=>x.a),themes=count(e,x=>x.at);
  $('topicsN').textContent=nf(themes.length);
  bars('areaBars',areas,'#143b59');bars('themeBars',themes,'#355f35');
+ let dist=count(all,x=>{let n=x.p+x.e;return n>=10?'10 ou mais':String(n)}).sort((a,b)=>(a[0]==='10 ou mais'?10:Number(a[0]))-(b[0]==='10 ou mais'?10:Number(b[0]))).map(([k,v])=>[k+' registros',v]);
+ bars('distBars',dist,'#c6ac35');
  bars('peopleBars',all.map(x=>[x.n,x.p+x.e]).filter(x=>x[1]>0).sort((a,b)=>b[1]-a[1]).slice(0,9),'#b8a02f');
  let words=count([...p,...e].flatMap(x=>norm(x.t).split(/[^a-zà-ÿ]+/).filter(w=>w.length>3&&!stop.has(w))),x=>x).slice(0,55);
  let high=Math.max(1,...words.map(x=>x[1]));$('cloud').innerHTML=words.length?words.map(([w,c])=>'<button class="word" title="'+c+' ocorrências nos títulos" style="font-size:'+(12+25*Math.sqrt(c/high)).toFixed(0)+'px" data-word="'+esc(w)+'">'+esc(w)+'</button>').join(''):'Nenhum título disponível';
- document.querySelectorAll('[data-word]').forEach(b=>b.onclick=()=>{$('q').value=b.dataset.word;document.querySelector('.filters').scrollIntoView({behavior:'smooth'});render()});
+ document.querySelectorAll('[data-word]').forEach(b=>b.onclick=()=>{
+ let word=b.dataset.word,matching=[...p.map(x=>({...x,axis:'Pesquisa'})),...e.map(x=>({...x,axis:'Extensão'}))].filter(x=>norm(x.t).includes(norm(word)));
+ $('wordResult').innerHTML='<b>'+nf(matching.length)+' registros associados a “'+esc(word)+'”</b><div style="max-height:160px;overflow:auto">'+matching.slice(0,15).map(x=>'<div class="item">'+esc(x.axis)+' · '+esc(x.t)+'</div>').join('')+'</div>';
+});
  $('linkStats').innerHTML='<span class="tag">'+nf(all.filter(x=>x.p&&x.e).length)+' pesquisa + extensão</span><span class="tag">'+nf(all.filter(x=>x.p&&!x.e).length)+' só pesquisa registrada</span><span class="tag">'+nf(all.filter(x=>!x.p&&x.e).length)+' só extensão registrada</span>';
  let unmatched=all.filter(x=>!x.p&&!x.e).length;
  $('audit').innerHTML='<div class="tags"><span class="tag">'+nf(unmatched)+' perfis sem projeto associado</span><span class="tag">'+nf(areas.length)+' áreas distintas</span><span class="tag">'+nf(themes.length)+' temas de extensão</span></div><p class="muted">Ausência de associação na base não equivale a inatividade. Comparações entre áreas e campi exigem denominadores oficiais.</p>';
  $('load').textContent='Base conectada · '+nf(all.length)+' perfis docentes identificados no arquivo';
  render();
-}).catch(err=>{$('load').textContent='Dados indisponíveis — verifique data.json';$('audit').textContent=String(err);['cloud','peopleBars','areaBars','themeBars'].forEach(id=>$(id).textContent='Não foi possível carregar a base.')});
+}).catch(err=>{$('load').textContent='Dados indisponíveis — verifique data.json';$('audit').textContent=String(err);['cloud','peopleBars','areaBars','themeBars','distBars'].forEach(id=>$(id).textContent='Não foi possível carregar a base.')});
 </script></body></html>

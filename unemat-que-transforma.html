@@ -27,7 +27,7 @@
 <section class="panel section"><h2>Explore todas as pessoas</h2><p>Consulta completa dos perfis da base. Números correspondem a associações registradas, e não a avaliações funcionais.</p>
 <div class="filters"><select id="year" aria-label="Ano"><option value="all">Todos os anos</option></select><select id="gender" aria-label="Classificação por prenome"><option value="all">Todas as pessoas</option><option value="f">Prenome com predominância feminina</option><option value="m">Prenome com predominância masculina</option><option value="u">Sem evidência suficiente</option></select><input id="q" placeholder="Buscar docente ou departamento…"><select id="filter"><option value="all">Todas as situações</option><option value="both">Pesquisa e extensão</option><option value="p">Com pesquisa</option><option value="e">Com extensão</option><option value="none">Sem associação identificada</option></select><select id="sort"><option value="name">Ordem alfabética</option><option value="p">Mais pesquisas cadastradas</option><option value="e">Mais extensões cadastradas</option></select><button id="csv" class="primary">Exportar CSV</button></div>
 <div id="count" class="muted"></div><div id="personDetails" class="notice" style="display:none"></div><div class="scroller"><table><thead><tr><th>Nome · clicar para explorar</th><th>Departamento</th><th>Pesquisa</th><th>Extensão</th><th>PPG</th><th>Predominância do prenome (IBGE)</th><th>Leitura do dado</th></tr></thead><tbody id="rows"></tbody></table></div><div class="viewcontrols"><button id="prev">Anterior</button><span class="muted" id="page"></span><button id="next">Próxima</button></div></section>
-<section class="panel section"><h2>Auditoria de cobertura</h2><p>Informações para qualificar a base antes de atribuir indicadores de impacto.</p><div id="audit"></div><p><b>Próxima etapa científica:</b> cruzar com a lista oficial de docentes, validar homônimos, registrar parcerias institucionais, sexo/gênero quando houver fonte apropriada e documentar resultados sociais de cada projeto.</p></section>
+<section class="panel section"><h2>Auditoria de cobertura e duplicações</h2><div id="duplicates" class="notice"></div><p>Informações para qualificar a base antes de atribuir indicadores de impacto.</p><div id="audit"></div><p><b>Próxima etapa científica:</b> cruzar com a lista oficial de docentes, validar homônimos, registrar parcerias institucionais, sexo/gênero quando houver fonte apropriada e documentar resultados sociais de cada projeto.</p></section>
 <div class="foot">Fonte dos dados: <a href="https://github.com/ernandes-sobreira/projetos-unemat">Projetos UNEMAT</a> · Identidade institucional: <a href="https://unemat.br/site/comunicacao/identidade-visual">UNEMAT</a> · Logo de origem institucional via Wikimedia Commons · Painel de diagnóstico, não avaliação de mérito.</div>
 </main><script>
 const $=x=>document.getElementById(x);
@@ -49,7 +49,27 @@ function genderHint(n){
  return 'u';
 }
 function genderLabel(g){return g==='f'?'Prenome geralmente feminino*':g==='m'?'Prenome geralmente masculino*':'Não classificado'}
-function selectedProjects(){let year=$('year').value;return {p:(data.pesq||[]).filter(x=>year==='all'||String(x.y)===year),e:(data.ext||[]).filter(x=>year==='all'||String(x.y)===year)}}
+// Normalize only for duplicate detection; keep the original source records untouched.
+function projectTitle(v){return norm(v).replace(/[^a-z0-9 ]/g,' ').replace(/\s+/g,' ').trim()}
+function deduplicate(records,axis){
+ let seen=new Map(),duplicates=[],possible=[];
+ for(const obj of records){
+  const name=norm(axis==='p'?obj.n:obj.co),title=projectTitle(obj.t),year=String(obj.y||''),code=String(obj.c||obj.codigo||'').trim();
+  // Safe exact/typographic duplicates within the same axis, year and coordinating person.
+  // Different coordinators or years are deliberately preserved.
+  const key=[axis,year,name,title].join('||');
+  if(!title||!name){seen.set('unkeyed:'+seen.size,obj);continue}
+  if(seen.has(key)){duplicates.push({axis,year,title:obj.t,name:axis==='p'?obj.n:obj.co,original:seen.get(key),duplicate:obj,code});continue}
+  seen.set(key,obj);
+ }
+ return {unique:[...seen.values()],duplicates,possible};
+}
+let duplicateReport={p:[],e:[]};
+function selectedProjects(){
+ let year=$('year').value,dp=deduplicate(data.pesq||[],'p'),de=deduplicate(data.ext||[],'e');
+ duplicateReport={p:dp.duplicates,e:de.duplicates};
+ return {p:dp.unique.filter(x=>year==='all'||String(x.y)===year),e:de.unique.filter(x=>year==='all'||String(x.y)===year)};
+}
 
 function renderGenderBars(){
  bars('genderBars',[['Predomínio feminino',all.filter(x=>x.g==='f').length],['Predomínio masculino',all.filter(x=>x.g==='m').length],['Inconclusivo / não consultado',all.filter(x=>x.g==='u').length]],'#355f35');
@@ -135,7 +155,7 @@ function updateYear(){
  let pc=new Map(),ec=new Map(),ps=new Map(),es=new Map();
  p.forEach(x=>{pc.set(norm(x.n),(pc.get(norm(x.n))||0)+1);if(x.s)ps.set(String(x.s),(ps.get(String(x.s))||0)+1)});
  e.forEach(x=>{ec.set(norm(x.co),(ec.get(norm(x.co))||0)+1);if(x.s)es.set(String(x.s),(es.get(String(x.s))||0)+1)});
- all.forEach(x=>{x.p=$('year').value==='all'?x.baseP:(ps.has(x.s)?ps.get(x.s):(pc.get(norm(x.n))||0));x.e=$('year').value==='all'?x.baseE:(es.has(x.s)?es.get(x.s):(ec.get(norm(x.n))||0))});
+ all.forEach(x=>{x.p=ps.has(x.s)?ps.get(x.s):(pc.get(norm(x.n))||0);x.e=es.has(x.s)?es.get(x.s):(ec.get(norm(x.n))||0)});
  $('pN').textContent=nf(p.length);$('eN').textContent=nf(e.length);$('bothN').textContent=nf(all.filter(x=>x.p&&x.e).length);
  let areas=count(p,x=>x.a),themes=count(e,x=>x.at);
  const select=$('rankArea'),previous=select.value;
@@ -156,6 +176,8 @@ function updateYear(){
  });
  $('linkStats').innerHTML='<span class="tag">'+nf(all.filter(x=>x.p&&x.e).length)+' pesquisa + extensão</span><span class="tag">'+nf(all.filter(x=>x.p&&!x.e).length)+' só pesquisa registrada</span><span class="tag">'+nf(all.filter(x=>!x.p&&x.e).length)+' só extensão registrada</span>';
  let unmatched=all.filter(x=>!x.p&&!x.e).length;
+ let dupYear=[...duplicateReport.p,...duplicateReport.e].filter(d=>$('year').value==='all'||d.year===$('year').value);
+ $('duplicates').innerHTML='<b>'+nf(dupYear.length)+' registros repetidos identificados e excluídos das contagens</b><p class="muted">Regra conservadora: mesmo tipo (pesquisa ou extensão), ano, coordenador e título após padronizar acentos, letras, espaços e pontuação. O arquivo original é preservado.</p><details><summary>Ver duplicações detectadas</summary><div style="max-height:210px;overflow:auto">'+dupYear.slice(0,60).map(d=>'<div class="item">'+esc(d.axis==='p'?'Pesquisa':'Extensão')+' · '+esc(d.year)+' · '+esc(d.name)+' · '+esc(d.title)+'</div>').join('')+'</div></details>';
  $('audit').innerHTML='<div class="tags"><span class="tag">'+nf(unmatched)+' perfis sem projeto associado no recorte</span><span class="tag">'+nf(areas.length)+' áreas</span><span class="tag">'+nf(themes.length)+' temas de extensão</span></div><p class="muted">Associações anuais calculadas por correspondência textual entre nome do docente e nome de coordenação; podem existir homônimos e divergências de grafia. “0” no recorte não é nota nem prova de inatividade.</p>';
  bars('genderBars',[['Predomínio feminino no nome',all.filter(x=>x.g==='f').length],['Predomínio masculino no nome',all.filter(x=>x.g==='m').length],['Sem classificação',all.filter(x=>x.g==='u').length]],'#355f35');
  page=0;render();

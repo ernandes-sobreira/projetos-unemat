@@ -1,0 +1,86 @@
+<!doctype html>
+<html lang="pt-BR"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>UNEMAT que Transforma — Diagnóstico de Docentes</title>
+<style>
+:root{--bg:#f7f7f2;--ink:#243830;--muted:#62756b;--green:#396d59;--amber:#aa7651;--line:#dce4db}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--ink);font:15px/1.5 system-ui,-apple-system,"Segoe UI",sans-serif}
+header{background:#e7eee6;padding:35px max(18px,calc((100% - 1140px)/2)) 30px}
+.wrap{max-width:1140px;margin:auto;padding:25px 18px 70px}h1{font:clamp(34px,5vw,57px)/1.1 Georgia,serif;max-width:900px;margin:8px 0}h1 i{color:var(--green);font-style:normal}
+h2{font:25px Georgia,serif;margin:4px 0 8px}.eyebrow{letter-spacing:.17em;text-transform:uppercase;font-size:11px;font-weight:800;color:#597566}
+.sub{color:var(--muted)}.notice{padding:14px 16px;background:#fff6ec;border:1px solid #ead6c1;border-radius:12px;font-size:13px;margin:18px 0}
+.metrics{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin:20px 0}.metric,.panel{border:1px solid var(--line);border-radius:15px;background:white;padding:17px}
+.metric strong{display:block;font:36px Georgia,serif}.metric span{color:var(--muted);font-size:12px}
+.controls{display:flex;gap:9px;flex-wrap:wrap;margin:18px 0}select,input,button{font:inherit;border:1px solid #cbd9cd;background:white;color:var(--ink);border-radius:8px;padding:10px 12px}input{flex:1;min-width:200px}button{cursor:pointer}button.primary{background:var(--green);color:white;border-color:var(--green)}
+table{border-collapse:collapse;width:100%;font-size:13px}th{text-align:left;color:var(--muted);font-size:11px;text-transform:uppercase;letter-spacing:.06em}td,th{border-bottom:1px solid #e9eee8;padding:12px 9px}td.num{text-align:center}th.num{text-align:center}tr:hover td{background:#f7faf6}td:first-child{font-weight:650}
+.scroller{overflow:auto;max-height:650px}.tag{display:inline-block;padding:4px 9px;border-radius:20px;background:#eaf2e9;font-size:11px}.tag.warn{background:#fff1e4}.small{font-size:12px;color:var(--muted)}
+.columns{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin:17px 0}.panel p{margin:6px 0}.pill{display:inline-block;margin:3px 4px 3px 0;border-radius:99px;background:#f0f3ef;padding:5px 9px;font-size:11px}
+.missing{background:#fff6eb;padding:10px;border-radius:10px}a{color:#326a55}footer{font-size:12px;color:var(--muted);margin-top:24px}
+@media(max-width:700px){.metrics{grid-template-columns:repeat(2,1fr)}.columns{grid-template-columns:1fr}table{min-width:660px}}
+</style></head><body>
+<header><div class="eyebrow">UNEMAT · Observatório da atuação docente</div>
+<h1>UNEMAT que <i>Transforma.</i></h1>
+<p>Um diagnóstico de pesquisa e extensão que começa pelo universo dos docentes — sem rankings improvisados, sem fotografias e sem transformar falta de dados em nota zero.</p>
+<div id="status" class="small">Carregando registros do Projetos UNEMAT…</div></header>
+<main class="wrap">
+<div class="notice"><b>Escopo correto:</b> esta etapa inclui <b>todos os perfis docentes presentes no arquivo atual da plataforma</b>, não necessariamente todos os professores ativos da UNEMAT. A cobertura institucional ainda deve ser verificada contra a relação oficial de docentes. Valores representam <b>registros associados</b>, nunca mérito, produtividade ou impacto comprovado.</div>
+<section class="metrics">
+<div class="metric"><strong id="total">—</strong><span>Perfis docentes na base</span></div>
+<div class="metric"><strong id="rp">—</strong><span>Com pesquisa associada</span></div>
+<div class="metric"><strong id="re">—</strong><span>Com extensão associada</span></div>
+<div class="metric"><strong id="both">—</strong><span>Com ambos os eixos</span></div>
+</section>
+<section class="columns">
+<div class="panel"><h2>O que sabemos</h2><p>Nome, departamento, projetos de pesquisa, ações de extensão e vínculo com PPG, quando presentes.</p><div id="coverage" class="small">Preparando verificação…</div></div>
+<div class="panel"><h2>O que ainda precisamos</h2><p class="small">Lista oficial atual de docentes, situação funcional, carga horária, áreas de atuação, evidências de resultados, públicos beneficiados e validação da identidade.</p><p class="small">Gênero não será deduzido pelos nomes. O recorte “Mulheres que Transformam” virá após identificação validada.</p></div>
+</section>
+<section class="panel"><h2>Todos os perfis encontrados</h2>
+<p class="small">Busca por docente ou departamento. Contagem zero significa ausência de associação neste conjunto de dados — <b>não</b> ausência de trabalho.</p>
+<div class="controls"><input id="q" type="search" placeholder="Nome ou departamento…"><select id="filter"><option value="todos">Todos os perfis</option><option value="p">Com pesquisa</option><option value="e">Com extensão</option><option value="ambos">Pesquisa + extensão</option><option value="sem">Sem registros associados</option></select><select id="sort"><option value="nome">Ordem alfabética</option><option value="p">Registros de pesquisa</option><option value="e">Registros de extensão</option></select><button class="primary" id="csv">Exportar CSV da consulta</button></div>
+<p id="count" class="small">—</p>
+<div class="scroller"><table><thead><tr><th>Docente</th><th>Departamento</th><th class="num">Pesquisa</th><th class="num">Extensão</th><th>PPG</th><th>Situação dos dados</th></tr></thead><tbody id="rows"></tbody></table></div>
+<div class="controls"><button id="previous">Anterior</button><span id="pages" class="small"></span><button id="next">Próxima</button></div>
+</section>
+<section class="columns">
+<div class="panel"><h2>Registros que exigem conciliação</h2><div class="small" id="orphans">Avaliando nomes de coordenação ainda sem correspondência exata…</div></div>
+<div class="panel"><h2>Próximas verificações</h2><p class="small">1. Confrontar os perfis com o quadro funcional oficial.</p><p class="small">2. Conciliar homônimos e variantes usando identificadores internos autorizados.</p><p class="small">3. Medir cobertura e atualizar dados de projetos.</p><p class="small">4. Incorporar impacto social comprovado, não presumido.</p></div>
+</section>
+<footer>Fonte: <a href="https://github.com/ernandes-sobreira/projetos-unemat" target="_blank" rel="noopener">Projetos UNEMAT</a>. Diagnóstico descritivo da cobertura da base; não é avaliação individual de desempenho funcional.</footer>
+</main>
+<script>
+const el=id=>document.getElementById(id);
+const norm=x=>String(x||'').normalize('NFD').replace(/[\u0300-\u036f]/g,'').toLowerCase().replace(/\s+/g,' ').trim();
+const safe=x=>String(x??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;','\'':'&#39;'}[c]));
+let all=[],page=0, view=[];
+function profileRows(data){return Object.values(data.profProfiles||{}).filter(x=>x&&typeof x==='object').map(p=>({name:p.n||'',dep:p.d||'',p:Number(p.pesq)||0,e:Number(p.ext)||0,ppg:Array.isArray(p.ppg)?p.ppg.join(', '):'',key:p.s||''})).filter(p=>p.name)}
+function render(){
+ const q=norm(el('q').value),filter=el('filter').value,sort=el('sort').value;
+ view=all.filter(x=>(norm(x.name+' '+x.dep).includes(q))&&(filter==='todos'||(filter==='p'&&x.p>0)||(filter==='e'&&x.e>0)||(filter==='ambos'&&x.p>0&&x.e>0)||(filter==='sem'&&x.p===0&&x.e===0)));
+ view.sort((a,b)=>sort==='p'?b.p-a.p||a.name.localeCompare(b.name,'pt-BR'):sort==='e'?b.e-a.e||a.name.localeCompare(b.name,'pt-BR'):a.name.localeCompare(b.name,'pt-BR'));
+ const pages=Math.max(1,Math.ceil(view.length/50));page=Math.min(page,pages-1);
+ el('count').textContent=view.length+' perfis correspondentes';
+ el('pages').textContent='Página '+(page+1)+' de '+pages;
+ el('previous').disabled=page===0;el('next').disabled=page>=pages-1;
+ el('rows').innerHTML=view.slice(page*50,page*50+50).map(x=>'<tr><td>'+safe(x.name)+'</td><td>'+safe(x.dep)+'</td><td class="num">'+x.p+'</td><td class="num">'+x.e+'</td><td>'+safe(x.ppg||'—')+'</td><td><span class="tag '+(x.p+x.e===0?'warn':'')+'">'+(x.p+x.e===0?'Sem associação na base':x.p&&x.e?'Dois eixos localizados':'Um eixo localizado')+'</span></td></tr>').join('')||'<tr><td colspan="6">Nenhum perfil encontrado neste filtro.</td></tr>';
+}
+for(const id of ['q','filter','sort'])el(id).addEventListener(id==='q'?'input':'change',()=>{page=0;render()});
+el('previous').onclick=()=>{page--;render()};el('next').onclick=()=>{page++;render()};
+el('csv').onclick=()=>{
+ const cells=[['Docente','Departamento','Pesquisa (registros)','Extensão (registros)','PPG','Situação dos registros'],...view.map(x=>[x.name,x.dep,x.p,x.e,x.ppg,x.p+x.e?'Associado':'Sem associação na base'])];
+ const csv='\uFEFF'+cells.map(row=>row.map(c=>'"'+String(c).replace(/"/g,'""')+'"').join(';')).join('\r\n');
+ const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([csv],{type:'text/csv;charset=utf-8'}));a.download='unemat_docentes_diagnostico.csv';a.click();setTimeout(()=>URL.revokeObjectURL(a.href),1000);
+};
+fetch('data.json').then(r=>{if(!r.ok)throw Error('HTTP '+r.status);return r.json()}).then(d=>{
+ all=profileRows(d);
+ el('total').textContent=all.length.toLocaleString('pt-BR');
+ el('rp').textContent=all.filter(x=>x.p>0).length.toLocaleString('pt-BR');
+ el('re').textContent=all.filter(x=>x.e>0).length.toLocaleString('pt-BR');
+ el('both').textContent=all.filter(x=>x.p>0&&x.e>0).length.toLocaleString('pt-BR');
+ el('status').textContent='Base carregada · '+new Date().toLocaleDateString('pt-BR')+' · Fonte: data.json';
+ el('coverage').textContent=all.filter(x=>x.p===0&&x.e===0).length+' perfis sem vínculo de projeto identificado na base atual. Isso exige auditoria de cobertura; não representa inatividade.';
+ const names=new Set(all.map(x=>norm(x.name)));
+ const projects=[...(d.pesq||[]).map(x=>x.n),...(d.ext||[]).map(x=>x.co)].filter(Boolean);
+ const unmatched=[...new Set(projects)].filter(x=>!names.has(norm(x)));
+ el('orphans').textContent=unmatched.length+' nomes distintos de coordenação não coincidem exatamente com o cadastro de perfis (inclui possíveis variantes, docentes externos e homônimos). Exemplos: '+unmatched.slice(0,12).join('; ')+(unmatched.length>12?'…':'');
+ render();
+}).catch(e=>{el('status').textContent='Falha na leitura da base';el('coverage').textContent='Verifique se data.json está disponível na mesma pasta.';el('orphans').textContent=String(e)});
+</script></body></html>

@@ -25,7 +25,7 @@
 <section class="panel"><h2>Sexo / gênero</h2><p>Estimativa estatística de predominância por sexo no Censo do IBGE, calculada por prenome. Não identifica o sexo individual, nem a identidade de gênero.</p><div id="genderBars"></div><div id="ibgeProgress" class="muted">Preparando cruzamento com a base pública de nomes do IBGE…</div><div class="tags"><span class="tag">≥ 90%: predominância forte</span><span class="tag">70–89%: predominância moderada</span><span class="tag">Demais: inconclusivo</span></div><div class="muted">Fonte: API pública de nomes do IBGE (Censo 2010 para a API v2). A proporção é do prenome na população, não a probabilidade individual da pessoa.</div></section>
 <section class="panel"><h2>Relações com outras IES</h2><p>Os registros consultados não apresentam campo padronizado de instituições parceiras. Não é possível medir a rede interinstitucional ainda.</p><div class="tag">Integração de dados necessária</div></section>
 </div>
-<section class="panel section" id="revisao"><h2>Revisão de classificações pendentes</h2><p>Marque apenas quando você souber a informação. As escolhas são guardadas neste navegador e podem ser exportadas. Não é necessário classificar nomes incertos.</p><div class="filters"><input id="revSearch" placeholder="Buscar nome…"><select id="revFilter"><option value="pending">Pendentes</option><option value="reviewed">Revisados</option><option value="all">Todos</option></select><button id="revExport" class="primary">Exportar revisão</button></div><div id="revCount" class="muted"></div><div id="revList"></div><div class="viewcontrols"><button id="revPrev">Anterior</button><span id="revPage" class="muted"></span><button id="revNext">Próxima</button></div></section>
+<section class="panel section" id="revisao"><h2>Revisão de classificações pendentes</h2><p>Marque apenas quando você souber a informação. As escolhas já consolidadas são carregadas do repositório. Novas alterações são guardadas neste navegador e podem ser exportadas. Não é necessário classificar nomes incertos.</p><div class="filters"><input id="revSearch" placeholder="Buscar nome…"><select id="revFilter"><option value="pending">Pendentes</option><option value="reviewed">Revisados</option><option value="all">Todos</option></select><button id="revExport" class="primary">Exportar revisão</button></div><div id="revCount" class="muted"></div><div id="revList"></div><div class="viewcontrols"><button id="revPrev">Anterior</button><span id="revPage" class="muted"></span><button id="revNext">Próxima</button></div></section>
 <section class="panel section"><h2>Explore todas as pessoas</h2><p>Consulta completa dos perfis da base. Números correspondem a associações registradas, e não a avaliações funcionais.</p>
 <div class="filters"><select id="gender" aria-label="Classificação por prenome"><option value="all">Todas as pessoas</option><option value="f">Prenome com predominância feminina</option><option value="m">Prenome com predominância masculina</option><option value="u">Sem evidência suficiente</option></select><input id="q" placeholder="Buscar docente ou departamento…"><select id="filter"><option value="all">Todas as situações</option><option value="both">Pesquisa e extensão</option><option value="p">Com pesquisa</option><option value="e">Com extensão</option><option value="none">Sem associação identificada</option></select><select id="sort"><option value="name">Ordem alfabética</option><option value="p">Mais pesquisas cadastradas</option><option value="e">Mais extensões cadastradas</option></select><button id="csv" class="primary">Exportar CSV</button></div>
 <div id="count" class="muted"></div><div id="personDetails" class="notice" style="display:none"></div><div class="scroller"><table><thead><tr><th>Nome · clicar para explorar</th><th>Departamento</th><th>Pesquisa</th><th>Extensão</th><th>PPG</th><th>Predominância do prenome (IBGE)</th><th>Leitura do dado</th></tr></thead><tbody id="rows"></tbody></table></div><div class="viewcontrols"><button id="prev">Anterior</button><span class="muted" id="page"></span><button id="next">Próxima</button></div></section>
@@ -112,7 +112,7 @@ $('menTable').onclick=()=>{$('gender').value='m';page=0;render();$('rows').scrol
 
 
 const REVIEW_STORAGE='observatorio_classificacoes_revisadas_v1';
-let rev={},revPage=0;
+let rev={},revPage=0,consolidatedCount=0;
 try{rev=JSON.parse(localStorage.getItem(REVIEW_STORAGE)||'{}')}catch{rev={}}
 function applyManualClassification(x){
  // Correção explicitamente confirmada pela pessoa que revisou o cadastro.
@@ -122,6 +122,26 @@ function applyManualClassification(x){
  }
  let v=rev[x.s];if(v==='f'||v==='m'){x.g=v;return true}return false
 }
+async function loadConsolidatedReviews(){
+ const response=await fetch('classificacoes-revisadas.json',{cache:'no-cache'});
+ if(!response.ok)throw new Error('HTTP '+response.status);
+ const json=await response.json();
+ if(!Array.isArray(json.records))throw new Error('Arquivo de revisões inválido');
+ let count=0;
+ for(const row of json.records){
+  const sex=row.classification==='mulher'?'f':row.classification==='homem'?'m':null;
+  if(!sex||!row.id)continue;
+  const person=all.find(x=>x.s===String(row.id));
+  if(!person||norm(person.n)!==norm(row.name))continue;
+  rev[person.s]=sex;count++;
+ }
+ consolidatedCount=count;
+ try{localStorage.setItem(REVIEW_STORAGE,JSON.stringify(rev))}catch(e){}
+ all.forEach(applyManualClassification);
+ renderGenderBars();renderGenderCover();render();reviewRows();
+ $('revCount').title=count+' registros revisados incorporados do repositório';
+}
+
 function reviewRows(){
  let term=norm($('revSearch').value),mode=$('revFilter').value;
  let rows=all.filter(x=>norm(x.n+' '+x.d).includes(term)&&(mode==='all'||mode==='reviewed'&&rev[x.s]||mode==='pending'&&x.g==='u'&&!rev[x.s]));
@@ -285,6 +305,7 @@ fetch('data.json').then(r=>{if(!r.ok)throw Error('HTTP '+r.status);return r.json
  $('load').textContent='Base carregada · '+nf(all.length)+' perfis docentes · selecione o ano para explorar';
  updateYear();
  all.forEach(applyManualClassification);renderGenderBars();renderGenderCover();reviewRows();
+ loadConsolidatedReviews().catch(err=>{console.warn('Revisões consolidadas indisponíveis:',err)});
  enrichIBGE().catch(err=>{$('ibgeProgress').textContent='Consulta ao IBGE indisponível: '+String(err)+'. Não serão usadas atribuições por heurística.'});
 }).catch(err=>{$('load').textContent='Dados indisponíveis — verifique data.json';$('audit').textContent=String(err);['cloud','peopleBars','areaBars','themeBars','distBars','genderBars'].forEach(id=>$(id).textContent='Não foi possível carregar a base.')});
 </script></body></html>

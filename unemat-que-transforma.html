@@ -114,7 +114,14 @@ $('menTable').onclick=()=>{$('gender').value='m';page=0;render();$('rows').scrol
 const REVIEW_STORAGE='observatorio_classificacoes_revisadas_v1';
 let rev={},revPage=0;
 try{rev=JSON.parse(localStorage.getItem(REVIEW_STORAGE)||'{}')}catch{rev={}}
-function applyManualClassification(x){let v=rev[x.s];if(v==='f'||v==='m'){x.g=v;return true}return false}
+function applyManualClassification(x){
+ // Correção explicitamente confirmada pela pessoa que revisou o cadastro.
+ if(norm(x.n).split(' ')[0]==='loriege'){
+  rev[x.s]='f';x.g='f';try{localStorage.setItem(REVIEW_STORAGE,JSON.stringify(rev))}catch(e){}
+  return true;
+ }
+ let v=rev[x.s];if(v==='f'||v==='m'){x.g=v;return true}return false
+}
 function reviewRows(){
  let term=norm($('revSearch').value),mode=$('revFilter').value;
  let rows=all.filter(x=>norm(x.n+' '+x.d).includes(term)&&(mode==='all'||mode==='reviewed'&&rev[x.s]||mode==='pending'&&x.g==='u'&&!rev[x.s]));
@@ -126,6 +133,7 @@ function reviewRows(){
  $('revList').innerHTML=rows.slice(revPage*20,revPage*20+20).map(x=>'<div class="reviewline"><div><strong>'+esc(x.n)+'</strong><small>'+esc(x.d)+' · '+(rev[x.s]?'Revisado manualmente':'Sem revisão manual')+'</small></div><div class="reviewactions"><button data-rid="'+esc(x.s)+'" data-val="f" class="'+(rev[x.s]==='f'?'selected':'')+'">Mulher</button><button data-rid="'+esc(x.s)+'" data-val="m" class="'+(rev[x.s]==='m'?'selected':'')+'">Homem</button><button data-rid="'+esc(x.s)+'" data-val="u">Não confirmado</button></div></div>').join('')||'<p class="muted">Nenhum registro neste filtro.</p>';
  document.querySelectorAll('[data-rid]').forEach(b=>b.onclick=()=>{
  let person=all.find(x=>x.s===b.dataset.rid);if(!person)return;
+ if(norm(person.n).split(' ')[0]==='loriege'&&b.dataset.val!=='f'){alert('Correção confirmada: Loriege = mulher.');return}
  if(b.dataset.val==='u'){delete rev[person.s];person.g=person.ibge?.category||'u'}
  else{rev[person.s]=b.dataset.val;person.g=b.dataset.val}
  try{localStorage.setItem(REVIEW_STORAGE,JSON.stringify(rev))}catch(e){}

@@ -21,12 +21,12 @@
 </div>
 <div class="cols3 section">
 <section class="panel"><h2>Pesquisa e extensão</h2><p>Conexão identificada por perfil docente, não necessariamente integração no mesmo projeto.</p><div id="linkStats" class="tags"></div></section>
-<section class="panel"><h2>Sexo / gênero</h2><p>Não há campo individual validado disponível na estrutura atual consultada. Não inferimos pelo nome.</p><div class="tag">Aguardando fonte institucional</div></section>
+<section class="panel"><h2>Sexo / gênero</h2><p>Exploração provisória por prenomes usuais, não autodeclaração nem sexo cadastral. Pessoas sem inferência segura ficam como não classificadas.</p><div id="genderBars"></div><div class="muted">Esta estimativa não deve ser usada para estatísticas oficiais ou avaliações individuais. É necessário validar com a fonte institucional.</div></section>
 <section class="panel"><h2>Relações com outras IES</h2><p>Os registros consultados não apresentam campo padronizado de instituições parceiras. Não é possível medir a rede interinstitucional ainda.</p><div class="tag">Integração de dados necessária</div></section>
 </div>
 <section class="panel section"><h2>Explore todas as pessoas</h2><p>Consulta completa dos perfis da base. Números correspondem a associações registradas, e não a avaliações funcionais.</p>
-<div class="filters"><input id="q" placeholder="Buscar docente ou departamento…"><select id="filter"><option value="all">Todas as situações</option><option value="both">Pesquisa e extensão</option><option value="p">Com pesquisa</option><option value="e">Com extensão</option><option value="none">Sem associação identificada</option></select><select id="sort"><option value="name">Ordem alfabética</option><option value="p">Mais pesquisas cadastradas</option><option value="e">Mais extensões cadastradas</option></select><button id="csv" class="primary">Exportar CSV</button></div>
-<div id="count" class="muted"></div><div class="scroller"><table><thead><tr><th>Nome</th><th>Departamento</th><th>Pesquisa</th><th>Extensão</th><th>PPG</th><th>Leitura do dado</th></tr></thead><tbody id="rows"></tbody></table></div><div class="viewcontrols"><button id="prev">Anterior</button><span class="muted" id="page"></span><button id="next">Próxima</button></div></section>
+<div class="filters"><select id="year" aria-label="Ano"><option value="all">Todos os anos</option></select><select id="gender" aria-label="Classificação por prenome"><option value="all">Todas as pessoas</option><option value="f">Prenome geralmente feminino*</option><option value="m">Prenome geralmente masculino*</option><option value="u">Sem classificação por prenome</option></select><input id="q" placeholder="Buscar docente ou departamento…"><select id="filter"><option value="all">Todas as situações</option><option value="both">Pesquisa e extensão</option><option value="p">Com pesquisa</option><option value="e">Com extensão</option><option value="none">Sem associação identificada</option></select><select id="sort"><option value="name">Ordem alfabética</option><option value="p">Mais pesquisas cadastradas</option><option value="e">Mais extensões cadastradas</option></select><button id="csv" class="primary">Exportar CSV</button></div>
+<div id="count" class="muted"></div><div class="scroller"><table><thead><tr><th>Nome</th><th>Departamento</th><th>Pesquisa</th><th>Extensão</th><th>PPG</th><th>Sexo/gênero (pista)</th><th>Leitura do dado</th></tr></thead><tbody id="rows"></tbody></table></div><div class="viewcontrols"><button id="prev">Anterior</button><span class="muted" id="page"></span><button id="next">Próxima</button></div></section>
 <section class="panel section"><h2>Auditoria de cobertura</h2><p>Informações para qualificar a base antes de atribuir indicadores de impacto.</p><div id="audit"></div><p><b>Próxima etapa científica:</b> cruzar com a lista oficial de docentes, validar homônimos, registrar parcerias institucionais, sexo/gênero quando houver fonte apropriada e documentar resultados sociais de cada projeto.</p></section>
 <div class="foot">Fonte dos dados: <a href="https://github.com/ernandes-sobreira/projetos-unemat">Projetos UNEMAT</a> · Identidade institucional: <a href="https://unemat.br/site/comunicacao/identidade-visual">UNEMAT</a> · Logo de origem institucional via Wikimedia Commons · Painel de diagnóstico, não avaliação de mérito.</div>
 </main><script>
@@ -37,41 +37,57 @@ const count=(items,key)=>{let m=new Map();for(let item of items){let v=String(ke
 const nf=x=>Number(x||0).toLocaleString('pt-BR');
 const stop=new Set('de da do das dos a o as os um uma uns umas e em no na nos nas para por com sem sobre entre ao aos que como sua seu suas seus este esta isto estudo estudos analise avaliacao projeto projetos pesquisa extensao desenvolvimento universidade unemat estado mato grosso uso efeitos impacto proposta investigacao abordagem aspectos relacao contribuicoes contribuicao partir sob meio uma estudo realizado area municipio municipios'.split(' '));
 let all=[],data={},view=[],page=0;
-function bars(id,arr,color){let max=Math.max(1,...arr.map(x=>x[1]));$(id).innerHTML=arr.length?arr.slice(0,9).map(([name,v])=>'<div class="rowbars"><span class="lab" title="'+esc(name)+'">'+esc(name)+'</span><div class="track"><div class="fill" style="width:'+(100*v/max)+'%;background:'+color+'"></div></div><span class="value">'+nf(v)+'</span></div>').join(''):'<p>Dados não disponíveis neste campo.</p>'}
-function render(){
- const q=norm($('q').value),f=$('filter').value,s=$('sort').value;
- view=all.filter(x=>norm(x.n+' '+x.d).includes(q)&&(f==='all'||f==='both'&&x.p>0&&x.e>0||f==='p'&&x.p>0||f==='e'&&x.e>0||f==='none'&&x.p===0&&x.e===0));
- view.sort((a,b)=>s==='p'?b.p-a.p||a.n.localeCompare(b.n,'pt-BR'):s==='e'?b.e-a.e||a.n.localeCompare(b.n,'pt-BR'):a.n.localeCompare(b.n,'pt-BR'));
- const max=Math.max(1,Math.ceil(view.length/50));page=Math.min(page,max-1);
- $('count').textContent=nf(view.length)+' perfis no filtro';
- $('page').textContent='Página '+(page+1)+' de '+max;
- $('prev').disabled=page===0;$('next').disabled=page>=max-1;
- $('rows').innerHTML=view.slice(page*50,page*50+50).map(x=>'<tr><td>'+esc(x.n)+'</td><td>'+esc(x.d)+'</td><td>'+nf(x.p)+'</td><td>'+nf(x.e)+'</td><td>'+esc(x.ppg)+'</td><td>'+(x.p+x.e===0?'Não localizado na base':x.p&&x.e?'Ambos localizados':'Um eixo localizado')+'</td></tr>').join('')||'<tr><td colspan="6">Nenhum perfil corresponde ao filtro.</td></tr>';
-}
-['q','filter','sort'].forEach(id=>$(id).addEventListener(id==='q'?'input':'change',()=>{page=0;render()}));
-$('prev').onclick=()=>{page--;render()};$('next').onclick=()=>{page++;render()};
-$('csv').onclick=()=>{let rows=[['Nome','Departamento','Pesquisa','Extensão','PPG'],...view.map(x=>[x.n,x.d,x.p,x.e,x.ppg])];let csv='\ufeff'+rows.map(r=>r.map(x=>'"'+String(x).replace(/"/g,'""')+'"').join(';')).join('\r\n');let a=document.createElement('a'),u=URL.createObjectURL(new Blob([csv],{type:'text/csv;charset=utf-8'}));a.href=u;a.download='observatorio_unemat_docentes.csv';a.click();setTimeout(()=>URL.revokeObjectURL(u),1000)};
-fetch('data.json').then(r=>{if(!r.ok)throw Error('HTTP '+r.status);return r.json()}).then(d=>{
- data=d;
- all=Object.values(d.profProfiles||{}).filter(x=>x&&x.n).map(x=>({n:x.n,d:x.d||'',p:Number(x.pesq)||0,e:Number(x.ext)||0,ppg:(x.ppg||[]).join(', ')}));
- let p=d.pesq||[],e=d.ext||[];
- $('docN').textContent=nf(all.length);$('pN').textContent=nf(p.length);$('eN').textContent=nf(e.length);$('bothN').textContent=nf(all.filter(x=>x.p&&x.e).length);
- let areas=count(p,x=>x.a),themes=count(e,x=>x.at);
- $('topicsN').textContent=nf(themes.length);
+const female=new Set('sandra maria ana anne anny aline carolina solange vera eliane cleide juliana juliane joana josefa marcia marcia luciana luciene lucia patricia paula daniela danielle adriana andrea fernanda francisca silvia silvana rosangela elisabete elizabeth eliza elaine elenita helena helen cristina cristiane claudia claudiane denise janaina janeide jessica vanessa valeria fatima fabiana sueli suely tatiana tais thayse talita giselle gislaine geovana giovana renata raquel rafaela larissa laura leticia isabela izabela camila carla cassia cintia cynthia mariana mariane marilia marlene marli neide irene iracema edna edilene edileusa neusa elza eliane evelyn ester esther nathalia natalia natasha luana luiza louise beatriz bianca bruna barbara debora deborah sabrina simone sonia sonya teresa tereza teresinha aline'.split(' '));
+const male=new Set('acir abner acelmo ernandes jose joao pedro paulo carlos marco marcos antonio antonio francisco fernando felipe fabio roberto rogerio ronaldo ricardo rafael rodolfo renato reginaldo luiz luis lucas luciano leandro leonardo andre anderson alexandre alessandro alex alexandro diego daniel david davi eduardo edson edmilson eder elias eliseu emanuel emerson enio eric erick erivelton erivan estevao evandro gabriel gustavo guilherme helder henrique hugo igor isaac ismael ivan ivo jacob jairo jair jonas jonatan jonathan jorge julio junior kleber laudemir lauro lucio marcelo murilo mauricio matheus mateus miguel milton natan natalino nelson nicolas oscar otavio osvaldo pascal patricio ramos raimundo ramon renan robson rodney romulo rubens samuel sergio sebastiao silvio stefan thiago tiago ulisses vanderlei victor vinicius vitor walter wilkinson willian william'.split(' '));
+function genderHint(n){const first=norm(n).split(' ')[0];if(female.has(first)&&!male.has(first))return 'f';if(male.has(first)&&!female.has(first))return 'm';return 'u'}
+function genderLabel(g){return g==='f'?'Prenome geralmente feminino*':g==='m'?'Prenome geralmente masculino*':'Não classificado'}
+function selectedProjects(){let year=$('year').value;return {p:(data.pesq||[]).filter(x=>year==='all'||String(x.y)===year),e:(data.ext||[]).filter(x=>year==='all'||String(x.y)===year)}}
+function updateYear(){
+ let {p,e}=selectedProjects();
+ // Matching by coordinator name is provisional; profile totals are retained for all years.
+ let pc=new Map(),ec=new Map();p.forEach(x=>pc.set(norm(x.n),(pc.get(norm(x.n))||0)+1));e.forEach(x=>ec.set(norm(x.co),(ec.get(norm(x.co))||0)+1));
+ all.forEach(x=>{x.p=$('year').value==='all'?x.baseP:(pc.get(norm(x.n))||0);x.e=$('year').value==='all'?x.baseE:(ec.get(norm(x.n))||0)});
+ $('pN').textContent=nf(p.length);$('eN').textContent=nf(e.length);$('bothN').textContent=nf(all.filter(x=>x.p&&x.e).length);
+ let areas=count(p,x=>x.a),themes=count(e,x=>x.at);$('topicsN').textContent=nf(themes.length);
  bars('areaBars',areas,'#143b59');bars('themeBars',themes,'#355f35');
  let dist=count(all,x=>{let n=x.p+x.e;return n>=10?'10 ou mais':String(n)}).sort((a,b)=>(a[0]==='10 ou mais'?10:Number(a[0]))-(b[0]==='10 ou mais'?10:Number(b[0]))).map(([k,v])=>[k+' registros',v]);
  bars('distBars',dist,'#c6ac35');
  bars('peopleBars',all.map(x=>[x.n,x.p+x.e]).filter(x=>x[1]>0).sort((a,b)=>b[1]-a[1]).slice(0,9),'#b8a02f');
  let words=count([...p,...e].flatMap(x=>norm(x.t).split(/[^a-zà-ÿ]+/).filter(w=>w.length>3&&!stop.has(w))),x=>x).slice(0,55);
- let high=Math.max(1,...words.map(x=>x[1]));$('cloud').innerHTML=words.length?words.map(([w,c])=>'<button class="word" title="'+c+' ocorrências nos títulos" style="font-size:'+(12+25*Math.sqrt(c/high)).toFixed(0)+'px" data-word="'+esc(w)+'">'+esc(w)+'</button>').join(''):'Nenhum título disponível';
+ let high=Math.max(1,...words.map(x=>x[1]));
+ $('cloud').innerHTML=words.length?words.map(([w,c])=>'<button class="word" title="'+c+' ocorrências nos títulos" style="font-size:'+(12+25*Math.sqrt(c/high)).toFixed(0)+'px" data-word="'+esc(w)+'">'+esc(w)+'</button>').join(''):'Nenhum título disponível';
+ $('wordResult').textContent='';
  document.querySelectorAll('[data-word]').forEach(b=>b.onclick=()=>{
  let word=b.dataset.word,matching=[...p.map(x=>({...x,axis:'Pesquisa'})),...e.map(x=>({...x,axis:'Extensão'}))].filter(x=>norm(x.t).includes(norm(word)));
- $('wordResult').innerHTML='<b>'+nf(matching.length)+' registros associados a “'+esc(word)+'”</b><div style="max-height:160px;overflow:auto">'+matching.slice(0,15).map(x=>'<div class="item">'+esc(x.axis)+' · '+esc(x.t)+'</div>').join('')+'</div>';
-});
+ $('wordResult').innerHTML='<b>'+nf(matching.length)+' registros com “'+esc(word)+'”</b><div style="max-height:160px;overflow:auto">'+matching.slice(0,15).map(x=>'<div class="item">'+esc(x.axis)+' · '+esc(x.t)+'</div>').join('')+'</div>';
+ });
  $('linkStats').innerHTML='<span class="tag">'+nf(all.filter(x=>x.p&&x.e).length)+' pesquisa + extensão</span><span class="tag">'+nf(all.filter(x=>x.p&&!x.e).length)+' só pesquisa registrada</span><span class="tag">'+nf(all.filter(x=>!x.p&&x.e).length)+' só extensão registrada</span>';
  let unmatched=all.filter(x=>!x.p&&!x.e).length;
- $('audit').innerHTML='<div class="tags"><span class="tag">'+nf(unmatched)+' perfis sem projeto associado</span><span class="tag">'+nf(areas.length)+' áreas distintas</span><span class="tag">'+nf(themes.length)+' temas de extensão</span></div><p class="muted">Ausência de associação na base não equivale a inatividade. Comparações entre áreas e campi exigem denominadores oficiais.</p>';
- $('load').textContent='Base conectada · '+nf(all.length)+' perfis docentes identificados no arquivo';
- render();
-}).catch(err=>{$('load').textContent='Dados indisponíveis — verifique data.json';$('audit').textContent=String(err);['cloud','peopleBars','areaBars','themeBars','distBars'].forEach(id=>$(id).textContent='Não foi possível carregar a base.')});
+ $('audit').innerHTML='<div class="tags"><span class="tag">'+nf(unmatched)+' perfis sem projeto associado no recorte</span><span class="tag">'+nf(areas.length)+' áreas</span><span class="tag">'+nf(themes.length)+' temas de extensão</span></div><p class="muted">Associações anuais calculadas por correspondência textual entre nome do docente e nome de coordenação; podem existir homônimos e divergências de grafia. “0” no recorte não é nota nem prova de inatividade.</p>';
+ bars('genderBars',[['Prenome fem. (pista)',all.filter(x=>x.g==='f').length],['Prenome masc. (pista)',all.filter(x=>x.g==='m').length],['Sem classificação',all.filter(x=>x.g==='u').length]],'#355f35');
+ page=0;render();
+}
+function bars(id,arr,color){let max=Math.max(1,...arr.map(x=>x[1]));$(id).innerHTML=arr.length?arr.slice(0,9).map(([name,v])=>'<div class="rowbars"><span class="lab" title="'+esc(name)+'">'+esc(name)+'</span><div class="track"><div class="fill" style="width:'+(100*v/max)+'%;background:'+color+'"></div></div><span class="value">'+nf(v)+'</span></div>').join(''):'<p>Dados não disponíveis neste campo.</p>'}
+function render(){
+ const q=norm($('q').value),f=$('filter').value,s=$('sort').value,g=$('gender').value;
+ view=all.filter(x=>norm(x.n+' '+x.d).includes(q)&&(g==='all'||x.g===g)&&(f==='all'||f==='both'&&x.p>0&&x.e>0||f==='p'&&x.p>0||f==='e'&&x.e>0||f==='none'&&x.p===0&&x.e===0));
+ view.sort((a,b)=>s==='p'?b.p-a.p||a.n.localeCompare(b.n,'pt-BR'):s==='e'?b.e-a.e||a.n.localeCompare(b.n,'pt-BR'):a.n.localeCompare(b.n,'pt-BR'));
+ const max=Math.max(1,Math.ceil(view.length/50));page=Math.min(page,max-1);
+ $('count').textContent=nf(view.length)+' perfis no filtro · ano: '+($('year').value==='all'?'todos':$('year').value)+' · *sexo/gênero não validado';
+ $('page').textContent='Página '+(page+1)+' de '+max;$('prev').disabled=page===0;$('next').disabled=page>=max-1;
+ $('rows').innerHTML=view.slice(page*50,page*50+50).map(x=>'<tr><td>'+esc(x.n)+'</td><td>'+esc(x.d)+'</td><td>'+nf(x.p)+'</td><td>'+nf(x.e)+'</td><td>'+esc(x.ppg)+'</td><td>'+genderLabel(x.g)+'</td><td>'+(x.p+x.e===0?'Sem associação no recorte':x.p&&x.e?'Ambos localizados':'Um eixo localizado')+'</td></tr>').join('')||'<tr><td colspan="7">Nenhum perfil corresponde ao filtro.</td></tr>';
+}
+['q','filter','sort','gender'].forEach(id=>$(id).addEventListener(id==='q'?'input':'change',()=>{page=0;render()}));
+$('year').onchange=updateYear;
+$('prev').onclick=()=>{page--;render()};$('next').onclick=()=>{page++;render()};
+$('csv').onclick=()=>{let rows=[['Nome','Departamento','Pesquisa','Extensão','PPG','Classificação preliminar por prenome','Ano'],...view.map(x=>[x.n,x.d,x.p,x.e,x.ppg,genderLabel(x.g),$('year').value])];let csv='\ufeff'+rows.map(r=>r.map(x=>'"'+String(x).replace(/"/g,'""')+'"').join(';')).join('\r\n');let a=document.createElement('a'),u=URL.createObjectURL(new Blob([csv],{type:'text/csv;charset=utf-8'}));a.href=u;a.download='observatorio_unemat_docentes.csv';a.click();setTimeout(()=>URL.revokeObjectURL(u),1000)};
+fetch('data.json').then(r=>{if(!r.ok)throw Error('HTTP '+r.status);return r.json()}).then(d=>{
+ data=d;
+ all=Object.values(d.profProfiles||{}).filter(x=>x&&x.n).map(x=>({n:x.n,d:x.d||'',baseP:Number(x.pesq)||0,baseE:Number(x.ext)||0,p:Number(x.pesq)||0,e:Number(x.ext)||0,ppg:(x.ppg||[]).join(', '),g:genderHint(x.n)}));
+ $('docN').textContent=nf(all.length);
+ let years=[...new Set([...(d.pesq||[]),...(d.ext||[])].map(x=>String(x.y||'')).filter(y=>/^\d{4}$/.test(y)))].sort((a,b)=>Number(b)-Number(a));
+ for(let y of years){let op=document.createElement('option');op.value=y;op.textContent='Ano '+y;$('year').appendChild(op)}
+ $('load').textContent='Base carregada · '+nf(all.length)+' perfis docentes · selecione o ano para explorar';
+ updateYear();
+}).catch(err=>{$('load').textContent='Dados indisponíveis — verifique data.json';$('audit').textContent=String(err);['cloud','peopleBars','areaBars','themeBars','distBars','genderBars'].forEach(id=>$(id).textContent='Não foi possível carregar a base.')});
 </script></body></html>

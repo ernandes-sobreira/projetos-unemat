@@ -21,12 +21,12 @@
 </div>
 <div class="cols3 section">
 <section class="panel"><h2>Pesquisa e extensão</h2><p>Conexão identificada por perfil docente, não necessariamente integração no mesmo projeto.</p><div id="linkStats" class="tags"></div></section>
-<section class="panel"><h2>Sexo / gênero</h2><p>Estimativa de apresentação por prenome, ampliada com regras usuais. Não equivale a sexo cadastral nem a identidade de gênero; casos ambíguos continuam sem classificação.</p><div id="genderBars"></div><div class="muted">Esta estimativa não deve ser usada para estatísticas oficiais ou avaliações individuais. É necessário validar com a fonte institucional.</div></section>
+<section class="panel"><h2>Sexo / gênero</h2><p>Estimativa estatística de predominância por sexo no Censo do IBGE, calculada por prenome. Não identifica o sexo individual, nem a identidade de gênero.</p><div id="genderBars"></div><div id="ibgeProgress" class="muted">Preparando cruzamento com a base pública de nomes do IBGE…</div><div class="tags"><span class="tag">≥ 90%: predominância forte</span><span class="tag">70–89%: predominância moderada</span><span class="tag">Demais: inconclusivo</span></div><div class="muted">Fonte: API pública de nomes do IBGE (Censo 2010 para a API v2). A proporção é do prenome na população, não a probabilidade individual da pessoa.</div></section>
 <section class="panel"><h2>Relações com outras IES</h2><p>Os registros consultados não apresentam campo padronizado de instituições parceiras. Não é possível medir a rede interinstitucional ainda.</p><div class="tag">Integração de dados necessária</div></section>
 </div>
 <section class="panel section"><h2>Explore todas as pessoas</h2><p>Consulta completa dos perfis da base. Números correspondem a associações registradas, e não a avaliações funcionais.</p>
-<div class="filters"><select id="year" aria-label="Ano"><option value="all">Todos os anos</option></select><select id="gender" aria-label="Classificação por prenome"><option value="all">Todas as pessoas</option><option value="f">Nome sugere feminino*</option><option value="m">Nome sugere masculino*</option><option value="u">Sem classificação por prenome</option></select><input id="q" placeholder="Buscar docente ou departamento…"><select id="filter"><option value="all">Todas as situações</option><option value="both">Pesquisa e extensão</option><option value="p">Com pesquisa</option><option value="e">Com extensão</option><option value="none">Sem associação identificada</option></select><select id="sort"><option value="name">Ordem alfabética</option><option value="p">Mais pesquisas cadastradas</option><option value="e">Mais extensões cadastradas</option></select><button id="csv" class="primary">Exportar CSV</button></div>
-<div id="count" class="muted"></div><div id="personDetails" class="notice" style="display:none"></div><div class="scroller"><table><thead><tr><th>Nome · clicar para explorar</th><th>Departamento</th><th>Pesquisa</th><th>Extensão</th><th>PPG</th><th>Sexo/gênero (pista)</th><th>Leitura do dado</th></tr></thead><tbody id="rows"></tbody></table></div><div class="viewcontrols"><button id="prev">Anterior</button><span class="muted" id="page"></span><button id="next">Próxima</button></div></section>
+<div class="filters"><select id="year" aria-label="Ano"><option value="all">Todos os anos</option></select><select id="gender" aria-label="Classificação por prenome"><option value="all">Todas as pessoas</option><option value="f">Prenome com predominância feminina</option><option value="m">Prenome com predominância masculina</option><option value="u">Sem evidência suficiente</option></select><input id="q" placeholder="Buscar docente ou departamento…"><select id="filter"><option value="all">Todas as situações</option><option value="both">Pesquisa e extensão</option><option value="p">Com pesquisa</option><option value="e">Com extensão</option><option value="none">Sem associação identificada</option></select><select id="sort"><option value="name">Ordem alfabética</option><option value="p">Mais pesquisas cadastradas</option><option value="e">Mais extensões cadastradas</option></select><button id="csv" class="primary">Exportar CSV</button></div>
+<div id="count" class="muted"></div><div id="personDetails" class="notice" style="display:none"></div><div class="scroller"><table><thead><tr><th>Nome · clicar para explorar</th><th>Departamento</th><th>Pesquisa</th><th>Extensão</th><th>PPG</th><th>Predominância do prenome (IBGE)</th><th>Leitura do dado</th></tr></thead><tbody id="rows"></tbody></table></div><div class="viewcontrols"><button id="prev">Anterior</button><span class="muted" id="page"></span><button id="next">Próxima</button></div></section>
 <section class="panel section"><h2>Auditoria de cobertura</h2><p>Informações para qualificar a base antes de atribuir indicadores de impacto.</p><div id="audit"></div><p><b>Próxima etapa científica:</b> cruzar com a lista oficial de docentes, validar homônimos, registrar parcerias institucionais, sexo/gênero quando houver fonte apropriada e documentar resultados sociais de cada projeto.</p></section>
 <div class="foot">Fonte dos dados: <a href="https://github.com/ernandes-sobreira/projetos-unemat">Projetos UNEMAT</a> · Identidade institucional: <a href="https://unemat.br/site/comunicacao/identidade-visual">UNEMAT</a> · Logo de origem institucional via Wikimedia Commons · Painel de diagnóstico, não avaliação de mérito.</div>
 </main><script>
@@ -36,7 +36,7 @@ const esc=x=>String(x??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&
 const count=(items,key)=>{let m=new Map();for(let item of items){let v=String(key(item)||'').trim();if(v)m.set(v,(m.get(v)||0)+1)}return [...m].sort((a,b)=>b[1]-a[1])};
 const nf=x=>Number(x||0).toLocaleString('pt-BR');
 const stop=new Set('de da do das dos a o as os um uma uns umas e em no na nos nas para por com sem sobre entre ao aos que como sua seu suas seus este esta isto estudo estudos analise avaliacao projeto projetos pesquisa extensao desenvolvimento universidade unemat estado mato grosso uso efeitos impacto proposta investigacao abordagem aspectos relacao contribuicoes contribuicao partir sob meio uma estudo realizado area municipio municipios'.split(' '));
-let all=[],data={},view=[],page=0,shownP=[],shownE=[];
+let all=[],data={},view=[],page=0,shownP=[],shownE=[],ibgeStats={};
 const female=new Set('sandra maria ana anne anny aline carolina solange vera eliane cleide juliana juliane joana josefa marcia marcia luciana luciene lucia patricia paula daniela danielle adriana andrea fernanda francisca silvia silvana rosangela elisabete elizabeth eliza elaine elenita helena helen cristina cristiane claudia claudiane denise janaina janeide jessica vanessa valeria fatima fabiana sueli suely tatiana tais thayse talita giselle gislaine geovana giovana renata raquel rafaela larissa laura leticia isabela izabela camila carla cassia cintia cynthia mariana mariane marilia marlene marli neide irene iracema edna edilene edileusa neusa elza eliane evelyn ester esther nathalia natalia natasha luana luiza louise beatriz bianca bruna barbara debora deborah sabrina simone sonia sonya teresa tereza teresinha aline'.split(' '));
 const male=new Set('acir abner acelmo ernandes jose joao pedro paulo carlos marco marcos antonio antonio francisco fernando felipe fabio roberto rogerio ronaldo ricardo rafael rodolfo renato reginaldo luiz luis lucas luciano leandro leonardo andre anderson alexandre alessandro alex alexandro diego daniel david davi eduardo edson edmilson eder elias eliseu emanuel emerson enio eric erick erivelton erivan estevao evandro gabriel gustavo guilherme helder henrique hugo igor isaac ismael ivan ivo jacob jairo jair jonas jonatan jonathan jorge julio junior kleber laudemir lauro lucio marcelo murilo mauricio matheus mateus miguel milton natan natalino nelson nicolas oscar otavio osvaldo pascal patricio ramos raimundo ramon renan robson rodney romulo rubens samuel sergio sebastiao silvio stefan thiago tiago ulisses vanderlei victor vinicius vitor walter wilkinson willian william'.split(' '));
 function genderHint(n){
@@ -50,6 +50,59 @@ function genderHint(n){
 }
 function genderLabel(g){return g==='f'?'Prenome geralmente feminino*':g==='m'?'Prenome geralmente masculino*':'Não classificado'}
 function selectedProjects(){let year=$('year').value;return {p:(data.pesq||[]).filter(x=>year==='all'||String(x.y)===year),e:(data.ext||[]).filter(x=>year==='all'||String(x.y)===year)}}
+
+function renderGenderBars(){
+ bars('genderBars',[['Predomínio feminino',all.filter(x=>x.g==='f').length],['Predomínio masculino',all.filter(x=>x.g==='m').length],['Inconclusivo / não consultado',all.filter(x=>x.g==='u').length]],'#355f35');
+}
+function firstName(n){return norm(n).split(' ')[0].toUpperCase()}
+function sumFreq(item){return (item?.res||[]).reduce((v,t)=>v+(Number(t.frequencia)||0),0)}
+async function queryNames(names,sex){
+ // API v2 do IBGE, Censo 2010: o resultado pode ter várias décadas por nome.
+ const endpoint='https://servicodados.ibge.gov.br/api/v2/censos/nomes/'+names.map(encodeURIComponent).join('%7C')+'?sexo='+sex;
+ const response=await fetch(endpoint);
+ if(!response.ok)throw Error('IBGE HTTP '+response.status);
+ const data=await response.json();if(!Array.isArray(data))throw Error('Formato IBGE inesperado');
+ const result={};for(const item of data){result[norm(item.nome)]=sumFreq(item)}
+ return result;
+}
+async function enrichIBGE(){
+ const distinct=[...new Set(all.map(x=>firstName(x.n)))].filter(Boolean);
+ let cache={};try{cache=JSON.parse(localStorage.getItem('unemat_ibge_names_v2')||'{}')}catch{}
+ const pending=distinct.filter(n=>!cache[n]);
+ $('ibgeProgress').textContent='IBGE: '+(distinct.length-pending.length)+' de '+distinct.length+' prenomes já consultados. Consultando os demais…';
+ let done=0,fail=0;
+ const size=12;
+ for(let start=0;start<pending.length;start+=size){
+  let batch=pending.slice(start,start+size);
+  try{
+   let [f,m]=await Promise.all([queryNames(batch,'F'),queryNames(batch,'M')]);
+   for(const name of batch){let key=norm(name),female=f[key]||0,male=m[key]||0,total=female+male;
+    cache[name]={f:female,m:male,total,checked:Date.now()};
+   }
+   done+=batch.length;
+  }catch(err){fail+=batch.length;console.warn('Lote IBGE indisponível:',err)}
+  if((start/size)%3===0||start+size>=pending.length){
+    try{localStorage.setItem('unemat_ibge_names_v2',JSON.stringify(cache))}catch{}
+    applyIBGE(cache);
+    $('ibgeProgress').textContent='IBGE: '+Object.keys(cache).length+' de '+distinct.length+' prenomes consultados · '+fail+' pendentes por erro de conexão';
+    await new Promise(resolve=>setTimeout(resolve,100));
+  }
+ }
+ applyIBGE(cache);
+ $('ibgeProgress').textContent=fail?'Consulta parcial: '+Object.keys(cache).length+' de '+distinct.length+' prenomes. Recarregue para tentar os '+fail+' restantes.':'Cruzamento concluído para '+Object.keys(cache).length+' prenomes distintos; casos sem frequência suficiente continuam inconclusivos.';
+}
+function applyIBGE(cache){
+ all.forEach(x=>{
+  let c=cache[firstName(x.n)];
+  if(!c){x.g='u';x.ibge=null;return}
+  let total=c.total||0,pct=total?100*Math.max(c.f,c.m)/total:0;
+  const category=(total>=20&&pct>=90)?(c.f>c.m?'f':'m'):'u';
+  x.g=category;
+  x.ibge={pct,total,source:'IBGE 2010',category};
+ });
+ renderGenderBars();render();
+}
+
 function filterProjectsForPerson(person){
  const key=norm(person.n);
  return [...shownP.filter(x=>x.s&&String(x.s)===person.s||norm(x.n)===key).map(x=>({type:'Pesquisa',...x})),
@@ -104,7 +157,7 @@ function updateYear(){
  $('linkStats').innerHTML='<span class="tag">'+nf(all.filter(x=>x.p&&x.e).length)+' pesquisa + extensão</span><span class="tag">'+nf(all.filter(x=>x.p&&!x.e).length)+' só pesquisa registrada</span><span class="tag">'+nf(all.filter(x=>!x.p&&x.e).length)+' só extensão registrada</span>';
  let unmatched=all.filter(x=>!x.p&&!x.e).length;
  $('audit').innerHTML='<div class="tags"><span class="tag">'+nf(unmatched)+' perfis sem projeto associado no recorte</span><span class="tag">'+nf(areas.length)+' áreas</span><span class="tag">'+nf(themes.length)+' temas de extensão</span></div><p class="muted">Associações anuais calculadas por correspondência textual entre nome do docente e nome de coordenação; podem existir homônimos e divergências de grafia. “0” no recorte não é nota nem prova de inatividade.</p>';
- bars('genderBars',[['Prenome fem. (pista)',all.filter(x=>x.g==='f').length],['Prenome masc. (pista)',all.filter(x=>x.g==='m').length],['Sem classificação',all.filter(x=>x.g==='u').length]],'#355f35');
+ bars('genderBars',[['Predomínio feminino no nome',all.filter(x=>x.g==='f').length],['Predomínio masculino no nome',all.filter(x=>x.g==='m').length],['Sem classificação',all.filter(x=>x.g==='u').length]],'#355f35');
  page=0;render();
 }
 function bars(id,arr,color){let max=Math.max(1,...arr.map(x=>x[1]));$(id).innerHTML=arr.length?arr.slice(0,9).map(([name,v])=>'<div class="rowbars"><span class="lab" title="'+esc(name)+'">'+esc(name)+'</span><div class="track"><div class="fill" style="width:'+(100*v/max)+'%;background:'+color+'"></div></div><span class="value">'+nf(v)+'</span></div>').join(''):'<p>Dados não disponíveis neste campo.</p>'}
@@ -113,9 +166,9 @@ function render(){
  view=all.filter(x=>norm(x.n+' '+x.d).includes(q)&&(g==='all'||x.g===g)&&(f==='all'||f==='both'&&x.p>0&&x.e>0||f==='p'&&x.p>0||f==='e'&&x.e>0||f==='none'&&x.p===0&&x.e===0));
  view.sort((a,b)=>s==='p'?b.p-a.p||a.n.localeCompare(b.n,'pt-BR'):s==='e'?b.e-a.e||a.n.localeCompare(b.n,'pt-BR'):a.n.localeCompare(b.n,'pt-BR'));
  const max=Math.max(1,Math.ceil(view.length/50));page=Math.min(page,max-1);
- $('count').textContent=nf(view.length)+' perfis no filtro · ano: '+($('year').value==='all'?'todos':$('year').value)+' · *sexo/gênero não validado';
+ $('count').textContent=nf(view.length)+' perfis no filtro · ano: '+($('year').value==='all'?'todos':$('year').value)+' · Predominância estatística por prenome (não sexo individual)';
  $('page').textContent='Página '+(page+1)+' de '+max;$('prev').disabled=page===0;$('next').disabled=page>=max-1;
- $('rows').innerHTML=view.slice(page*50,page*50+50).map(x=>'<tr><td><button style="border:0;text-align:left;font-weight:700;padding:0;color:#143b59" data-person="'+esc(x.s)+'">'+esc(x.n)+'</button></td><td>'+esc(x.d)+'</td><td>'+nf(x.p)+'</td><td>'+nf(x.e)+'</td><td>'+esc(x.ppg)+'</td><td>'+genderLabel(x.g)+'</td><td>'+(x.p+x.e===0?'Sem associação no recorte':x.p&&x.e?'Ambos localizados':'Um eixo localizado')+'</td></tr>').join('')||'<tr><td colspan="7">Nenhum perfil corresponde ao filtro.</td></tr>';
+ $('rows').innerHTML=view.slice(page*50,page*50+50).map(x=>'<tr><td><button style="border:0;text-align:left;font-weight:700;padding:0;color:#143b59" data-person="'+esc(x.s)+'">'+esc(x.n)+'</button></td><td>'+esc(x.d)+'</td><td>'+nf(x.p)+'</td><td>'+nf(x.e)+'</td><td>'+esc(x.ppg)+'</td><td>'+genderLabel(x.g)+(x.ibge?(' · '+x.ibge.pct.toFixed(1)+'% · '+x.ibge.source):' · sem evidência IBGE')+'</td><td>'+(x.p+x.e===0?'Sem associação no recorte':x.p&&x.e?'Ambos localizados':'Um eixo localizado')+'</td></tr>').join('')||'<tr><td colspan="7">Nenhum perfil corresponde ao filtro.</td></tr>';
  document.querySelectorAll('[data-person]').forEach(b=>b.onclick=()=>openPerson(b.dataset.person));
 }
 ['q','filter','sort','gender'].forEach(id=>$(id).addEventListener(id==='q'?'input':'change',()=>{page=0;render()}));
@@ -124,11 +177,12 @@ $('prev').onclick=()=>{page--;render()};$('next').onclick=()=>{page++;render()};
 $('csv').onclick=()=>{let rows=[['Nome','Departamento','Pesquisa','Extensão','PPG','Classificação preliminar por prenome','Ano'],...view.map(x=>[x.n,x.d,x.p,x.e,x.ppg,genderLabel(x.g),$('year').value])];let csv='\ufeff'+rows.map(r=>r.map(x=>'"'+String(x).replace(/"/g,'""')+'"').join(';')).join('\r\n');let a=document.createElement('a'),u=URL.createObjectURL(new Blob([csv],{type:'text/csv;charset=utf-8'}));a.href=u;a.download='observatorio_unemat_docentes.csv';a.click();setTimeout(()=>URL.revokeObjectURL(u),1000)};
 fetch('data.json').then(r=>{if(!r.ok)throw Error('HTTP '+r.status);return r.json()}).then(d=>{
  data=d;
- all=Object.entries(d.profProfiles||{}).filter(([s,x])=>x&&x.n).map(([s,x])=>({s:String(x.s||s),n:x.n,d:x.d||'',baseP:Number(x.pesq)||0,baseE:Number(x.ext)||0,p:Number(x.pesq)||0,e:Number(x.ext)||0,ppg:(x.ppg||[]).join(', '),g:genderHint(x.n)}));
+ all=Object.entries(d.profProfiles||{}).filter(([s,x])=>x&&x.n).map(([s,x])=>({s:String(x.s||s),n:x.n,d:x.d||'',baseP:Number(x.pesq)||0,baseE:Number(x.ext)||0,p:Number(x.pesq)||0,e:Number(x.ext)||0,ppg:(x.ppg||[]).join(', '),g:'u',ibge:null}));
  $('docN').textContent=nf(all.length);
  let years=[...new Set([...(d.pesq||[]),...(d.ext||[])].map(x=>String(x.y||'')).filter(y=>/^\d{4}$/.test(y)))].sort((a,b)=>Number(b)-Number(a));
  for(let y of years){let op=document.createElement('option');op.value=y;op.textContent='Ano '+y;$('year').appendChild(op)}
  $('load').textContent='Base carregada · '+nf(all.length)+' perfis docentes · selecione o ano para explorar';
  updateYear();
+ enrichIBGE().catch(err=>{$('ibgeProgress').textContent='Consulta ao IBGE indisponível: '+String(err)+'. Não serão usadas atribuições por heurística.'});
 }).catch(err=>{$('load').textContent='Dados indisponíveis — verifique data.json';$('audit').textContent=String(err);['cloud','peopleBars','areaBars','themeBars','distBars','genderBars'].forEach(id=>$(id).textContent='Não foi possível carregar a base.')});
 </script></body></html>

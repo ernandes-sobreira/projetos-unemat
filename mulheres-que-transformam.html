@@ -9,31 +9,53 @@
 </style></head><body>
 <header><div class="eyebrow">UNEMAT · Pesquisa + Extensão</div><h1>Mulheres que <em>Transformam.</em></h1><p>Ciência que produz conhecimento. Extensão que encontra pessoas. Impacto que merece ser demonstrado.</p><div class="status" id="status">Conectando à base institucional…</div></header>
 <main>
-<div class="warning"><strong>Versão exploratória, sem fotografias.</strong> Os números abaixo são indicadores de <b>atividade cadastrada</b>, não provas de impacto social. A lista inicial de nomes é provisória e pode ser ajustada; nenhuma identidade de gênero é inferida automaticamente.</div>
-<div class="stats"><div class="stat"><strong id="nWomen">—</strong><span>Nomes na seleção</span></div><div class="stat"><strong id="nP">—</strong><span>Registros de pesquisa</span></div><div class="stat"><strong id="nE">—</strong><span>Ações de extensão</span></div><div class="stat"><strong id="nBoth">—</strong><span>Atuação integrada</span></div></div>
+<div class="warning"><strong>Versão exploratória, sem fotografias.</strong> Esta versão apresenta somente registros localizados na base. <b>Não existem notas, pontuações ou ranking</b>. Falta de correspondência não significa ausência de atuação. A seleção de nomes depende de validação institucional.</div>
+<div class="stats"><div class="stat"><strong id="nWomen">—</strong><span>Nomes na seleção</span></div><div class="stat"><strong id="nP">—</strong><span>Pesquisas localizadas na seleção</span></div><div class="stat"><strong id="nE">—</strong><span>Extensões localizadas na seleção</span></div><div class="stat"><strong id="nBoth">—</strong><span>Nomes com registros nos dois eixos</span></div></div>
 <div class="panel"><h2>Quem queremos reconhecer?</h2><p class="small">Procure uma coordenadora presente na base e adicione à seleção. A curadoria deve confirmar a identificação antes da publicação oficial.</p><div class="flex"><input id="lookup" placeholder="Buscar nome de coordenadora…"><button id="add">Adicionar nome</button><button id="reset">Restaurar pré-seleção</button></div><div id="suggestions" class="small"></div></div>
-<div class="toolbar"><button class="active" data-sort="integrado">Visão integrada</button><button data-sort="pesq">Pesquisa</button><button data-sort="ext">Extensão</button><input id="search" placeholder="Filtrar pesquisadoras…" aria-label="Filtrar"><select id="time"><option value="all">Todos os anos</option><option value="2024">Desde 2024</option><option value="2025">Desde 2025</option><option value="2026">2026</option></select></div>
+<div class="toolbar"><button class="active" data-sort="nome">Ordem alfabética</button><button data-sort="pesq">Mais registros de pesquisa</button><button data-sort="ext">Mais registros de extensão</button><input id="search" placeholder="Filtrar pesquisadoras…" aria-label="Filtrar"><select id="time"><option value="all">Todos os anos</option><option value="2024">Desde 2024</option><option value="2025">Desde 2025</option><option value="2026">2026</option></select></div>
 <p class="small" id="summary">Carregando registros…</p><section id="cards" class="grid"></section>
-<section class="panel method"><h2>Como se calcula?</h2><p>Esta prévia usa dois indicadores observáveis: contagem de projetos de <b>pesquisa (P)</b> e de <b>extensão (E)</b>, associados às coordenadoras selecionadas. A escala de cada dimensão é relativa ao maior valor encontrado na seleção e período escolhido.</p><p><b>Atividade integrada = 35% pesquisa + 45% extensão + 20% integração.</b> Integração vale 100 pontos quando há registros nos dois eixos, e 0 quando não há. É uma <b>pontuação exploratória</b>, não o IPF definitivo.</p><p>O IPF científico precisará adicionar evidências de transformação social, qualidade de resultados, beneficiários e território, continuidade, formação e liderança. <b>Ausência de evidência ≠ impacto zero.</b></p><div class="warning">Importante: ranking quantitativo provisório não deve ser usado para premiações ou afirmações institucionais antes de validar a lista de mulheres, a completude da base e a metodologia.</div></section>
+<section class="panel method"><h2>Metodologia responsável</h2>
+<p>Os quantitativos são <b>registros encontrados</b> na base institucional, associados por nome à coordenação. Uma associação precisa ser verificada, especialmente nos casos de homônimos, abreviações e variações de grafia.</p>
+<p><b>Sem pontuação e sem classificação de mérito.</b> O Índice de Protagonismo Feminino só poderá ser calculado após validação de identidade, completude dos projetos, indicadores de pesquisa e extensão e evidências de transformação social (territórios, beneficiários, mudanças documentadas, participação e continuidade).</p>
+<div class="warning"><strong>Sem registro localizado ≠ nota zero.</strong> Uma pessoa que não foi encontrada pelo nome aparece como “dados não localizados / identificação pendente”.</div></section>
 <footer>Fonte dos registros: <a class="textlink" href="https://github.com/ernandes-sobreira/projetos-unemat">Projetos UNEMAT</a> · Módulo piloto independente · Nenhuma fotografia utilizada.</footer>
 </main><script>
 const starters=['Solange Kimie Ikeda Castrillon','Ana Cláudia Terças Trettel','Carolina Joana da Silva','Vera Maquêa','Solange Aparecida Arrolho da Silva','Eliane Boroponepá Monzilar','Cleide Aparecida Ferreira da Silva Gusmão','Ana Heloisa Maia'];
 const normalize=s=>(s||'').normalize('NFD').replace(/[\u0300-\u036f]/g,'').toLowerCase().replace(/[^a-z\s]/g,' ').replace(/\s+/g,' ').trim();
-let chosen=JSON.parse(localStorage.getItem('mt-selection')||'null')||starters, data=null, sort='integrado';
+let chosen=JSON.parse(localStorage.getItem('mt-selection')||'null')||starters, data=null, sort='nome';
 const $=id=>document.getElementById(id);
 const uniqueNames=()=>[...new Set([...(data?.pesq||[]).map(x=>x.n),...(data?.ext||[]).map(x=>x.co)].filter(Boolean))].sort((a,b)=>a.localeCompare(b,'pt-BR'));
 const yearOK=x=>{let y=$('time').value;return y==='all'||(y==='2026'?String(x.y)==='2026':Number(x.y)>=Number(y))};
 function render(){
- if(!data)return;const p=data.pesq||[],e=data.ext||[];
- let rows=chosen.map(n=>{let key=normalize(n),P=p.filter(x=>normalize(x.n)===key&&yearOK(x)),E=e.filter(x=>normalize(x.co)===key&&yearOK(x));return {n,p:P.length,e:E.length,P,E}});
- let maxP=Math.max(1,...rows.map(r=>r.p)),maxE=Math.max(1,...rows.map(r=>r.e));
- rows.forEach(r=>{r.sp=100*r.p/maxP;r.se=100*r.e/maxE;r.si=r.p&&r.e?100:0;r.score=.35*r.sp+.45*r.se+.20*r.si});
+ if(!data)return;
+ const p=data.pesq||[],e=data.ext||[];
+ let rows=chosen.map(n=>{
+   const key=normalize(n);
+   const allP=p.filter(x=>normalize(x.n)===key);
+   const allE=e.filter(x=>normalize(x.co)===key);
+   const P=allP.filter(yearOK),E=allE.filter(yearOK);
+   return {n,p:P.length,e:E.length,P,E,located:allP.length+allE.length>0};
+ });
  rows=rows.filter(r=>normalize(r.n).includes(normalize($('search').value)));
- rows.sort((a,b)=>(sort==='pesq'?b.p-a.p:sort==='ext'?b.e-a.e:b.score-a.score)||a.n.localeCompare(b.n));
- $('nWomen').textContent=chosen.length;$('nP').textContent=rows.reduce((s,x)=>s+x.p,0);$('nE').textContent=rows.reduce((s,x)=>s+x.e,0);$('nBoth').textContent=rows.filter(r=>r.p&&r.e).length;
- $('summary').textContent='Registros encontrados na seleção e nos filtros atuais · Ordenação: '+(sort==='integrado'?'pontuação exploratória':sort==='pesq'?'pesquisa':'extensão')+'.';
- $('cards').innerHTML=rows.length?rows.map(r=>'<article class="person"><div class="top"><div><h3>'+esc(r.n)+'</h3><div class="small">'+(r.p||r.e?'Coordenadora com registros correspondentes':'Sem correspondência exata na base / verificar nome')+'</div></div><div class="score">'+r.score.toFixed(0)+'<span class="small">/100*</span></div></div><div class="bars"><div class="bar"><span style="width:'+r.sp+'%"></span></div><div class="bar ext"><span style="width:'+r.se+'%"></span></div></div><div class="pill">Pesquisa: '+r.p+'</div><div class="pill">Extensão: '+r.e+'</div><div class="pill">'+(r.p&&r.e?'Pesquisa + extensão':'Integração não identificada')+'</div><p class="small">Impacto social: ainda não avaliado · '+(r.P.concat(r.E).slice(0,2).map(x=>esc(x.t||'')).filter(Boolean).join(' · ')||'Sem títulos correspondentes')+'</p><button onclick="removeName('+JSON.stringify(r.n).replace(/"/g,'&quot;')+')">Retirar da seleção</button></article>').join(''):'<div class="mutedbox">Nenhum nome corresponde aos filtros. Busque outra coordenadora ou restaure a pré-seleção.</div>';
+ rows.sort((a,b)=>sort==='pesq'?(b.p-a.p)||a.n.localeCompare(b.n):sort==='ext'?(b.e-a.e)||a.n.localeCompare(b.n):a.n.localeCompare(b.n));
+ $('nWomen').textContent=chosen.length;
+ $('nP').textContent=rows.reduce((s,x)=>s+x.p,0);
+ $('nE').textContent=rows.reduce((s,x)=>s+x.e,0);
+ $('nBoth').textContent=rows.filter(r=>r.p&&r.e).length;
+ $('summary').textContent='Sem notas ou ranking · Valores abaixo são apenas registros de coordenação localizados no filtro escolhido. Nomes e vínculos sujeitos a validação.';
+ $('cards').innerHTML=rows.length?rows.map(r=>{
+   const label=r.located?'Correspondência nominal encontrada — validar vínculo':'Dados não localizados / identificação pendente';
+   const pLabel=r.located?String(r.p):'Não localizado';
+   const eLabel=r.located?String(r.e):'Não localizado';
+   const titles=r.P.concat(r.E).slice(0,3).map(x=>esc(x.t||'')).filter(Boolean).join(' · ');
+   return '<article class="person"><div class="top"><div><h3>'+esc(r.n)+'</h3><div class="small">'+label+'</div></div></div>'+
+   '<div class="pill">Pesquisa: '+pLabel+'</div><div class="pill">Extensão: '+eLabel+'</div>'+
+   '<p class="small">'+(titles?'Exemplos de registros: '+titles:'Nenhum título correspondente disponível para este recorte.')+'</p>'+
+   '<p class="small"><b>Transformação social:</b> ainda não avaliada; nenhuma conclusão sobre mérito pode ser extraída destas contagens.</p>'+
+   '<button onclick="removeName('+JSON.stringify(r.n).replace(/"/g,'&quot;')+')">Retirar da seleção</button></article>';
+ }).join(''):'<div class="mutedbox">Nenhum nome corresponde aos filtros.</div>';
 }
+
 function esc(s){return String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))}
 function removeName(n){chosen=chosen.filter(x=>x!==n);save()}
 function save(){localStorage.setItem('mt-selection',JSON.stringify(chosen));render()}

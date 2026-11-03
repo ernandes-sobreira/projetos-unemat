@@ -1,0 +1,660 @@
+{
+  "version": 1,
+  "description": "Classificação revisada manualmente pelo usuário do Observatório; não equivale a dado oficial/autodeclaração.",
+  "records": [
+    {
+      "id": "6130001",
+      "name": "EMILLYANE CRISTINE SILVA ADORNO",
+      "classification": "mulher",
+      "source": "revisão manual"
+    },
+    {
+      "id": "11641001",
+      "name": "CICIANNI BERNARDO VIANA",
+      "classification": "mulher",
+      "source": "revisão manual"
+    },
+    {
+      "id": "12354002",
+      "name": "ROSILAINY SURUBI FERNANDES",
+      "classification": "mulher",
+      "source": "revisão manual"
+    },
+    {
+      "id": "22952006",
+      "name": "HERENA NAOCO CHISAKI ISOBE",
+      "classification": "mulher",
+      "source": "revisão manual"
+    },
+    {
+      "id": "30095001",
+      "name": "FRANCIMAYRE APARECIDA PEREIRA DE JESUS",
+      "classification": "mulher",
+      "source": "revisão manual"
+    },
+    {
+      "id": "31175100",
+      "name": "GABRIELLIN BUOSE",
+      "classification": "mulher",
+      "source": "revisão manual"
+    },
+    {
+      "id": "32639001",
+      "name": "LOYRRANA DE SOUZA FONSECA MEIRA",
+      "classification": "mulher",
+      "source": "revisão manual"
+    },
+    {
+      "id": "33907002",
+      "name": "MAURECILDE LEMES DA SILVA SANTANA",
+      "classification": "mulher",
+      "source": "revisão manual"
+    },
+    {
+      "id": "37199002",
+      "name": "TAISIR MAHMUDO KARIM",
+      "classification": "homem",
+      "source": "revisão manual"
+    },
+    {
+      "id": "41485008",
+      "name": "SALLI BAGGENSTOSS",
+      "classification": "mulher",
+      "source": "revisão manual"
+    },
+    {
+      "id": "44330001",
+      "name": "VANCLEBER DIVINO SILVA ALVES",
+      "classification": "homem",
+      "source": "revisão manual"
+    },
+    {
+      "id": "47607013",
+      "name": "INEDIO ARCARI",
+      "classification": "homem",
+      "source": "revisão manual"
+    },
+    {
+      "id": "47679005",
+      "name": "VANDERSEZAR CASTURINO",
+      "classification": "homem",
+      "source": "revisão manual"
+    },
+    {
+      "id": "49549005",
+      "name": "LEONIR AMANTINO BOFF",
+      "classification": "homem",
+      "source": "revisão manual"
+    },
+    {
+      "id": "53748002",
+      "name": "WILBUM DE ANDRADE CARDOSO",
+      "classification": "homem",
+      "source": "revisão manual"
+    },
+    {
+      "id": "57200100",
+      "name": "WEKSILEY DA SILVA SODRÉ",
+      "classification": "homem",
+      "source": "revisão manual"
+    },
+    {
+      "id": "59687004",
+      "name": "MAURECILNE LEMES DA SILVA CARVALHO",
+      "classification": "mulher",
+      "source": "revisão manual"
+    },
+    {
+      "id": "60581007",
+      "name": "LISANIL DA CONCEICAO PATROCINIO PEREIRA",
+      "classification": "mulher",
+      "source": "revisão manual"
+    },
+    {
+      "id": "68840001",
+      "name": "MARION MACHADO CUNHA",
+      "classification": "homem",
+      "source": "revisão manual"
+    },
+    {
+      "id": "75286005",
+      "name": "ELAIR DE CARVALHO",
+      "classification": "homem",
+      "source": "revisão manual"
+    },
+    {
+      "id": "75622007",
+      "name": "WAGHMA FABIANA BORGES RODRIGUES",
+      "classification": "mulher",
+      "source": "revisão manual"
+    },
+    {
+      "id": "82407001",
+      "name": "DARCI PERON",
+      "classification": "mulher",
+      "source": "revisão manual"
+    },
+    {
+      "id": "82415001",
+      "name": "LORIEGE PESSOA BITENCOURT",
+      "classification": "mulher",
+      "source": "revisão manual"
+    },
+    {
+      "id": "83156001",
+      "name": "EDIR ANTONIA DE ALMEIDA",
+      "classification": "mulher",
+      "source": "revisão manual"
+    },
+    {
+      "id": "83229001",
+      "name": "ROMYR CONDE GARCIA",
+      "classification": "homem",
+      "source": "revisão manual"
+    },
+    {
+      "id": "83246001",
+      "name": "VITERICO JABUR MALUF",
+      "classification": "homem",
+      "source": "revisão manual"
+    },
+    {
+      "id": "83260001",
+      "name": "AUMERI CARLOS BAMPI",
+      "classification": "homem",
+      "source": "revisão manual"
+    },
+    {
+      "id": "86172006",
+      "name": "CRISTINNE LEUS TOME",
+      "classification": "mulher",
+      "source": "revisão manual"
+    },
+    {
+      "id": "96153100",
+      "name": "DALCI MAURICIO MIRANDA DE OLIVEIRA",
+      "classification": "homem",
+      "source": "revisão manual"
+    },
+    {
+      "id": "98307005",
+      "name": "BENEVID FELIX DA SILVA",
+      "classification": "homem",
+      "source": "revisão manual"
+    },
+    {
+      "id": "101996004",
+      "name": "ALYRIO CARDOSO FILHO",
+      "classification": "homem",
+      "source": "revisão manual"
+    },
+    {
+      "id": "102005004",
+      "name": "WEILY TORO MACHADO",
+      "classification": "homem",
+      "source": "revisão manual"
+    },
+    {
+      "id": "102180100",
+      "name": "DANNY ANNY TEREZINHA SCHOLZE",
+      "classification": "mulher",
+      "source": "revisão manual"
+    },
+    {
+      "id": "102338005",
+      "name": "OSTENILDO RIBEIRO CAMPOS",
+      "classification": "homem",
+      "source": "revisão manual"
+    },
+    {
+      "id": "103291003",
+      "name": "NEYRES ZINIA TAVEIRA DE JESUS",
+      "classification": "mulher",
+      "source": "revisão manual"
+    },
+    {
+      "id": "107876008",
+      "name": "AIRENO DE SOUZA SILVA",
+      "classification": "homem",
+      "source": "revisão manual"
+    },
+    {
+      "id": "107975001",
+      "name": "HUGMAR PAINS DA SILVA",
+      "classification": "homem",
+      "source": "revisão manual"
+    },
+    {
+      "id": "110496003",
+      "name": "NAUDIA DA SILVA DIAS",
+      "classification": "mulher",
+      "source": "revisão manual"
+    },
+    {
+      "id": "111970004",
+      "name": "WYLMOR CONSTANTINO TIVES DALFOVO",
+      "classification": "homem",
+      "source": "revisão manual"
+    },
+    {
+      "id": "114992016",
+      "name": "THIELIDE VERONICA DA SILVA PAVANELLI TROIAN",
+      "classification": "mulher",
+      "source": "revisão manual"
+    },
+    {
+      "id": "118084001",
+      "name": "TAYOMARA FERREIRA NASCIMENTO",
+      "classification": "mulher",
+      "source": "revisão manual"
+    },
+    {
+      "id": "131867001",
+      "name": "KILWANGY KYA KAPITANGO A SAMBA",
+      "classification": "homem",
+      "source": "revisão manual"
+    },
+    {
+      "id": "131871001",
+      "name": "ALCIONE LESCANO DE SOUZA JUNIOR",
+      "classification": "homem",
+      "source": "revisão manual"
+    },
+    {
+      "id": "131965001",
+      "name": "ODACIR ELIAS VIEIRA MARQUES",
+      "classification": "homem",
+      "source": "revisão manual"
+    },
+    {
+      "id": "132587001",
+      "name": "NIVALDI CALONEGO JUNIOR",
+      "classification": "homem",
+      "source": "revisão manual"
+    },
+    {
+      "id": "203185004",
+      "name": "NELCY MARIA DIAS",
+      "classification": "mulher",
+      "source": "revisão manual"
+    },
+    {
+      "id": "204053002",
+      "name": "DINAIRAN DANTAS SOUZA",
+      "classification": "mulher",
+      "source": "revisão manual"
+    },
+    {
+      "id": "214185009",
+      "name": "WOLBER SEBASTIAO PEREIRA",
+      "classification": "homem",
+      "source": "revisão manual"
+    },
+    {
+      "id": "220295001",
+      "name": "POLLYANY PEREIRA MARTINS",
+      "classification": "mulher",
+      "source": "revisão manual"
+    },
+    {
+      "id": "222557100",
+      "name": "KARLYNE TAFAREL BARROS",
+      "classification": "mulher",
+      "source": "revisão manual"
+    },
+    {
+      "id": "222609003",
+      "name": "LAWRENBERG ADVINCULA DA SILVA",
+      "classification": "homem",
+      "source": "revisão manual"
+    },
+    {
+      "id": "229842019",
+      "name": "VANDINELMA DE OLIVEIRA VIEIRA",
+      "classification": "mulher",
+      "source": "revisão manual"
+    },
+    {
+      "id": "230178002",
+      "name": "FRADIA CICERA DE CASTRO TSUKAMOTO",
+      "classification": "mulher",
+      "source": "revisão manual"
+    },
+    {
+      "id": "234009006",
+      "name": "WELVESLEY DA SILVA SANTOS",
+      "classification": "homem",
+      "source": "revisão manual"
+    },
+    {
+      "id": "236987002",
+      "name": "LINDOMAR PEGORINI DANIEL",
+      "classification": "homem",
+      "source": "revisão manual"
+    },
+    {
+      "id": "239554004",
+      "name": "ANDRICO MORAES XAVIER",
+      "classification": "homem",
+      "source": "revisão manual"
+    },
+    {
+      "id": "242905002",
+      "name": "KEYCINARA BATISTA DE LIMA",
+      "classification": "mulher",
+      "source": "revisão manual"
+    },
+    {
+      "id": "245429002",
+      "name": "MURIEL ANDRE DE MOURA",
+      "classification": "mulher",
+      "source": "revisão manual"
+    },
+    {
+      "id": "247099104",
+      "name": "VALVENARG PEREIRA DA SILVA",
+      "classification": "homem",
+      "source": "revisão manual"
+    },
+    {
+      "id": "249454002",
+      "name": "UDILMAR CARLOS ZABOT",
+      "classification": "homem",
+      "source": "revisão manual"
+    },
+    {
+      "id": "249792101",
+      "name": "DIONÊ PEREIRA DE SOUZA",
+      "classification": "homem",
+      "source": "revisão manual"
+    },
+    {
+      "id": "250301002",
+      "name": "LUCYAN ELAM ROSA SANTOS",
+      "classification": "homem",
+      "source": "revisão manual"
+    },
+    {
+      "id": "250523201",
+      "name": "OSMILTO MOREIRA SILVA",
+      "classification": "homem",
+      "source": "revisão manual"
+    },
+    {
+      "id": "251141002",
+      "name": "SILKIANE MACHADO CAPELETO",
+      "classification": "mulher",
+      "source": "revisão manual"
+    },
+    {
+      "id": "252378003",
+      "name": "KATRICE ALMEIDA DE SOUZA",
+      "classification": "mulher",
+      "source": "revisão manual"
+    },
+    {
+      "id": "253503001",
+      "name": "ELETISANDA DAS NEVES",
+      "classification": "mulher",
+      "source": "revisão manual"
+    },
+    {
+      "id": "253511001",
+      "name": "ROSCELI KOCHHANN",
+      "classification": "mulher",
+      "source": "revisão manual"
+    },
+    {
+      "id": "253582001",
+      "name": "THALISE YURI HATTORI",
+      "classification": "mulher",
+      "source": "revisão manual"
+    },
+    {
+      "id": "253751001",
+      "name": "ORISMARIO LUCIO RODRIGUES",
+      "classification": "homem",
+      "source": "revisão manual"
+    },
+    {
+      "id": "253806001",
+      "name": "ULISFLAVIO OLIVEIRA EVANGELISTA",
+      "classification": "homem",
+      "source": "revisão manual"
+    },
+    {
+      "id": "253948001",
+      "name": "RONICELY PEREIRA DA ROCHA",
+      "classification": "mulher",
+      "source": "revisão manual"
+    },
+    {
+      "id": "255109006",
+      "name": "JUSCELIANY RODRIGUES LEONEL CORREA",
+      "classification": "mulher",
+      "source": "revisão manual"
+    },
+    {
+      "id": "255428004",
+      "name": "RAILEI GARCIA LEAL",
+      "classification": "homem",
+      "source": "revisão manual"
+    },
+    {
+      "id": "258033001",
+      "name": "TANISMARE TATIANA DE ALMEIDA",
+      "classification": "mulher",
+      "source": "revisão manual"
+    },
+    {
+      "id": "260739009",
+      "name": "VIVIENI LARA MACHADO",
+      "classification": "mulher",
+      "source": "revisão manual"
+    },
+    {
+      "id": "263527005",
+      "name": "AKEISA DIELI RIBEIRO DALLA VECHIA",
+      "classification": "mulher",
+      "source": "revisão manual"
+    },
+    {
+      "id": "265761001",
+      "name": "AQUIRYA PINHEIRO COSTA",
+      "classification": "mulher",
+      "source": "revisão manual"
+    },
+    {
+      "id": "269004004",
+      "name": "THIZIANE HELEN LORENZON",
+      "classification": "mulher",
+      "source": "revisão manual"
+    },
+    {
+      "id": "270016002",
+      "name": "AUREIR ALVES DE BRITO",
+      "classification": "homem",
+      "source": "revisão manual"
+    },
+    {
+      "id": "270628001",
+      "name": "MURIEL DA SILVA FOLLI PEREIRA",
+      "classification": "mulher",
+      "source": "revisão manual"
+    },
+    {
+      "id": "273383005",
+      "name": "PRESLINE BLUM",
+      "classification": "mulher",
+      "source": "revisão manual"
+    },
+    {
+      "id": "273711006",
+      "name": "DILIAN MARTIN SANDRO DE OLIVEIRA",
+      "classification": "homem",
+      "source": "revisão manual"
+    },
+    {
+      "id": "277669003",
+      "name": "REGINNE MICHELLI SILVA IOCCA",
+      "classification": "mulher",
+      "source": "revisão manual"
+    },
+    {
+      "id": "279099005",
+      "name": "OKSANA APARECIDA DE LARA HUNGARO",
+      "classification": "mulher",
+      "source": "revisão manual"
+    },
+    {
+      "id": "281000005",
+      "name": "RAQUIEL NAIELE RAMOS FELIPE",
+      "classification": "mulher",
+      "source": "revisão manual"
+    },
+    {
+      "id": "287942002",
+      "name": "TAIMY CASTRILLON DA COSTA FARIA",
+      "classification": "mulher",
+      "source": "revisão manual"
+    },
+    {
+      "id": "295781005",
+      "name": "YVA PAES DE BARROS",
+      "classification": "mulher",
+      "source": "revisão manual"
+    },
+    {
+      "id": "298494003",
+      "name": "LUZ ANGÉLICA SEPÚLVEDA CASTILLO",
+      "classification": "mulher",
+      "source": "revisão manual"
+    },
+    {
+      "id": "298567003",
+      "name": "CIDES SEMPREBOM BEZERRA",
+      "classification": "homem",
+      "source": "revisão manual"
+    },
+    {
+      "id": "298575003",
+      "name": "CAYTTANO SAUL DE SA ZARPELLON",
+      "classification": "homem",
+      "source": "revisão manual"
+    },
+    {
+      "id": "300034015",
+      "name": "NHAARA DA VILA PEREIRA",
+      "classification": "mulher",
+      "source": "revisão manual"
+    },
+    {
+      "id": "300699002",
+      "name": "JACQUELINY CONCEIÇÃO LIMA SANTOS",
+      "classification": "mulher",
+      "source": "revisão manual"
+    },
+    {
+      "id": "301272001",
+      "name": "GILCIANNY PIGNATA CAVALCANTE",
+      "classification": "mulher",
+      "source": "revisão manual"
+    },
+    {
+      "id": "305484002",
+      "name": "NASLE MARIA CABANA",
+      "classification": "mulher",
+      "source": "revisão manual"
+    },
+    {
+      "id": "305853002",
+      "name": "EILEEN AZEVEDO SANTOS",
+      "classification": "mulher",
+      "source": "revisão manual"
+    },
+    {
+      "id": "306888001",
+      "name": "JOIZEANNE PEDROSO PIRES CHAVES",
+      "classification": "mulher",
+      "source": "revisão manual"
+    },
+    {
+      "id": "314541002",
+      "name": "ANÂNKIA DE OLIVEIRA RICARTE MARINHO",
+      "classification": "mulher",
+      "source": "revisão manual"
+    },
+    {
+      "id": "330469002",
+      "name": "TRIANA GONÇALVES RAMIRES",
+      "classification": "mulher",
+      "source": "revisão manual"
+    },
+    {
+      "id": "332703001",
+      "name": "JEMY ALEX MANDUJANO VALLE",
+      "classification": "homem",
+      "source": "revisão manual"
+    },
+    {
+      "id": "346870002",
+      "name": "CLAIR KEMER DE MELO",
+      "classification": "mulher",
+      "source": "revisão manual"
+    },
+    {
+      "id": "351139100",
+      "name": "MILLEIDE ALVES DE JESUS",
+      "classification": "mulher",
+      "source": "revisão manual"
+    },
+    {
+      "id": "470137100",
+      "name": "DNY SANDRA DA SILVA SOUZA",
+      "classification": "mulher",
+      "source": "revisão manual"
+    },
+    {
+      "id": "547399101",
+      "name": "EDIONE TEIXEIRA DE CARVALHO",
+      "classification": "mulher",
+      "source": "revisão manual"
+    },
+    {
+      "id": "621920100",
+      "name": "ORGELIO AUGUSTO DE SENE",
+      "classification": "homem",
+      "source": "revisão manual"
+    },
+    {
+      "id": "811214100",
+      "name": "AKESLAYNE MARA DE CAMARGO",
+      "classification": "mulher",
+      "source": "revisão manual"
+    },
+    {
+      "id": "893190101",
+      "name": "REJAI DOS SANTOS PIRES",
+      "classification": "homem",
+      "source": "revisão manual"
+    },
+    {
+      "id": "903825100",
+      "name": "VITALE JOANONI NETO",
+      "classification": "homem",
+      "source": "revisão manual"
+    },
+    {
+      "id": "905142100",
+      "name": "HEIRYADNA DE SOUZA RIBEIRO",
+      "classification": "mulher",
+      "source": "revisão manual"
+    },
+    {
+      "id": "916149100",
+      "name": "IANÁRIA TABOSA LOPES",
+      "classification": "mulher",
+      "source": "revisão manual"
+    }
+  ]
+}
